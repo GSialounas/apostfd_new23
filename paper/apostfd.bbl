@@ -1,0 +1,315 @@
+\newcommand{\etalchar}[1]{$^{#1}$}
+\begin{thebibliography}{DGPR19}
+
+\bibitem[ABF88]{arney1988posteriori}
+David~C Arney, Rupak Biswas, and Joseph~E Flaherty.
+\newblock A posteriori error estimation of adaptive finite difference schemes
+  for hyperbolic systems.
+\newblock Technical report, US Army Armanent Research Development and
+  Engineering Center, Watervliet NY, 1988.
+
+\bibitem[AO11]{ainsworth2011posteriori}
+Mark Ainsworth and J~Tinsley Oden.
+\newblock {\em A posteriori error estimation in finite element analysis},
+  volume~37.
+\newblock John Wiley \& Sons, 2011.
+
+\bibitem[BHO18]{barth2018finite}
+Timothy Barth, Rapha{\`e}le Herbin, and Mario Ohlberger.
+\newblock Finite volume methods: foundation and analysis.
+\newblock {\em Encyclopedia of Computational Mechanics Second Edition}, pages
+  1--60, 2018.
+
+\bibitem[BO84]{berger1984adaptive}
+Marsha~J Berger and Joseph Oliger.
+\newblock Adaptive mesh refinement for hyperbolic partial differential
+  equations.
+\newblock {\em Journal of computational Physics}, 53(3):484--512, 1984.
+
+\bibitem[CCL94]{cockburn1994error}
+Bernardo Cockburn, Fr{\'e}d{\'e}ric Coquel, and Philippe LeFloch.
+\newblock An error estimate for finite volume methods for multidimensional
+  conservation laws.
+\newblock {\em mathematics of computation}, 63(207):77--103, 1994.
+
+\bibitem[CCL95]{cockburn1995convergence}
+Bernardo Cockburn, Fr{\'e}d{\'e}ric Coquel, and Philippe~G LeFloch.
+\newblock Convergence of the finite volume method for multidimensional
+  conservation laws.
+\newblock {\em SIAM Journal on Numerical Analysis}, 32(3):687--705, 1995.
+
+\bibitem[CET14]{collins2014posteriori}
+James~B Collins, Don Estep, and Simon Tavener.
+\newblock A posteriori error estimation for the lax--wendroff finite difference
+  scheme.
+\newblock {\em Journal of Computational and Applied Mathematics}, 263:299--311,
+  2014.
+
+\bibitem[CFR05]{carlini2005weighted}
+Elisabetta Carlini, Roberto Ferretti, and Giovanni Russo.
+\newblock A weighted essentially nonoscillatory, large time-step scheme for
+  hamilton--jacobi equations.
+\newblock {\em SIAM Journal on Scientific Computing}, 27(3):1071--1091, 2005.
+
+\bibitem[CG95]{cockburn1995posteriori}
+Bernardo Cockburn and Huiing Gau.
+\newblock A posteriori error estimates for general numerical methods for scalar
+  conservation laws.
+\newblock {\em Mat. Aplic. Comp}, 14(1):37--47, 1995.
+
+\bibitem[CG14]{chen2014goal}
+Qingshan Chen and Max Gunzburger.
+\newblock Goal-oriented a posteriori error estimation for finite volume
+  methods.
+\newblock {\em Journal of Computational and Applied Mathematics}, 265:69--82,
+  2014.
+
+\bibitem[DGPR19]{dedner2019residual}
+Andreas Dedner, Jan Giesselmann, Tristan Pryer, and Jennifer~K Ryan.
+\newblock Residual estimates for post-processors in elliptic problems.
+\newblock {\em arXiv preprint arXiv:1906.04658}, 2019.
+
+\bibitem[DMO07]{dedner2007error}
+Andreas Dedner, Charalambos Makridakis, and Mario Ohlberger.
+\newblock Error control for a class of runge--kutta discontinuous galerkin
+  methods for nonlinear conservation laws.
+\newblock {\em SIAM Journal on Numerical Analysis}, 45(2):514--538, 2007.
+
+\bibitem[Eva98]{Evans:1998}
+Lawrence~C. Evans.
+\newblock {\em Partial differential equations}, volume~19 of {\em Graduate
+  Studies in Mathematics}.
+\newblock American Mathematical Society, Providence, RI, 1998.
+
+\bibitem[GMP15]{giesselmann2015posteriori}
+Jan Giesselmann, Charalambos Makridakis, and Tristan Pryer.
+\newblock A posteriori analysis of discontinuous galerkin schemes for systems
+  of hyperbolic conservation laws.
+\newblock {\em SIAM Journal on Numerical Analysis}, 53(3):1280--1303, 2015.
+
+\bibitem[God59]{godunov1959difference}
+Sergei~Konstantinovich Godunov.
+\newblock A difference method for numerical calculation of discontinuous
+  solutions of the equations of hydrodynamics.
+\newblock {\em Matematicheskii Sbornik}, 89(3):271--306, 1959.
+
+\bibitem[GP17]{giesselmann2017posteriori}
+Jan Giesselmann and Tristan Pryer.
+\newblock A posteriori analysis for dynamic model adaptation in
+  convection-dominated problems.
+\newblock {\em Mathematical Models and Methods in Applied Sciences},
+  27(13):2381--2423, 2017.
+
+\bibitem[GST01]{gottlieb2001strong}
+Sigal Gottlieb, Chi-Wang Shu, and Eitan Tadmor.
+\newblock Strong stability-preserving high-order time discretization methods.
+\newblock {\em SIAM review}, 43(1):89--112, 2001.
+
+\bibitem[HEOC87]{harten1987uniformly}
+Ami Harten, Bjorn Engquist, Stanley Osher, and Sukumar~R Chakravarthy.
+\newblock Uniformly high order accurate essentially non-oscillatory schemes,
+  iii.
+\newblock In {\em Upwind and high-resolution schemes}, pages 218--290.
+  Springer, 1987.
+
+\bibitem[Joh90]{johnson1990adaptive}
+Claes Johnson.
+\newblock Adaptive finite element methods for diffusion and convection
+  problems.
+\newblock {\em Computer Methods in Applied Mechanics and Engineering},
+  82(1-3):301--322, 1990.
+
+\bibitem[JS95]{johnson1995adaptive}
+Claes Johnson and Anders Szepessy.
+\newblock Adaptive finite element methods for conservation laws based on a
+  posteriori error estimates.
+\newblock {\em Communications on Pure and Applied Mathematics}, 48(3):199--234,
+  1995.
+
+\bibitem[JS96]{jiang1996efficient}
+Guang-Shan Jiang and Chi-Wang Shu.
+\newblock Efficient implementation of weighted eno schemes.
+\newblock {\em Journal of computational physics}, 126(1):202--228, 1996.
+
+\bibitem[JSB{\etalchar{+}}19]{janett2019novel}
+Gioele Janett, Oskar Steiner, Ernest~Alsina Ballester, Luca Belluzzi, and
+  Siddhartha Mishra.
+\newblock A novel fourth-order weno interpolation technique-a possible new tool
+  designed for radiative transfer.
+\newblock {\em Astronomy \& Astrophysics}, 624:A104, 2019.
+
+\bibitem[JT97]{johnson1997advanced}
+B~Cockburn~C Johnson and C-W Shu~E Tadmor.
+\newblock Advanced numerical approximation of nonlinear hyperbolic equations.
+\newblock 1997.
+
+\bibitem[JT98]{jiang1998nonoscillatory}
+Guang-Shan Jiang and Eitan Tadmor.
+\newblock Nonoscillatory central schemes for multidimensional hyperbolic
+  conservation laws.
+\newblock {\em SIAM Journal on Scientific Computing}, 19(6):1892--1917, 1998.
+
+\bibitem[KR94]{kroner1994convergence}
+Dietmar Kr{\"o}ner and Mirko Rokyta.
+\newblock Convergence of upwind finite volume schemes for scalar conservation
+  laws in two dimensions.
+\newblock {\em SIAM journal on numerical analysis}, 31(2):324--343, 1994.
+
+\bibitem[L{\etalchar{+}}02]{leveque2002finite}
+Randall~J LeVeque et~al.
+\newblock {\em Finite volume methods for hyperbolic problems}, volume~31.
+\newblock Cambridge university press, 2002.
+
+\bibitem[Lax54]{lax1954weak}
+Peter~D Lax.
+\newblock Weak solutions of nonlinear hyperbolic equations and their numerical
+  computation.
+\newblock {\em Communications on pure and applied mathematics}, 7(1):159--193,
+  1954.
+
+\bibitem[LeV92]{leveque1992numerical}
+Randall~J LeVeque.
+\newblock {\em Numerical methods for conservation laws}, volume 132.
+\newblock Springer, 1992.
+
+\bibitem[LOC94]{liu1994weighted}
+Xu-Dong Liu, Stanley Osher, and Tony Chan.
+\newblock Weighted essentially non-oscillatory schemes.
+\newblock {\em Journal of computational physics}, 115(1):200--212, 1994.
+
+\bibitem[LSZ09]{liu2009positivity}
+Yuan-yuan Liu, Chi-wang Shu, and Meng-ping Zhang.
+\newblock On the positivity of linear weights in weno approximations.
+\newblock {\em Acta Mathematicae Applicatae Sinica, English Series},
+  25(3):503--538, 2009.
+
+\bibitem[LT11]{long2011numerical}
+David Long and John Thuburn.
+\newblock Numerical wave propagation on non-uniform one-dimensional staggered
+  grids.
+\newblock {\em Journal of Computational Physics}, 230(7):2643--2659, 2011.
+
+\bibitem[LVW21]{liska2021lax}
+Richard Liska, Pavel V{\'a}chal, and Burton Wendroff.
+\newblock Lax-wendroff methods on highly non-uniform meshes. dedicated to the
+  memory of blair swartz (1932--2019).
+\newblock {\em Applied Numerical Mathematics}, 163:167--181, 2021.
+
+\bibitem[Mak07]{makridakis2007space}
+Charalambos Makridakis.
+\newblock Space and time reconstructions in a posteriori analysis of evolution
+  problems.
+\newblock In {\em ESAIM: Proceedings}, volume~21, pages 31--44. EDP Sciences,
+  2007.
+
+\bibitem[MM05]{morton2005numerical}
+Keith~W Morton and David~Francis Mayers.
+\newblock {\em Numerical solution of partial differential equations: an
+  introduction}.
+\newblock Cambridge university press, 2005.
+
+\bibitem[NT90]{nessyahu1990non}
+Haim Nessyahu and Eitan Tadmor.
+\newblock Non-oscillatory central differencing for hyperbolic conservation
+  laws.
+\newblock {\em Journal of computational physics}, 87(2):408--463, 1990.
+
+\bibitem[SCR16]{semplice2016adaptive}
+Matteo Semplice, Armando Coco, and Giovanni Russo.
+\newblock Adaptive mesh refinement for hyperbolic systems based on third-order
+  compact weno reconstruction.
+\newblock {\em Journal of Scientific Computing}, 66(2):692--724, 2016.
+
+\bibitem[Shu98]{shu1998essentially}
+Chi-Wang Shu.
+\newblock Essentially non-oscillatory and weighted essentially non-oscillatory
+  schemes for hyperbolic conservation laws.
+\newblock In {\em Advanced numerical approximation of nonlinear hyperbolic
+  equations}, pages 325--432. Springer, 1998.
+
+\bibitem[Shu20]{shu2020essentially}
+Chi-Wang Shu.
+\newblock Essentially non-oscillatory and weighted essentially non-oscillatory
+  schemes.
+\newblock {\em Acta Numerica}, 29:701--762, 2020.
+
+\bibitem[SL18]{semplice2018adaptive}
+Matteo Semplice and Rapha{\"e}l Loub{\`e}re.
+\newblock Adaptive-mesh-refinement for hyperbolic systems of conservation laws
+  based on a posteriori stabilized high order polynomial reconstructions.
+\newblock {\em Journal of Computational Physics}, 354:86--110, 2018.
+
+\bibitem[SO88]{shu1988efficient}
+Chi-Wang Shu and Stanley Osher.
+\newblock Efficient implementation of essentially non-oscillatory
+  shock-capturing schemes.
+\newblock {\em Journal of computational physics}, 77(2):439--471, 1988.
+
+\bibitem[SO89]{shu1989efficient}
+Chi-Wang Shu and Stanley Osher.
+\newblock Efficient implementation of essentially non-oscillatory
+  shock-capturing schemes, ii.
+\newblock In {\em Upwind and High-Resolution Schemes}, pages 328--374.
+  Springer, 1989.
+
+\bibitem[SS05]{schmidt2005design}
+Alfred Schmidt and Kunibert~G Siebert.
+\newblock Design of adaptive finite element software.
+\newblock {\em Lecture Notes in Computational Science and Engineering.
+  Springer-Verlag, Berlin}, 2005.
+
+\bibitem[Tre82]{trefethen1982group}
+Lloyd~N Trefethen.
+\newblock Group velocity in finite difference schemes.
+\newblock {\em SIAM review}, 24(2):113--136, 1982.
+
+\bibitem[Ver13]{verfurth2013posteriori}
+R{\"u}diger Verf{\"u}rth.
+\newblock {\em A posteriori error estimation techniques for finite element
+  methods}.
+\newblock OUP Oxford, 2013.
+
+\bibitem[Vic81a]{vichnevetsky1981energy}
+Robert Vichnevetsky.
+\newblock Energy and group velocity in semi discretizations of hyperbolic
+  equations.
+\newblock 1981.
+
+\bibitem[Vic81b]{vichnevetsky1981propagation}
+Robert Vichnevetsky.
+\newblock Propagation through numerical mesh refinement for hyperbolic
+  equations.
+\newblock 1981.
+
+\bibitem[VL73]{van1973towards}
+Bram Van~Leer.
+\newblock Towards the ultimate conservative difference scheme i. the quest of
+  monotonicity.
+\newblock In {\em Proceedings of the Third International Conference on
+  Numerical Methods in Fluid Mechanics}, pages 163--168. Springer, 1973.
+
+\bibitem[VL74]{van1974towards}
+Bram Van~Leer.
+\newblock Towards the ultimate conservative difference scheme. ii. monotonicity
+  and conservation combined in a second-order scheme.
+\newblock {\em Journal of computational physics}, 14(4):361--370, 1974.
+
+\bibitem[VL77a]{van1977towards}
+Bram Van~Leer.
+\newblock Towards the ultimate conservative difference scheme iii.
+  upstream-centered finite-difference schemes for ideal compressible flow.
+\newblock {\em Journal of Computational Physics}, 23(3):263--275, 1977.
+
+\bibitem[VL77b]{van1977towardsIV}
+Bram Van~Leer.
+\newblock Towards the ultimate conservative difference scheme. iv. a new
+  approach to numerical convection.
+\newblock {\em Journal of computational physics}, 23(3):276--299, 1977.
+
+\bibitem[VL79]{van1979towards}
+Bram Van~Leer.
+\newblock Towards the ultimate conservative difference scheme. v. a
+  second-order sequel to godunov's method.
+\newblock {\em Journal of computational Physics}, 32(1):101--136, 1979.
+
+\end{thebibliography}

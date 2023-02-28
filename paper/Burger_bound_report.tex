@@ -1,0 +1,186 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Hey Emacs,
+%% mode:latex ***
+%% tex-main-file: "apostfd.tex"  ***
+%%
+%%        Reconstruction based a posteriori estimates for some finite difference schemes.
+%%
+%%
+%% Dear Human:
+%%
+%% This source file may be subject to copyright restrictions as mandated
+%% by the Journal's policy and arXiv's copyright policies.  
+%%
+%% In any case, you MUST SEEK PERMISSION from at least one of the authors
+%% prior to any use of this source file.
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% style and macro packages
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[final]{amsart}
+\usepackage{pdfsync}
+\usepackage{amsmath,amssymb}
+\usepackage{enumerate}
+\usepackage{xspace}
+
+\usepackage{boxedminipage}
+\usepackage{algorithmicx}
+\usepackage[ruled]{algorithm}
+\usepackage{algpseudocode}
+\usepackage{listings}% for including source code
+\usepackage{tabularx}
+\usepackage{subfigure}
+\usepackage{tristan}
+\usepackage{fullpage}
+\usepackage[colorlinks,citecolor=cyan,linkcolor=magenta]{hyperref}
+
+%\usepackage[cm]{fullpage}
+\renewcommand{\bi}[2]{\ensuremath{\cA\qp{#1,#2}}}
+\renewcommand{\bih}[2]{\ensuremath{\cA_h\qp{#1,#2}}}
+\renewcommand{\bid}[2]{\ensuremath{\cA^*\qp{#1,#2}}}
+\renewcommand{\biloc}[2]{\ensuremath{\cA^K\qp{#1,#2}}}
+\renewcommand{\bihloc}[2]{\ensuremath{\cA_h^K\qp{#1,#2}}}
+
+
+\renewcommand{\vec}[1]{\geovec{#1}}
+\renewcommand{\mat}[1]{\geomat{#1}}
+
+\renewcommand{\enorm}[2]{\ensuremath{\Norm{#1}}_{dG,{#2}}}
+\newcommand{\opnorm}[2]{\ensuremath{\Norm{#1}}_{\widetilde{dG},{#2}}}
+\renewcommand{\eenorm}[2]{\,|\!|\!| {{#1}} |\!|\!|_{dG,{#2}}}
+\renewcommand{\d}{\ensuremath{\,\mathrm{d}}}
+\renewcommand{\todo}[1]{{\color{red} Tristan says:  #1 }}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% local macros
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\numberwithin{equation}{section}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% service packages and switches
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\usepackage{showkeys}
+\setboolean{showtodo}{true}
+\setboolean{shownotes}{true}
+\setboolean{showchanges}{false}%true
+\setboolean{usemathrsfs}{false}%true
+\setlength{\parindent}{12pt} %to have no indentation in the beginning
+                            %of paragraph
+%\setboolean{issiamltex}{true}
+
+%\usepackage{tikz}
+%\usetikzlibrary{shapes,arrows}
+
+
+\author{
+  Tristan Pryer
+}
+\address{
+  Tristan Pryer
+  \thanks{
+    Department of Mathematical Sciences,
+    University of Bath, Bath BA2 7AY, UK
+    {\tt{tmp38@bath.ac.uk}}.
+}}
+
+\author{
+  Georgios Sialounas
+}
+\address{
+  Georgios Sialounas
+  \thanks{
+    Swears like a sailor, fill this in!
+}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\title{A posteriori bound for Burgers' equation in the pre-schock regime}
+\date{\today}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pdfformat{true}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+\maketitle
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Let $u\qp{x,t}$ solve 
+\begin{equation}
+\begin{aligned}
+u_t+\partial_x\qp{\frac{u^2}{2}}&=0\\
+u\qp{x,0}&=u_0\qp{x}
+\end{aligned}
+\end{equation}
+with periodic boundary conditions.  Let $v$ satisfy the perturbed pde
+\begin{equation}
+\begin{aligned}
+v_t+\partial_x\qp{\frac{v^2}{2}}&=-R\\
+v\qp{x,0}&=v_0\qp{x}.
+\end{aligned}
+\end{equation}
+Then, the error $e:=u-v$ satisfies
+\begin{equation}
+\begin{aligned}
+e_t+\partial_x\qp{\frac{\qp{u+v}\qp{u-v}}{2}}&=R\\
+e\qp{x,0}&=e_0\qp{x}.
+\end{aligned}
+\end{equation}
+We use the fact that $u+v = u+v-v+v = e+2v$ to rewrite this as
+\begin{equation}
+\begin{aligned}
+e_t+\partial_x\qp{\frac{\qp{e+2v}\qp{e}}{2}}&=R\\
+e\qp{x,0}&=e_0\qp{x}.
+\end{aligned}
+\end{equation}
+We test with $e$ to obtain
+
+\begin{equation}
+\begin{aligned}
+\int Re&=\int e e_t +\frac{1}{2}e\partial_x{\qp{e^2+2ve}}\\
+\int Re&=\int e e_t +\int \frac{1}{3}\partial_x{\qp{e^3}}+\int e\partial_x{\qp{ve}}
+\end{aligned}
+\end{equation}
+We note that 
+\begin{equation}
+.5\partial_x\qp{ve^2} = {vee_x}+.5{e^2v_x}
+\end{equation}
+and that
+\begin{equation}
+\begin{aligned}
+ e\partial_x{\qp{ve}}&= {vee_x}+{e^2v_x}\\
+&=.5\partial_x\qp{ve^2}+.5{e^2v_x}.
+\end{aligned}
+\end{equation}
+Hence
+\begin{equation}
+\begin{aligned}
+\frac{1}{2}\frac{\mathrm{d}}{dt}\Norm{e}^2_{L_2}=\int Re +\int.5 e^2 v_x
+\end{aligned}
+\end{equation}
+We use the Cauchy-Schwarz and Holder's inequality to get
+\begin{equation}
+\begin{aligned}
+\frac{1}{2}\frac{\mathrm{d}}{dt}\Norm{e}^2_{L_2}&\leq\Norm{R}_{L_2}\Norm{e} _{L_2}+.5 \Norm{e}^2_{L_2}\Norm{v_x}_{L_\infty}\\
+&\leq\frac{1}{2}\Norm{R}^2_{L_2}+\frac{1}{2}\Norm{e}^2_{L_2}+\frac{1}{2} \Norm{e}^2_{L_2}\Norm{v_x}_{L_\infty}\\
+\end{aligned}
+\end{equation}
+We now use Gronwall's inequality to get
+\begin{equation}
+\begin{aligned}
+\Norm{e\qp{t}}^2_{L_2}\leq \exp\qp{\int_0^t\qp{\Norm{v_x\qp{s}}_{L_\infty}+1}\mathrm{d}s}\qb{\Norm{e\qp{0}}_{L_2}^2+\int_0^t\Norm{R\qp{s}}^2_{L_2}\mathrm{d}s}
+\end{aligned}
+\end{equation}
+
+
+
+
+
+\bibliographystyle{alpha}
+\bibliography{./tristansbib,./tristanswritings,./apostfd,./apostfd_bibdesk}
+
+\end{document}
+
+%% End: ***
+    

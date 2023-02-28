@@ -1,0 +1,31 @@
+   \begin{tikzpicture}[scale=0.9,
+        declare function={
+          T(\u,\beta,\mu) = (1+(abs(\beta*\u))^\mu )^(-1);
+        },
+        spy using outlines=
+	{circle, magnification=3, connect spies},
+      ]
+      \begin{axis}[
+          xlabel={Pressure head $u$ ($m$).},
+          ylabel={$\mathcal K_r(u)$},
+          legend style={at={(.55,0.9)}},
+          domain=-2:0,
+        ]
+        \addplot[blue, thick,samples=101] {T(x,4.53,1.31)};
+        \addplot[red, thick,samples=101] {T(x,2.6,0.63)};  
+        \addplot[green, thick,samples=101] {T(x,11.03,1.2)};   
+        \addplot[yellow, thick,samples=101] {T(x,100.3,0.51)};  
+        \addplot[dashed,black,samples=2] {1};
+        \addplot[black, thick, domain=-0.:1] {1};
+        \coordinate (spypoint) at (axis cs:-0.3,0.8);
+        \coordinate (magnifyglass) at (axis cs:0.33,0.4);
+        \legend{
+          Silty sand,
+          Sandstone,
+          Basalt,
+          Clay
+        }
+          \spy [blue, size=3cm] on (spypoint)
+          in node[fill=white, size=2.3cm] at (magnifyglass);
+      \end{axis}
+    \end{tikzpicture}
