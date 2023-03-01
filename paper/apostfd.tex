@@ -454,217 +454,358 @@ U^{n+1}_j &= U^n_j + \frac{\tau}{h} \qp{U^n_{j} - U^n_{j-1}}
 U^0_j &= u_0(x_j) \text{ for } j=0, \dots, M
 \end{split}
 \end{equation}
-and a forward-time central-space (FTCS)
+and a Crank-Nicolson central-space (CNCS)
 \begin{equation}
 \label{eq:FTCS}
 \begin{split}
-U^{n+1}_j &= U^n_j + \frac{\tau}{2h}
-\qp{U^n_{j+1}-U^n_{j-1}}
-\text{ for } n=0,\dots, N-1 \text{ and } j=0,\dots, M-1.
+U^{n+1}_j &= U^n_j - \frac{1}{2}\qp{\frac{\tau}{2h}
+	\qp{U^n_{j+1}-U^n_{j-1}} 
+	+
+	\frac{\tau}{2h}\qp{U^{n+1}_{j+1}-U^{n+1}_{j-1}}}
+\text{ for } \quad j=0,\dots, M-1.
 \\
-U^0_j &= u_0(x_j) \text{ for } j=0, \dots, M.
+U^0_j &= u_0(x_j) \text{ for } j=0, \dots, M,
 \end{split}
 \end{equation}
+for $n=0,\dots,N-1$.
 Formally, these methods have truncation error $\Oh(\tau + h)$ and
-$\Oh(\tau + h^2)$ respectively.
+$\Oh(\tau^2 + h^2)$ respectively.
+
+\begin{Defn}[Truncation error for the FTBS scheme]\label{defn:truncation_ftbs}
+	We define the Truncation error for the FTBS scheme at $\qp{t,x}$, $T\qp{t,x}$, as
+	\begin{equation}
+	\begin{aligned}
+	T\qp{t,x}&:=\frac{u\qp{t+\tau,x}-u\qp{x,t}}{\tau}+\frac{u\qp{t,x}-u\qp{t,x-h}}{h}\\
+	&=\frac{1}{2}\qp{ \tau u_{tt}\qp{x,\eta} +hu_{xx}\qp{\xi,t} },
+	\end{aligned}
+	\end{equation}
+	for $\xi\in\qp{x-h,x}$, $\eta \in\qp{t, t+\tau}$.
+\end{Defn}
+
+
+\begin{Defn}[Truncation error for the BTFS scheme]\label{defn:btfs_truncation}
+	We define the Truncation error for the BTFS scheme at $\qp{t,x}$, $T\qp{t,x}$, as
+	\begin{equation}\label{eq:btfs_truncation}
+	\begin{aligned}
+	T\qp{t,x}&:=\frac{u\qp{t+\tau,x}-u\qp{x,t}}{\tau}+\frac{u\qp{t+\tau,x+h}-u\qp{t+\tau,x}}{h}\\
+	&=\qp{ \tau-h}u_{tx},
+	\end{aligned}
+	\end{equation}
+	for $\xi\in\qp{x+h,x}$, $\eta \in\qp{t, t+\tau}$.
+\end{Defn}
 
 In order to make use of the abstract bounds given in \S
 \ref{sec:setup} we must have an interpretation of the numerical
 approximation $\{ U^n_j \}_{j}^{n}$, which is only defined as point
 values over the space-time domain. The most intuitive post-processing
-is to apply a bilinear Lagrange interpolant in space-time. With a
-globally defined reconstruction, $\widehat U$ say. As a consequence of
-Lemma \ref{theorem_stab_advection}, we arrive at the a posteriori
-bound:
-\begin{equation}\label{eq_prelim_bound}
-\Norm{(u - \widehat{U})\qp{t}}^2_{\leb{2}\qp{\W}}
-\leq
-\w(t)
-\qb{\Norm{(u - \widehat{U})\qp{0}}^2_{\leb{2}\qp{\W}}+\int_0^t\Norm{\delta(s) R(s)}^2_{\leb{2}\qp{\W}}  \d s }
-=: \w\qp{t}\cE(t)^2
-,
-\end{equation}
-where
-\begin{equation}
-R := - \widehat U_t - \widehat U_x
-\end{equation}
-is the discrete residual of the reconstruction. Note that given the
-numerical solution, the right hand side of (\ref{eq_prelim_bound}) is
-fully computable. It can even be shown to be fully robust when $u_0$
-is a sufficiently smooth initial condition.
+is to apply, for example, a bilinear Lagrange interpolant in space-time. 
 
-\begin{Lem}{Asymptotic convergence rate for the reconstruction residual}
-  \label{subsec:asymptotic_convergence_rate}
-  Let $\{ U^n_j \}_{j}^{n}$ be the FTBS approximation of $u$, the
-  solution of (\ref{eq:transport}) with $u_0 \in
-  \cont{2}(\W)$. Suppose $\widehat U$ is the piecewise bilinear
-  interpolant of the nodal values of $\{ U^n_j \}_{j}^{n}$ and let
-  $\w\qp{t}\cE(t)^2$ be defined in (\ref{eq_prelim_bound}), then
-  \begin{equation}
-    \w\qp{t}\cE(t)^2 = \Oh(\tau^2 + h^2).
-  \end{equation}
+\begin{Cor}[An a posteriori bound]
+	\label{cor:aposteriori}
+	Let $\widehat U$ be a continuous reconstruction of the finite
+	difference approximation $\{ U^n_j \}_{j}^n$. Then, in view of Lemma
+	\ref{theorem_stab_advection}, we have the a posteriori bound:
+	\begin{equation}\label{eq_prelim_bound}
+	\Norm{(u - \widehat{U})\qp{t}}^2_{\leb{2}\qp{\W}}
+	\leq
+	\w(t)
+	\qb{\Norm{(u - \widehat{U})\qp{0}}^2_{\leb{2}\qp{\W}}+\int_0^t\Norm{\delta(s) R(s)}^2_{\leb{2}\qp{\W}}  \d s }
+	=: \w\qp{t}\cE(t)^2
+	,
+	\end{equation}
+	where
+	\begin{equation}\label{eq:residual_advection}
+	R := - \widehat U_t - \widehat U_x
+	\end{equation}
+	is the discrete residual of the reconstruction.
+\end{Cor}
+
+Note that given the numerical solution, the right hand side of
+(\ref{eq_prelim_bound}) is fully computable. It can even be shown to
+be fully robust when $u_0$ is a sufficiently smooth initial condition
+as we will indicate in the following result.
+
+\begin{Lem}[Asymptotic convergence rate for the reconstruction residual]
+	\label{subsec:asymptotic_convergence_rate}
+	Let $\{ U^n_j \}_{j}^{n}$ be the FTBS approximation of $u$, the
+	solution of (\ref{eq:transport}) with $u_0 \in
+	\cont{2}(\W)$. Suppose $\widehat U$ is the piecewise bilinear
+	interpolant of the nodal values of $\{ U^n_j \}_{j}^{n}$ and let
+	$\w\qp{t}\cE(t)^2$ be defined in (\ref{eq_prelim_bound}), then
+	\begin{equation}
+	\w\qp{t}\cE(t)^2 \leq C \qp{\tau^2 + h^2}\Norm{u_0}_{\cont{2}\qp{\W}}^2.
+	\end{equation}
 \end{Lem}
 \begin{proof}
-We begin by defining, $\widehat{U}^t$ as
-\begin{equation}
-  \widehat{U}^t_j\qp{t}
-  :=
-  U^n_j +\frac{U^{n+1}_j
-    -
-    U^n_j}{\tau}\qp{t-t^n}, \quad \text{for }\quad t \in \qb{t^n,
-    t^{n+1}}  \text{ and } j\in [0,M-1],
-\end{equation}
-which represents interpolant in the temporal direction. That allows us
-to write $\widehat{U}$ as
-\begin{equation}
-  \widehat{U}\qp{x,t}
-  :=
-  \widehat{U}^t_j\qp{t} + \frac{\widehat{U}_{j+1}^t\qp{t}-\widehat{U}_j^t\qp{t} }{h}\qp{x-x_j}\quad\text{for}\quad \qp{x,t}\in \qb{x_j, x_{j+1}}\times\qb{t^n, t^{n+1}}.
-\end{equation}
-Since $\widehat{U}$ is bilinear on a space-time slab we can compute
-$R$ explicitly as
-\begin{equation}
-  \label{eq:Reqn}
-  \begin{aligned}
-    -R
-    =
-    \partial_t \widehat{U}
-    +
-    \partial_x \widehat{U}
-    &=
-    \partial_t \widehat{U}^t_j
-    +
-    \frac{\partial_t\widehat{U}_{j+1}^t-\partial_t\widehat{U}_j^t}{h}\qp{x-x_j}
-    +
-    \frac{\widehat{U}_{j+1}^t-\widehat{U}_j^t}{h}.
-\end{aligned}
-\end{equation}
-Now
-\begin{equation}
-  \begin{split}
-    \Norm{\w(s) R(s)}_{\leb{2}(\W)}^2
-    &=
-    \sum_{j} \int_{x_j}^{x_{j+1}} \norm{\w(s) R(s,x)}^2 \d x
-    \\
-    &=
-    \sum_{j} h \norm{w(s) R(s, x_{j+1/2})}^2,
-  \end{split}
-\end{equation}
-as $\w R$ is linear over each spatial interval. Note that, because $\omega$ changes form once $t>1$, we split the integral into two parts.  We also denote by $n_1$ the index of the time-step where $t>1$ for the first time. Now
-\begin{equation}\label{eq:bound}
-  \begin{split}
-    \int_0^T \Norm{\w(s) R(s)}_{\leb{2}(\W)}^2 \d s
-    &=
-    \sum_n \int_{t^n}^{t^{n+1}}
-    \sum_{j} h \norm{w(s) R(s, x_{j+1/2})}^2 \d s,
-    \\
-    &\leq
-    \sum_{n=0}^{n=n_1} \int_{t^n}^{t^{n+1}}
-    \sum_{j} h \norm{R(s, x_{j+1/2})}^2 \d s
-    +
-    \sum_{n=n_1}^{n=N-1}\int_{t^n}^{t^{n+1}}
-    \sum_{j} h \norm{s R(s, x_{j+1/2})}^2 \d s
-    \\
-    &\leq
-   \tau h\qp{ \sum_{n=0}^{n=n_1-1}
-   	\sum_{j} \norm{ R(t^{n+1/2}, x_{j+1/2})}^2
-   	+
-   	\sum_{n=n_1}^{N-1}
-   	\sum_{j} \norm{t^{n+1/2} R(t^{n+1/2}, x_{j+1/2})}^2}
-    .
-  \end{split}
-\end{equation}
-Using (\ref{eq:Reqn}) we see
-\begin{equation}\label{eq:residual_expression}
-  -R(t^{n+1/2}, x_{j+1/2})
-  =
-  \frac{U^{n+1}_{j}-U^n_{j}}{\tau}
-  +
-  \frac{U^n_{j+1}-U^n_j}{h}
-  +
-  \qp{\frac{1}{2\tau}+\frac{1}{2h}}\qp{U^{n+1}_{j+1} - U^{n}_{j+1} - \qp{U^{n+1}_j - U^n_j}},
-\end{equation}
-which simplifies to 
-\begin{equation}\label{eq:Residual_scheme_form_BTFS}
-\begin{aligned}
--R(t^{n+1/2}, x_{j+1/2})&=\frac{1}{2\tau}\qp{U^{n+1}_{j+1} - U^{n}_{j+1} + \qp{U^{n+1}_j - U^n_j}}
-+
-\frac{1}{2h}\qp{U^{n+1}_{j+1} - U^{n+1}_{j} + \qp{U^{n}_{j+1} - U^n_j}}\\
-&=
-\frac{1}{2}\qp{\frac{U^{n+1}_{j+1} - U^{n}_{j+1}}{\tau}+
-\frac{U^{n}_{j+1} - U^n_j}{h}}
-+
-\frac{1}{2}\qp{\frac{U^{n+1}_j - U^n_j}{\tau}+\frac{U^{n+1}_{j+1} - U^{n+1}_{j} }{h}}\\
-&=
-\frac{1}{2}\qp{\frac{U^{n+1}_j - U^n_j}{\tau}+\frac{U^{n+1}_{j+1} - U^{n+1}_{j} }{h}},
-\end{aligned}
-\end{equation}
-since the term in the first bracket is the numerical scheme we use.   The contribution to the residual comes from the second term.  In order to assess this we add the PDE at $\qp{t^n, x_j}$ and discretise the resulting terms.  For ease of notation we will denote the exact solution $u\qp{t^n,x_j}$ as $u^n_j$ and define a truncation error at $\qp{t,x}$, $T\qp{t,x}$, as
-\begin{equation}
-\begin{aligned}
-T\qp{t,x}&:=\frac{u\qp{t+\tau,x}-u\qp{x,t}}{\tau}+\frac{u\qp{t+\tau,x+h}-u\qp{t+\tau,x}}{h}=\frac{1}{2}\qp{ \tau u_{tt}\qp{\eta,x} +hu_{xx}\qp{t,\xi} },
-\end{aligned}
-\end{equation}
-for some $\xi\in\qp{x,x+h}$, $\eta \in\qp{t, t+\tau}$. This is of the same form as the truncation error for the FTBS  scheme for this problem (see \cite[\S4]{morton2005numerical}).  We use this to write (\ref{eq:Residual_scheme_form_BTFS}) as
-\begin{equation}
-\begin{aligned}
--R(t^{n+1/2}, x_{j+1/2})=\frac{1}{2}\qp{\frac{U^{n+1}_j - U^n_j}{\tau}
-+
-\frac{U^{n+1}_{j+1} - U^{n+1}_{j} }{h}}
--\frac{1}{2}\qp{\frac{u^{n+1}_j-u^n_j}{\tau}
-+
-\frac{u^{n+1}_{j+1}-u^{n+1}_j}{h}}
-+
-\frac{1}{2}T^{n+1}_{j+1},
-\end{aligned}
-\end{equation}
-where $T^{n+1}_{j+1}$  is the truncation error at the $\qp{t^{n+1},x_{j+1}}$.
-This simplifies to 
-\begin{equation}
-\begin{aligned}
--R(t^{n+1/2}, x_{j+1/2})
-=
-\frac{1}{2}\qp{\frac{e^{n+1}_j - e^n_j}{\tau}	
-+
-\frac{e^{n+1}_{j+1} - e^{n+1}_{j} }{h}}
-+
-\frac{1}{2}{T^{n+1}_{j+1}}.
-\end{aligned}
-\end{equation}
-Therefore,
-\begin{equation}\label{eq:residual_absolute_many}
-\abs{R(t^{n+1/2}, x_{j+1/2})}
-\leq 
-\qp{\frac{\abs{e^{n+1}_j} + \abs{e^n_j}}{\tau}	
+	We begin by defining, $\widehat{U}^t$ nodally as
+	\begin{equation}
+	\widehat{U}^t_j\qp{t}
+	:=
+	U^n_j +\frac{U^{n+1}_j
+		-
+		U^n_j}{\tau}\qp{t-t^n}, \quad \text{for }\quad t \in \qb{t^n,
+		t^{n+1}}  \text{ and } j\in [0,M-1],
+	\end{equation}
+	which represents the interpolant in the temporal direction. This allows us
+	to write $\widehat{U}$ as
+	\begin{equation}
+	\widehat{U}\qp{x,t}
+	:=
+	\widehat{U}^t_j\qp{t} + \frac{\widehat{U}_{j+1}^t\qp{t}-\widehat{U}_j^t\qp{t} }{h}\qp{x-x_j}\quad\text{for}\quad \qp{x,t}\in \qb{x_j, x_{j+1}}\times\qb{t^n, t^{n+1}}.
+	\end{equation}
+	Since $\widehat{U}$ is bilinear on a space-time slab we can compute
+	$R$ explicitly as
+	\begin{equation}
+	\label{eq:Reqn}
+	\begin{aligned}
+	-R
+	=
+	\partial_t \widehat{U}
 	+
-	\frac{\abs{e^{n+1}_{j+1}} +\abs{ e^{n+1}_{j} }}{h}} +\frac{1}{2}\abs{T^{n+1}_{j+1}}.
-\end{equation}
-We denote the maximum truncation error in the computation as
-\begin{equation}
-T:=\max_n\max_{j}\abs{T^n_j},
-\end{equation}
-noting that  $T=\mathcal{O}\qp{\tau+h}$ and that (cf. \cite{morton2005numerical})
-\begin{equation}
-\max_j\abs{e^n_j}\leq n\tau T.
-\end{equation}
-Hence,  (\ref{eq:residual_absolute_many}) simplifies to  
-\begin{equation}\label{eq:bound_residual_R123}
-\abs{R\qp{t^{n+1/2},x_{j+1/2}}}\leq T+4(n+1)T\leq D\qp{\tau+h},
-\end{equation}
-for some constant $D$. Finally, substituting (\ref{eq:bound_residual_R123})  into (\ref{eq:bound}) and noting that  $\tau:=1/N$ and $h:=1/M$, after some simple algebraic manipulations we obtain
-\begin{equation}
-\begin{aligned}
-  \Norm{\w(s) R(s)}_{\leb{2}(\W)}^2
-  \leq
-  \tau h\qp{
-   \sum_{n=0}^{n_1-1}\sum_{j} \norm{D\qp{\tau+h}}^2
-+
-\sum_{n=n_1}^{N-1}\sum_{j} \norm{Dt^{n+1/2} \qp{\tau+h}}^2}
-  =\mathcal{O}\qp{\tau^2+h^2},
-\end{aligned}
-\end{equation}
-which concludes the proof.  
+	\partial_x \widehat{U}
+	&=
+	\partial_t \widehat{U}^t_j
+	+
+	\frac{\partial_t\widehat{U}_{j+1}^t-\partial_t\widehat{U}_j^t}{h}\qp{x-x_j}
+	+
+	\frac{\widehat{U}_{j+1}^t-\widehat{U}_j^t}{h}.
+	\end{aligned}
+	\end{equation}
+	Now consider the residual component of the estimator. Since
+	$\delta R$ is linear over each spatial interval, we see that
+	\begin{equation}
+	\begin{split}
+	\Norm{\delta(s) R(s)}_{\leb{2}(\W)}^2
+	&=
+	\sum_{j=0}^{M-1}\int_{x_j}^{x_{j+1}} \norm{\delta(s) R(s,x)}^2 \d x
+	\\
+	&=
+	\sum_{j=0}^{M-1} h \norm{\delta(s) R(s, x_{j+1/2})}^2,
+	\end{split}
+	\end{equation}
+	Now
+	\begin{equation}\label{eq:bound}
+	\begin{split}
+	\int_0^T \Norm{\delta(s) R(s)}_{\leb{2}(\W)}^2 \d s
+	&=
+	\sum_{n=0}^{N-1} \int_{t^n}^{t^{n+1}}
+	\sum_{j=0}^{M-1} h \norm{\delta(s) R(s, x_{j+1/2})}^2 \d s
+	.
+	\end{split}
+	\end{equation}
+	We recall from Lem.  \ref{theorem_stab_advection} that 
+	\begin{equation}
+	\begin{aligned}
+	\delta\qp{s}&=\begin{cases}
+	1 &\text{ for } s\leq 1\\
+	\sqrt{s} &\text{ for } s\geq 1\\
+	\end{cases}
+	\end{aligned}
+	\end{equation}
+	hence we may bound (\ref{eq:bound}) as follows:
+	\begin{equation}\label{eq:bound_2   }
+	\begin{split}
+	\int_0^T \Norm{\delta(s) R(s)}_{\leb{2}(\W)}^2 \d s
+	&\leq
+	\max\qp{1,{T}}
+	\sum_{n=0}^{N-1} \int_{t^n}^{t^{n+1}}
+	\sum_{j=0}^{M-1} h \norm{R(s, x_{j+1/2})}^2 \d s
+	\\
+	&\leq
+	\max\qp{1,{T}}\tau h \sum_{n=0}^{N-1}
+	\sum_{j=0}^{M-1} \norm{R(t^{n+1/2}, x_{j+1/2})}^2
+	.
+	\end{split}
+	\end{equation}
+	
+	Using (\ref{eq:Reqn}) we see that
+	\begin{equation}\label{eq:residual_expression}
+	-R(t^{n+1/2}, x_{j+1/2})
+	=
+	\frac{U^{n+1}_{j}-U^n_{j}}{\tau}
+	+
+	\frac{U^n_{j+1}-U^n_j}{h}
+	+
+	\qp{\frac{1}{2\tau}+\frac{1}{2h}}\qp{U^{n+1}_{j+1} - U^{n}_{j+1} - \qp{U^{n+1}_j - U^n_j}},
+	\end{equation}
+	which simplifies to 
+	\begin{equation}\label{eq:Reqn_2}\small{
+		\begin{aligned}
+		-R(t^{n+1/2}, x_{j+1/2})
+		&=
+		\frac{1}{2\tau}\qp{U^{n+1}_{j+1} - U^{n}_{j+1} + {U^{n+1}_j - U^n_j}}
+		+
+		\frac{1}{2h}\qp{U^{n+1}_{j+1} - U^{n+1}_{j} + {U^{n}_{j+1} - U^n_j}}\\
+		&=
+		\frac{1}{2}\qp{\underbrace{\frac{U^{n+1}_{j+1} - U^{n}_{j+1}}{\tau}+
+				\frac{U^{n}_{j+1} - U^n_j}{h}}_A}
+		+
+		\frac{1}{2}\qp{\underbrace{\frac{U^{n+1}_j - U^n_j}{\tau}+\frac{U^{n+1}_{j+1} - U^{n+1}_{j} }{h}}_B}.
+		\end{aligned}}
+	\end{equation}
+	We note that term $A$ in (\ref{eq:Reqn_2}) is the FTBS
+	discretisation (\ref{eq:FTBS}) evaluated at the $(j+1)$-th node
+	and it is therefore equal to zero. Hence, (\ref{eq:Reqn_2})
+	simplifies to
+	\begin{equation}\label{eq:residual_FTBS}
+	-R(t^{n+1/2}, x_{j+1/2})
+	=
+	\frac{1}{2}\qp{\frac{U^{n+1}_j - U^n_j}{\tau}+\frac{U^{n+1}_{j+1} - U^{n+1}_{j} }{h}}.
+	\end{equation}
+	Notice that this corresponds to a backward time, forward space
+	discretisation. In a sense this is the ``opposite'' discretisation of the
+	method we study. This allows us to relate the residual, (\ref{eq:residual_FTBS}), to the truncation error of the BTFS scheme (see Defn. \ref{defn:btfs_truncation}) and to subsequently use this in our calculation. 
+	
+	Therefore, to assess the contribution of the remaining terms, we relate them to quantities for which we have known bounds, such as the truncation error.  In this spirit we utilise the relation between the BTFS scheme and its truncation error, (\ref{eq:btfs_truncation}) to (\ref{eq:residual_FTBS}):
+	\begin{equation}\label{eq:scheme_truncation_error}
+	\frac{U^{n+1}_{j} - U^{n}_{j}}{\tau}+
+	\frac{U^{n+1}_{j+1} - U^{n+1}_{j}}{h}
+	=
+	\frac{u^{n+1}_{j} - u^{n}_{j}}{\tau}+
+	\frac{u^{n+1}_{j+1} - u^{n+1}_{j}}{h} -T^n_j.
+	\end{equation}
+	
+	On account of (\ref{eq:FTBS}), (\ref{eq:scheme_truncation_error}) is zero. We add the right-hand side of (\ref{eq:scheme_truncation_error}), evaluated at  $\qp{t^n,x_j}$ and $\qp{t^{n+1},x_{j+1}}$ to (\ref{eq:Reqn_2}) to obtain:
+	\begin{equation}\label{eq:residual_unsimplified}
+	\begin{aligned}
+	-R(t^{n+1/2}, x_{j+1/2})&=\frac{1}{2}\qp{\frac{U^{n+1}_j - U^n_j}{\tau}
+		+
+		\frac{U^{n+1}_{j+1} - U^{n+1}_{j} }{h}}\\
+	&-\frac{1}{2}\qp{\frac{u^{n+1}_j-u^n_j}{\tau}
+		+\frac{u^{n+1}_{j+1}-u^{n+1}_{j}}{h}}
+	+
+	\frac{1}{2}T^n_j,
+	\end{aligned}
+	\end{equation}
+	where  $T^n_j$ is the truncation error, defined in (\ref{eq:btfs_truncation}), at $\qp{t^n,x_j}$.
+	Then, (\ref{eq:residual_unsimplified}) simplifies to 
+	\begin{equation}\label{eq:btfs_residual_1}
+	\begin{aligned}
+	-R(t^{n+1/2}, x_{j+1/2})
+	&=
+	\frac{1}{2}\qp{\frac{e^{n+1}_j - e^n_j}{\tau}	
+		+
+		\frac{e^{n+1}_{j+1} - e^{n+1}_{j} }{h}}
+	+\frac{1}{2}T^n_j.
+	\end{aligned}
+	\end{equation} 
+	Examining (\ref{eq:btfs_residual_1}), we see that the term in brackets is essentially a truncation error.  We  denote the maximum of this quantity over $\qp{t^n,x_j}$  as $T^e$.  In the same vein as in Defn. \ref{defn:btfs_truncation}, we will assume that there exists a constant $C_e>0$ such that the following bound holds:
+	\begin{equation}\label{eq:truncation_error_e}
+	\norm{T^e}:=\max_{n}\max_{j}
+	\norm{\qp{\frac{e^{n+1}_j - e^n_j}{\tau}	
+			+
+			\frac{e^{n+1}_{j+1} - e^{n+1}_{j} }{h}}}
+	\leq
+	C_e\qp{\tau+h}\Norm{u_0}_{\cont{2}\qp{\W}}.
+	\end{equation}
+	
+	\/*we look at the second term and calculate the Taylor expansions about $\qp{t^{n+1/2},x_{j+1/2}}$:
+	\begin{equation}
+	\begin{aligned}
+	\qp{   \frac{u^{n+2}_{j+1}-u^{n+1}_{j+1}}{\tau}+
+		\frac{u^n_j-u^n_{j-1}}{h}  
+	}&=\frac{1}{\tau}\qp{u^{n+1/2}_{j+1/2} +\frac{h}{2}u_x+\frac{3\tau}{2}u_t+\frac{1}{2}\qp{\frac{3\tau}{2}}^2u_{tt} +\frac{1}{2}\qp{\frac{h}{2}}^2u_{xx}}\\
+	&-\frac{1}{\tau}\qp{u^{n+1/2}_{j+1/2} +\frac{h}{2}u_x+\frac{\tau}{2}u_t+\frac{1}{2}\qp{\frac{\tau}{2}}^2u_{tt} +\frac{1}{2}\qp{\frac{h}{2}}^2u_{xx}}\\
+	&+\frac{1}{h}\qp{u^{n+1/2}_{j+1/2}-\frac{h}{2}u_x-\frac{\tau}{2}u_t+\frac{1}{2}\qp{\frac{\tau}{2}}^2u_{tt} +\frac{1}{2}\qp{\frac{h}{2}}^2u_{xx}}\\
+	&-\frac{1}{h}\qp{u^{n+1/2}_{j+1/2}-\frac{3h}{2}u_x-\frac{\tau}{2}u_t+\frac{1}{2}\qp{\frac{\tau}{2}}^2u_{tt} +\frac{1}{2}\qp{\frac{h}{2}}^2u_{xx}}.
+	\end{aligned}
+	\end{equation}
+	*/
+	
+	\/*
+	We can use this to obtain 
+	\begin{equation}\label{eq:bound_R1}
+	\abs{\qp{   \frac{u^{n+2}_{j+1}-u^{n+1}_{j+1}}{\tau}+
+			\frac{u^n_j-u^n_{j-1}}{h}  }}\leq C_1\qp{\tau+h}\Norm{u_0}_{\cont{2}\qp{\W}},
+	\end{equation}
+	where $C_1\in\reals^+$.  
+	*/	
+	Combining (\ref{eq:truncation_error_e}) with the known bounds we have for the truncation error, $T^n_j$ (see Defn. \ref{defn:truncation_ftbs}), we  obtain a bound for the residual $\norm{R}$.  
+	
+	Firstly, since $u\in\cont{2}\qp{\qb{0,T}\times\W}$, $\abs{u_{tt}}$ and $\abs{u_{xx}}$ are bounded, for the particular problem, by $\Norm{u_0}_{\cont{2}\qp{\qb{0,T}\times\W}}$ for all $\qp{t,x}\in\qb{0,T}\times\W$.  We define the maximum truncation error for all $t=\qb{0,T}$ to be 
+	\begin{equation}\label{eq:ftbs_max_truncation}
+	T^u:=\max_{n}\max_{j}\abs{T^n_j},
+	\end{equation}
+	for which the following bound holds (see also Defn. \ref{defn:truncation_ftbs})
+	\begin{equation}\label{eq:bound_T_FTBS_C2}
+	\norm{T^u}\leq C_u\qp{\tau+h}\Norm{u_0}_{\cont{2}\qp{\W}},
+	\end{equation}
+	for  some $C_u\in\reals^+$. 	\/*
+	\begin{equation}
+	\abs{\qp{\frac{e^{n+1}_j - e^n_j}{\tau}	
+			+
+			\frac{e^{n+1}_{j+1} - e^{n+1}_{j} }{h}}
+	}
+	\leq
+	\qp{\frac{\abs{e^{n+1}_j} + \abs{e^n_j}}{\tau}	
+		+
+		\frac{\abs{e^{n+1}_{j+1}} +\abs{ e^{n+1}_{j} }}{h}}.
+	\end{equation}
+	Since we know from our scheme that $\max_j\abs{e^n_j}\leq n\tau T$ (see \cite[\S4.3]{morton2005numerical}), we obtain that 
+	\begin{equation}\label{eq:bound_R2}
+	\abs{\qp{\frac{e^{n+1}_j - e^n_j}{\tau}	
+			+
+			\frac{e^{n+1}_{j+1} - e^{n+1}_{j} }{h}}
+	}
+	\leq
+	4\qp{n+1}T.
+	\end{equation}
+	We also know that 
+	\begin{equation}\label{eq:bound_R3}
+	\frac{1}{2}\qp{\abs{T^{n+1}_{j+1}} +\abs{T^{n}_{j}}}\leq T.
+	\end{equation}
+	*/Finally, we combine  (\ref{eq:truncation_error_e}) and (\ref{eq:bound_T_FTBS_C2}) to obtain
+	\begin{equation}\label{eq:bound_R_FTBS_C1}
+	\begin{aligned}
+	\abs{R\qp{t^{n+1/2},x_{j+1/2}}}
+	&\leq 
+	\frac{1}{2}\qp{\norm{T^u}+\norm{T^e}}\\
+	&\leq 
+	\frac{1}{2}
+	{\max\braces{C_e,C_u}}\qp{\tau+h}
+	\Norm{u_0}_{\cont{2}\qp{\W}}.
+	\end{aligned}
+	\end{equation}
+	For brevity, we define $C:=\frac{1}{2}{\max\braces{C_e,C_u}}$,
+	which simplifies (\ref{eq:bound_R_FTBS_C1}) to 
+	\begin{equation}\label{eq:bound_R_FTBS_C2}
+	\abs{R\qp{t^{n+1/2},x_{j+1/2}}}
+	\leq
+	C\qp{\tau+h} \Norm{u_0}_{\cont{2}\qp{\W}}.
+	\end{equation}
+	Now, we substitute (\ref{eq:bound_R_FTBS_C2})  in (\ref{eq:bound}) we obtain
+	\begin{equation}\label{eq:bound_residual_accumulation}
+	\begin{aligned}
+	\int_0^T \Norm{\delta(s) R(s)}_{\leb{2}(\W)}^2 \d s
+	&\leq
+	\max\qp{1,{T}}\tau h \sum_{n=0}^{N-1}
+	\sum_{j=0}^{M-1} \norm{R(t^{n+1/2}, x_{j+1/2})}^2\\
+	&\leq
+	C^2\max\qp{1,{T}}\tau h 
+	\qp{\tau+h}^2\Norm{u_0}_{\cont{2}\qp{\W}}^2
+	\sum_{n=0}^{N-1}
+	\sum_{j=0}^{M-1} 1.
+	\end{aligned}
+	\end{equation}
+	Now we use the fact that
+	\begin{equation}
+	\sum_{j=0}^{M-1}1=M=\frac{1}{h}\quad \text{and}\quad \sum_{n=0}^{N-1}1=N=\frac{1}{\tau},
+	\end{equation}
+	to evaluate the summations in the second line of (\ref{eq:bound_residual_accumulation}), thereby simplifying it to
+	\begin{equation}\label{eq:bound_simplified}
+	\int_0^T \Norm{\delta(s) R(s)}_{\leb{2}(\W)}^2 \d s
+	\leq
+	C^2\max\qp{1,{T}}
+	\qp{\tau+h}^2\Norm{u_0}_{\cont{2}\qp{\W}}^2.
+	\end{equation}	
+	Finally, knowing from interpolation theory that $\Norm{\qp{u-\widehat{U}}\qp{0}}_{\leb{2}\qp{\W}}=\mathcal{O}\qp{h^2}$ and combining this with (\ref{eq:bound_simplified}) concludes the proof.  
 \end{proof}
+\begin{Rem} Combining the results of Corollary \ref{cor:aposteriori}
+	and Lemma \ref{subsec:asymptotic_convergence_rate} implies the a
+	posteriori bound is fully robust for FTBS, at least with smooth
+	initial data. We will subsequently demonstrate this with numerical
+	examples.
+\end{Rem}
 \begin{Rem}
 The residual in Lemma \ref{subsec:asymptotic_convergence_rate} would result in an optimal bound if FTBS was used, because, in this case, the error  would behave as $\mathcal{O}\qp{\tau+h}$.  We will demonstrate this with numerical examples.
 \end{Rem}
@@ -712,14 +853,14 @@ to achieve the optimal convergence rate of the residual.
 	\end{subfigure}
 	\\
 	\begin{subfigure}[b]{\textwidth}
-		\includegraphics[width=\textwidth]{../figures/fig_FTCSplots_1x5_sin_IC_uniform_P1_ind}	
+		\includegraphics[width=\textwidth]{../figures/fig_CNCS_plots_1x5_sin_IC_ind_uniform_P1}	
 		\caption{\label{sfig:FTCS_prelim_P1}
-			FTCS (\ref{eq:FTCS}).
+			CNCS (\ref{eq:FTCS}).
 		}
 	\end{subfigure}
 	\caption{\label{fig:bilinearLagrange} Errors and asymptotic
           convergence rates for the bilinear interpolant of FTBS
-          (\ref{eq:FTBS}) and FTCS (\ref{eq:FTCS}) approximations of
+          (\ref{eq:FTBS}) and CNCS (\ref{eq:FTCS}) approximations of
           (\ref{eq:transport}) with initial condition
           (\ref{eq_ic_sin}) and periodic boundary conditions. The
           simulations were conducted over a family of meshes with
@@ -727,10 +868,10 @@ to achieve the optimal convergence rate of the residual.
           timestep $\tau = \tfrac{h^2}{10}$. Note that the estimate is
           optimal for the FTBS scheme and achieves a very favourable
           effectivity of $EI \qp{4} < 3$, however it is suboptimal for
-          the FTCS scheme.  }
+          the CNCS scheme.  }
 \end{figure}
 
-The suboptimality in the a posteriori bound for the FTCS scheme can be
+The suboptimality in the a posteriori bound for the CNCS scheme can be
 circumvented. We do this by building information from within the
 finite difference spatial discretisation directly into the
 post-processor. Indeed, augmenting $\widehat U$ such that it is
@@ -751,7 +892,7 @@ we are closer to the spirit of a finite difference method. The
 argument from Lemma \ref{subsec:asymptotic_convergence_rate} can be
 modified to apply in this case. Indeed, one can show that applying the
 same argument the interpolant given by (\ref{eq:quadrecon}) yields
-$\sqrt{w\cE^2} = \Oh\qp{\tau+h^2}$, which is optimal for the FTCS
+$\sqrt{w\cE^2} = \Oh\qp{\tau^2+h^2}$, which is optimal for the CNCS
 scheme. To illustrate this asymptotic convergence properties we have
 replicated the same experiment as in Figure \ref{fig:bilinearLagrange}
 for the quadratic reconstruction. This is shown in Figure
@@ -761,22 +902,22 @@ representation allows us to achieve optimal convergence rates of the a
 posteriori bound and favourable effectivities.
 
 \begin{figure}[H] 
-	\includegraphics[width=\textwidth]{../figures/fig_FTCSplots_1x5_sin_IC_uniform_P2_ind}	
+	\includegraphics[width=\textwidth]{../figures/fig_CNCS_plots_1x5_sin_IC_ind_uniform_P2}	
 	\caption{
 		\label{fig:FTCS_prelim_P2}
 		Errors and asymptotic convergence rates for the linear in time,
-		quadratic in space Hermite interpolant of FTCS (\ref{eq:FTCS})
+		quadratic in space Hermite interpolant of CNCS (\ref{eq:FTCS})
 		approximations of (\ref{eq:transport}) with initial condition
 		(\ref{eq_ic_sin}) and periodic boundary conditions. The simulations were conducted over a family of
 		meshes with discretisation parameter $h = 2^{-m}, m = 4,\dots 7$,
-		with a timestep $\tau = \tfrac{h^2}{10}$. Note that the estimate
-		is now optimal for the FTCS scheme with favourable effectivity of
-		$EI \qp{4} \sim 4$.}
+		with a time-step $\tau = \tfrac{h}{10}$. Note that the estimate
+		is now optimal for the CNCS scheme with favourable effectivity of
+		$EI \qp{4} \sim 2.2$.}
 \end{figure}
 
 The ideas presented in this section form an intuitive way to obtain
 the reconstruction. It is possible to generalise this quite naturally
-to other spatio-temporal discrestisations as we will present in the
+to other spatio-temporal discretisations as we will present in the
 forthcoming sections.
 
 \section{General Systems}\label{sec:numerical_discretisation}
@@ -933,7 +1074,7 @@ Runge-Kutta (SSPRK) methods (see \cite{gottlieb2001strong}).
 
 
 \section{WENO Schemes}\label{sec:ENO_WENO_schemes}
-\tristan{Dont be lazy, you do the reorganising!}
+
 In this section we briefly summarise the details behind Weighted Essentially Non-Oscillatory (WENO) schemes, (cf. \cite{jiang1996efficient}, \cite{shu1998essentially}), which pertain to our implementation.  ENO/WENO schemes have been used with great success in several areas and in particular in the discretisation of hyperbolic conservation laws and convection-diffusion equations (see e.g. \cite{shu2020essentially} for an overview).   
 
 They have several features which contributed to their widespread success.  These include a mechanism of computational stencil construction that can achieve arbitrarily high accuracy in regions where the solution is smooth, essentially non-oscillatory behavior in the vicinity of discontinuities (no artificial, numerical overshoots and undershoots) and proven ability to simulate complex smooth solution structures (see \cite{shu1998essentially} for more details).  In the present work we only consider WENO schemes.
@@ -1481,7 +1622,7 @@ Derivatives of a field, q, are denoted $\D q:=\qp{\partial_{u_1}q\qp{\vect{u}},\
 \Cueta^{-1}\qp{\Norm{\vect{R}}^2_{\leb{2}\qp{I\times\qp{0,t}}}
   +\Coeta\Norm{\vect{u}_0-\recgs{U}_0}^2_{\leb{2}\qp{I}}}\\ &\times\exp\qp{\int_0^t\frac{\Coeta
     \Cof \Norm{\partial_x\recgs{U}\qp{\cdot,s}}_{\leb{\infty}\qp{I}}
-    +\Coeta^2\mathrm{d}s}{\Cueta}}.
+    +\Coeta^2}{\Cueta}\mathrm{d}s}.
 \end{aligned}
 \end{equation}
 The constants $\Cueta$ and $\Coeta$ represent the minimum and maximum absolute eigenvalues of $\D^2 \eta$. Furthermore, $\Cof:=\qp{\sum_i \Cofi}^{1/2}$, where $\Cofi$ is an upper bound for the absolute values of the eigenvalues of the \textit{i}th component of $\vec{f}$.
@@ -1671,29 +1812,56 @@ which makes the parasites more visible.  The results are shown in Fig. \ref{fig:
 	\label{fig_grid_piecewise_nonu}
 \end{figure}
 */
+
 \begin{figure}[H]
+	\centering
 	\begin{subfigure}[b]{.3\textwidth}
-		\includegraphics[width=\textwidth]{../figures/fig_CNCS_20_para_1}	
+		\includegraphics[width=\textwidth]{../figures/fig_CNCS_parasite_rep_20_zoom_off}	
 		\caption{
 			\label{fig:CNCS_parasite_1D_1}
-			Before parasite formation.
+			Before parasite forms.
 		}
 	\end{subfigure}
 	\begin{subfigure}[b]{.3\textwidth}
-		\includegraphics[width=\textwidth]{../figures/fig_CNCS_4000_para_1_legend}	
-		\caption{\label{fig:CNCS_parasite_1D_2}
-			After parasite formation.
+		\includegraphics[width=\textwidth]{../figures/fig_CNCS_parasite_rep_3800zoom_off}	
+		\caption{\label{fig:CNCS_parasite_1D_1}
+			After parasite forms.
 		}
 	\end{subfigure}
 	\begin{subfigure}[b]{.3\textwidth}
-	\includegraphics[width=\textwidth]{../figures/fig_CNCS_4000_para_1_zoom}	
-	\caption{\label{fig:CNCS_parasite_1D_2_zoom}
-		Magnified Parasite.
-	}
-\end{subfigure}
-	\caption{A parasitic wave which occurs to due an abrupt mesh change.  We use a CNCS scheme on a grid given by (\ref{eq_grid_spacing_piecewise_nonu}) and a temporal-to-spatial step coupling of $\tau=\frac{h}{10}$.  We plot the solution and the normalized $\leb{2}$-norm of the local residual (\ref{eq_reconstruction_gen_cons}) before and after parasite formation.  The parasitic wave is the highly oscillatory wave in the right-most plot, which is zoomed in.  Notice that it is moving in the opposite direction from the solution. Such parasites can arise when implementing adaptivity and can rapidly pollute the computation. Notice that the residual detects and tracks the parasite.}
-	\label{fig:CNCS_parasite}
+		\includegraphics[width=\textwidth]{../figures/fig_CNCS_parasite_rep_3800zoom_on}	
+		\caption{\label{fig:CNCS_parasite_1D_2_zoom}
+			Magnified Parasite.
+		}
+	\end{subfigure}
+\caption{A parasitic wave which occurs to due an abrupt mesh change.  We use a CNCS scheme on a grid given by (\ref{eq_grid_spacing_piecewise_nonu}) and a temporal-to-spatial step coupling of $\tau=\frac{h}{10}$.  We plot the solution and the normalized $\leb{2}$-norm of the local residual (\ref{eq_reconstruction_gen_cons}) before and after parasite formation.  The parasitic wave is the highly oscillatory wave in the right-most plot, which is zoomed in.  Notice that it is moving in the opposite direction from the solution. Such parasites can arise when implementing adaptivity and can rapidly pollute the computation. Notice that the residual detects and tracks the parasite.}
+\label{fig:CNCS_parasite}
 \end{figure}
+
+%begin{figure}[H]
+%	\begin{subfigure}[b]{.3\textwidth}
+%		\includegraphics[width=\textwidth]{../figures/fig_CNCS_20_para_1}	
+%		\caption{
+			
+%			Before parasite formation.
+%		}
+%	\end{subfigure}%
+%	\begin{subfigure}[b]{.3\textwidth}
+%		\includegraphics[width=\textwidth]{../figures/fig_CNCS_4000_para_1_legend}	
+%		\caption{
+%			After parasite formation.
+%		}
+%	\end{subfigure}
+%	\begin{subfigure}[b]{.3\textwidth}
+%	\includegraphics[width=\textwidth]{../figures/fig_CNCS_4000_para_1_zoom}	
+%	\caption{
+%		Magnified Parasite.
+%	}
+%\end{subfigure}
+%	\caption{A parasitic wave which occurs to due an abrupt mesh change.  We use a CNCS scheme on a grid given by (\ref{eq_grid_spacing_piecewise_nonu}) and a temporal-to-spatial step coupling of $\tau=\frac{h}{10}$.  We plot the solution and the normalized $\leb{2}$-norm of the local residual (\ref{eq_reconstruction_gen_cons}) before and after parasite formation.  The parasitic wave is the highly oscillatory wave in the right-most plot, which is zoomed in.  Notice that it is moving in the opposite direction from the solution. Such parasites can arise when implementing adaptivity and can rapidly pollute the computation. Notice that the residual detects and tracks the parasite.}
+%	}
+%\end{figure}
+
 In Fig.\ref{fig:CNCS_parasite} we see a parasite, which is the highly oscillatory wave-train shown in the bottom left plot.  Notice that it travels in the opposite direction compared to the initial condition.    Parasitic waves can rapidly pollute the computation.     Notice that the bound we have constructed using Defns. \ref{defn_temp_rec} and \ref{defn_spatio-temporal reconstruction} is able to detect the parasitic wave.  The reader should note that implementing adaptivity in the presence of an existing grid discontinuity may exacerbate parasite formation and propagation.
 
 
