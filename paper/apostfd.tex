@@ -1647,6 +1647,35 @@ The constants $\Cueta$ and $\Coeta$ represent the minimum and maximum absolute e
 	\end{equation}
 \end{Cor}
 
+
+\begin{Rem} Note that the  result given in Lemma  \ref{cor_stab_control_burgers} loses its robustness in the post-shock regime due to the presence of the reconstruction's derivative, which blows up upon shock formation, in the exponential accumulation factor, see (\ref{eq:burgers_bound}).   The next result on a posteriori error control is from \cite{cockburn1995posteriori}.  It pertains to a posteriori error control for a scalar, non-linear hyperbolic problem and it makes use of the Kruzkov doubling of variable technique (see \cite{kruvzkov1970first},\cite{kuznetsov1976accuracy}).  This estimate retains robustness in the post-shock regime.  We test it for the scalar problem in the post-shock regime.  
+\end{Rem} 
+
+\begin{The}($\leb{1}\qp{\W}$ error bound - \cite[Thm. 2.1]{cockburn1995posteriori})\label{thm:bound_post_shock_burgers} Let $u$ be an entropy solution of the scalar case of (\ref{eq_1d_gen_cons_law}) and denote by $\widehat{U}$ the reconstruction of the numerical solution $\braces{U^n_j}^n_j$ (see Defn.\ref{defn_spatio-temporal reconstruction}).  Then,
+	\begin{equation}\label{eq:bound_burger_cockburn}
+	\begin{aligned}
+	\Norm{u\qp{t} - \widehat{U}\qp{t}}_{\leb{1}\qp{\W}}
+	&\leq 
+	\Norm{u_0-v_0}_{\leb{1}\qp{0,t;\leb{1}\qp{\W}}}
+	+
+	\int_{0}^t\Norm{R\qp{s}}_{\leb{1}\qp{\W}}\mathrm{d}s\\
+	&=:
+	\w_a\qp{t}\mathcal{E}_a\qp{t;\leb{1}\qp{\W}},
+	\end{aligned}
+	\end{equation}
+	where
+	\begin{equation*}
+	\w_a\qp{t}=1\quad \forall t
+	\end{equation*}
+	and
+	\begin{equation*}
+	R:=  \partial_t\widehat{ U}+\partial_x \qp{{f}\qp{\widehat{U}}}
+	\end{equation*}
+	is the discrete residual of the reconstruction.
+\end{The}
+\begin{proof} See \cite[Appendix]{cockburn1995posteriori}.
+\end{proof}
+
 We test the bound (\ref{eq:burgers_bound}) for three different schemes
 - Lax-Friedrichs, Lax-Wendroff and SSP3-WENO - with uniform temporal
 and spatial discretizations, i.e. $\tau^n:=\tau $ $\forall n$ and
@@ -1655,7 +1684,7 @@ $h_j:=h$ $\forall j$.  The reconstruction residual,
 Defn. \ref{defn_temp_rec} for the temporal component and
 Defn. \ref{defn_spatio-temporal reconstruction} for the spatial
 component.
-
+We test the bound (\ref{eq:bound_burger_cockburn}) for the non-linear scalar problem with a discontinuous initial condition with a FTBS scheme and a linear-in-time, WENO3-in-space reconstruction.  The reason we do not test the bound (\ref{eq:burgers_bound}) in this case is because of the blow-up in the exponential factor.
 
 We have implemented the a posteriori bound with these numerical
 schemes in order to benchmark its behaviour before applying it to
@@ -1765,7 +1794,50 @@ In order to explain the behaviour of the bound (\ref{eq:burgers_bound}), we deco
 		with a timestep $\tau = \tfrac{h}{10}$. The blow-up in the time accumulation term is because of the spatial derivative in the exponential factor, which becomes exceedingly large in the presence of shocks. }
 \end{figure}
 
-\subsection{Test 2:  Shallow Water equation.  }  We benchmark the behaviour of the residual for the shallow water equations.
+\subsection{Test 2: Inviscid Burgers equation - step initial condition.}  In this test we benchmark the behaviour of the residual for Burgers equation with a step initial condition given by 
+\begin{equation}\label{eq:burrger_disc_ic}
+\begin{aligned}
+u_0\qp{x}
+=
+\begin{cases}
+0\quad x\leq 0,\\
+1\quad x>0
+\end{cases}
+\end{aligned}
+\end{equation}
+The exact solution is given by 
+\begin{equation}
+\begin{aligned}
+u\qp{x,t}
+=
+\begin{cases}
+0\quad \quad \text{for}\quad &x\leq 0,\\
+x/t\quad \text{for}\quad &0<x\leq t,\\
+1\quad \quad \text{for}\quad &x>t.
+\end{cases}
+\end{aligned}
+\end{equation}
+The results are shown in Fig. \ref{fig:FTBS_burger_step}
+\begin{Rem}[Note on boundary conditions] We caution the reader that we have used periodic boundary conditions for ease of implementation.  In order to ensure the results are not affected by the initial condition travelling over the boundary, we make use of an extended numerical domain and a masking function to discard results outside the closed interval $\qb{-1,1}$. We also run the simulation for a short enough interval to ensure the solution that travels over the periodic boundary does not affect the results in $\qb{-1,1}$.
+\end{Rem}
+
+\begin{figure}[H] 
+	\includegraphics[width=\textwidth]{../figures/fig_FTBS_bound_comparison_burgers_offset_0_rarefaction_simpleinterp}	
+	\caption{
+		\label{fig:FTBS_burger_step}
+		Errors and asymptotic convergence rates for the linear in time,
+		WENO in space reconstruction of the FTBS (\ref{eq:FTBS})
+		approximation of Burgers equation with discontinuous initial condition
+		(\ref{eq:burrger_disc_ic}) and periodic boundary conditions. The simulations were conducted over a family of
+		meshes with discretisation parameter $h = 2^{-m}, m = 9,\dots 12$,
+		with a time-step $\tau = \tfrac{h}{10}$. The estimate (\ref{eq:bound_burger_cockburn})
+		is  optimal for the FTBS scheme with favourable effectivity of
+		$EI \qp{.6} \sim 1.4$.}
+\end{figure}
+
+
+
+\subsection{Test 3:  Shallow Water equation.  }  We benchmark the behaviour of the residual for the shallow water equations.
 \begin{figure}[H]	
 	\includegraphics[width=\textwidth]{../figures/fig_SHW_RK3_WENO3_rec3_fixed_gsplots_1x5_sin_IC_P3_shw}	
 	\caption{\label{fig:SSP3WENO_SHW} Bench marking for the shallow-water equations with a sinusoidal initial condition and periodic boundary conditions. We use an SSP3-WENO3 scheme with $h = 2^{-m}, m = 9,\dots 12$,
@@ -2120,7 +2192,7 @@ initial condition.  The initial fine mesh is given by $h=32\pi \times
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{../figures/fig_SHW_dambreak_RK3_WENO3_rec_3_fixed_gsplots_1x5_shw_dambreak_comparison_adaptONOFF}	
-	\caption{\label{fig:SSP3WENO3_shw_dambreak_adapt} An adaptive simulation of the shallow water equations for the dam-break problem using an SSP3-WENO3 discretization and free outflow boundary conditions.  The simulation starts at the maximum allowable refinement level with a uniform grid with $h=32\pi \times 2^{-14}$ and a temporal step $\tau =\frac{32\pi\times2^{-12}}{10}$ which remains constant throughout the simulation. The equivalent uniform grid has $1622$ degrees of freedom.  The residual is constructed using a bilinear Lagrange indicator.  Notice that the indicator automatically coarsens the grid at the beginning of the simulation, resulting in a steep decrease in the number of freedom away from the discontinuity. The behaviour in the adaptive case is almost identical with that of the finest resolution despite the considerable difference in degrees of freedom (the two results are almost entirely coincident on the right plot).  This is because, for this problem, the features of refinement interest are concentrated in small areas, allowing for good resolution with relatively few degrees of freedom. }
+	\caption{\label{fig:SSP3WENO3_shw_dambreak_adapt} An adaptive simulation of the shallow water equations for the dam-break problem using an SSP3-WENO3 discretization and free outflow boundary conditions.  The simulation starts at the maximum allowable refinement level with a uniform grid with $h=32\pi \times 2^{-14}$ and a temporal step $\tau =\frac{32\pi\times2^{-12}}{10}$ which remains constant throughout the simulation. The equivalent uniform grid has $2183$ degrees of freedom.  The residual is constructed using a bilinear Lagrange indicator.  Notice that the indicator automatically coarsens the grid at the beginning of the simulation, resulting in a steep decrease in the number of freedom away from the discontinuity. The behaviour in the adaptive case is almost identical with that of the finest resolution despite the considerable difference in degrees of freedom (the two results are almost entirely coincident on the right plot).  This is because, for this problem, the features of refinement interest are concentrated in small areas, allowing for good resolution with relatively few degrees of freedom. }
 \end{figure}
 
 \section{Conclusions}\label{sec:conclusion}
