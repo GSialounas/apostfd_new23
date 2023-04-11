@@ -126,7 +126,10 @@
 }}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-\title{Reconstruction based a posteriori estimates for some finite difference schemes}
+\title{ A Posteriori Error Estimation for Hyperbolic Conservation Laws
+  with High-Order Finite Difference Schemes and WENO Interpolation
+}
+
 \date{\today}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\pdfformat{true}
@@ -135,18 +138,27 @@
 \begin{document}
 \maketitle
 \begin{abstract}
-  In this work we present a framework for the construction of reliable
-  a posteriori estimates for classes of finite difference schemes
-  approximating systems of hyperbolic conservation laws. We design
-  appropriate reconstructions of the finite difference solution which
-  allows us to utilise the relative entropy stability framework. This,
-  in turn, results in a fully computable a posteriori bound enabling
-  error control.
+  In this work, we derive a posteriori error estimates for general
+  finite difference (FD) schemes approximating systems of nonlinear
+  conservation laws. Our approach enables the construction of reliable
+  a posteriori estimates for general FD schemes. The results are
+  conditional, as they hold under certain conditions on the numerical
+  solution, but are general as they do not assume any particular
+  structure of the exact solution. The framework allows for the
+  construction of robust estimates for high-order schemes which we
+  showcase with strong stability preseving weighted essentially non
+  oscilatory (SSP-WENO) schemes. The a posteriori error analysis is,
+  however, applicable to any method. The construction of the estimate
+  for computational purposes is done using reconstruction techniques,
+  similar to those used in finite element and finite volume methods.
 
-  We showcase our results with thorough numerical testing of certain
-  well used schemes approximating hyperbolic problems including
-  classical Lax-Friedrich and Lax-Wendroff methods as well as more
-  recent ENO and WENO schemes.
+  We conduct numerical experiments to benchmark the behavior of the
+  estimates and demonstrate the concept of optimal order for smooth
+  solutions. We showcase relevant results for widely used schemes for
+  both linear and nonlinear examples. The derived a posteriori error
+  estimates provide a valuable tool for assessing the accuracy of FD
+  schemes and even guide mesh adaptivity in numerical simulations of
+  hyperbolic conservation laws.
 \end{abstract}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -471,34 +483,38 @@ for $n=0,\dots,N-1$.
 Formally, these methods have truncation error $\Oh(\tau + h)$ and
 $\Oh(\tau^2 + h^2)$ respectively.
 
-\begin{Defn}[Truncation error for the FTBS scheme]\label{defn:truncation_ftbs}
-	We define the Truncation error for the FTBS scheme at $\qp{t,x}$, $T\qp{t,x}$, as
-	\begin{equation}
-	\begin{aligned}
-	T\qp{t,x}&:=\frac{u\qp{t+\tau,x}-u\qp{x,t}}{\tau}+\frac{u\qp{t,x}-u\qp{t,x-h}}{h}\\
-	&=\frac{1}{2}\qp{ \tau u_{tt}\qp{x,\eta} +hu_{xx}\qp{\xi,t} },
-	\end{aligned}
-	\end{equation}
-	for $\xi\in\qp{x-h,x}$, $\eta \in\qp{t, t+\tau}$.
-\end{Defn}
+%% \begin{Defn}[Truncation error for the FTBS scheme]\label{defn:truncation_ftbs}
+%% 	We define the Truncation error for the FTBS scheme at $\qp{t,x}$, $T\qp{t,x}$, as
+%% 	\begin{equation}
+%% 	\begin{aligned}
+%% 	T\qp{t,x}&:=\frac{u\qp{t+\tau,x}-u\qp{x,t}}{\tau}+\frac{u\qp{t,x}-u\qp{t,x-h}}{h}\\
+%% 	&=\frac{1}{2}\qp{ \tau u_{tt}\qp{x,\eta} +hu_{xx}\qp{\xi,t} },
+%% 	\end{aligned}
+%% 	\end{equation}
+%% 	for $\xi\in\qp{x-h,x}$, $\eta \in\qp{t, t+\tau}$.
+%% \end{Defn}
 
 
-\begin{Defn}[Truncation error for the BTFS scheme]\label{defn:btfs_truncation}
-	We define the Truncation error for the BTFS scheme at $\qp{t,x}$, $T\qp{t,x}$, as
-	\begin{equation}\label{eq:btfs_truncation}
-	\begin{aligned}
-	T\qp{t,x}&:=\frac{u\qp{t+\tau,x}-u\qp{x,t}}{\tau}+\frac{u\qp{t+\tau,x+h}-u\qp{t+\tau,x}}{h}\\
-	&=\qp{ \tau-h}u_{tx},
-	\end{aligned}
-	\end{equation}
-	for $\xi\in\qp{x+h,x}$, $\eta \in\qp{t, t+\tau}$.
-\end{Defn}
+%% \begin{Defn}[Truncation error for the BTFS scheme]\label{defn:btfs_truncation}
+%% 	We define the Truncation error for the BTFS scheme at $\qp{t,x}$, $T\qp{t,x}$, as
+%% 	\begin{equation}\label{eq:btfs_truncation}
+%% 	\begin{aligned}
+%% 	T\qp{t,x}&:=\frac{u\qp{t+\tau,x}-u\qp{x,t}}{\tau}+\frac{u\qp{t+\tau,x+h}-u\qp{t+\tau,x}}{h}\\
+%% 	&=\qp{ \tau-h}u_{tx},
+%% 	\end{aligned}
+%% 	\end{equation}
+%% 	for $\xi\in\qp{x+h,x}$, $\eta \in\qp{t, t+\tau}$.
+%% \end{Defn}
 
-In order to make use of the abstract bounds given in \S
-\ref{sec:setup} we must have an interpretation of the numerical
-approximation $\{ U^n_j \}_{j}^{n}$, which is only defined as point
-values over the space-time domain. The most intuitive post-processing
-is to apply, for example, a bilinear Lagrange interpolant in space-time. 
+\subsection{Data representation}
+
+The key to our analysis is to have access to a global interpretation
+of the numerical approximation $\{ U^n_j \}_{j}^{n}$, which is only
+defined as point values over the space-time domain. This is not a
+unique choice and we will illustrate some examples in the following
+sections. We will denote these post processings $\widehat U$. The most
+intuitive post-processing is to apply, for example, a bilinear
+Lagrange interpolant in space-time. Then we have
 
 \begin{Cor}[An a posteriori bound]
 	\label{cor:aposteriori}
@@ -806,9 +822,9 @@ as we will indicate in the following result.
 	initial data. We will subsequently demonstrate this with numerical
 	examples.
 \end{Rem}
-\begin{Rem}
-The residual in Lemma \ref{subsec:asymptotic_convergence_rate} would result in an optimal bound if FTBS was used, because, in this case, the error  would behave as $\mathcal{O}\qp{\tau+h}$.  We will demonstrate this with numerical examples.
-\end{Rem}
+%% \begin{Rem}
+%% The residual in Lemma \ref{subsec:asymptotic_convergence_rate} would result in an optimal bound if FTBS was used, because, in this case, the error  would behave as $\mathcal{O}\qp{\tau+h}$.  We will demonstrate this with numerical examples.
+%% \end{Rem}
 \begin{Defn}[EOC and EI]
   To test the validity and robustness of our estimate we will
   examine the \emph{estimated order of convergence} (EOC) of the
@@ -835,12 +851,12 @@ considering the solution of (\ref{eq:transport}) with
   \label{eq_ic_sin}
   u_0(x) = \sin{2\pi x}.
 \end{equation}
-We examine the behaviour of the bound in both the FTBS and FTCS
+We examine the behaviour of the bound in both the FTBS and CNCS
 schemes. The results are shown in Figure
 \ref{fig:bilinearLagrange}. As indicated in Lemma
 \ref{subsec:asymptotic_convergence_rate} the asymptotic convergence
 rate of the estimate matches that of the error for the FTBS scheme but
-the Lemma does not naturally extend to the FTCS scheme. The reason for
+the Lemma does not naturally extend to the CNCS scheme. The reason for
 this is that the naive bilinear interpolant lacks the approximability
 to achieve the optimal convergence rate of the residual.
 \begin{figure}[H]
@@ -855,10 +871,12 @@ to achieve the optimal convergence rate of the residual.
 	\begin{subfigure}[b]{\textwidth}
 		\includegraphics[width=\textwidth]{../figures/fig_CNCS_plots_1x5_sin_IC_ind_uniform_P1}	
 		\caption{\label{sfig:FTCS_prelim_P1}
-			CNCS (\ref{eq:FTCS}).
+		  CNCS (\ref{eq:FTCS}).
+                  \tristan{look at the yaxis on the errors. You need to run the 2nd plot from 1e-6 to 1e0.}
 		}
 	\end{subfigure}
-	\caption{\label{fig:bilinearLagrange} Errors and asymptotic
+	\caption{\label{fig:bilinearLagrange}
+          Errors and asymptotic
           convergence rates for the bilinear interpolant of FTBS
           (\ref{eq:FTBS}) and CNCS (\ref{eq:FTCS}) approximations of
           (\ref{eq:transport}) with initial condition
@@ -875,9 +893,8 @@ The suboptimality in the a posteriori bound for the CNCS scheme can be
 circumvented. We do this by building information from within the
 finite difference spatial discretisation directly into the
 post-processor. Indeed, augmenting $\widehat U$ such that it is
-defined as the piecewise linear Lagrange interpolant of the finite
-difference coefficients $\{U^n_j\}$ in time and the unique piecewise
-quadratic interpolant satisfying
+defined as the piecewise bi-quadratic Lagrange interpolant of the finite
+difference coefficients $\{U^n_j\}$ satisfying
 \begin{equation}
   \label{eq:quadrecon}
 \begin{split}
@@ -886,8 +903,11 @@ quadratic interpolant satisfying
 \widehat U(x_{j+1},t^n) &= U^n_{j+1}
 \\
 \partial_x \widehat U(x_j, t^n) &= \frac{U^n_{j+1}-U^n_{j-1}}{2h}
+\\
+\partial_t \widehat U(x_j, t^n) &= \frac{U^{n+1/2}_{j}-U^{n-1/2}_{j}}{\tau}
 \end{split}
 \end{equation}
+\tristan{I changed this to be CNCS, is it correct?}
 we are closer to the spirit of a finite difference method. The
 argument from Lemma \ref{subsec:asymptotic_convergence_rate} can be
 modified to apply in this case. Indeed, one can show that applying the
