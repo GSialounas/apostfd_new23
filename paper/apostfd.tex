@@ -892,23 +892,32 @@ to achieve the optimal convergence rate of the residual.
 The suboptimality in the a posteriori bound for the CNCS scheme can be
 circumvented. We do this by building information from within the
 finite difference spatial discretisation directly into the
-post-processor. Indeed, augmenting $\widehat U$ such that it is
+post-processor, effectively augmenting $\widehat U$ such that it is
 defined as the piecewise bi-quadratic Lagrange interpolant of the finite
-difference coefficients $\{U^n_j\}$ satisfying
+difference coefficients $\{U^n_j\}$.  For clarity, we will denote by $\widehat{ U}^t$ the temporal step of the reconstruction and by $\widehat{ U}^{ts}$ the spatio-temporal step (the full reconstruction).   We require that, in each temporal interval $\qb{t^n, t^{n+1}}$, $\widehat{ U}^t$ satisfy two nodal equivalence conditions and a derivative condition:
 \begin{equation}
   \label{eq:quadrecon}
 \begin{split}
-\widehat U(x_j,t^n) &= U^n_j
+\widehat{U}_j^t\qp{t^n} &= U_j^n
 \\
-\widehat U(x_{j+1},t^n) &= U^n_{j+1}
+\widehat{U}_j^t\qp{t^{n+1}} &= U_j^{n+1}\quad \text{and}
 \\
-\partial_x \widehat U(x_j, t^n) &= \frac{U^n_{j+1}-U^n_{j-1}}{2h}
-\\
-\partial_t \widehat U(x_j, t^n) &= \frac{U^{n+1/2}_{j}-U^{n-1/2}_{j}}{\tau}
+\partial_t\widehat{U}_j^t\qp{t^n} &= -\frac{1}{2h}\qp{U_{j+1}^{n}-U_{j-1}^{n}}.
 \end{split}
 \end{equation}
-\tristan{I changed this to be CNCS, is it correct?}
-we are closer to the spirit of a finite difference method. The
+Note that we have use the sub-script $j$ to denote the spatial position, $x_j$, on the grid where we obtain the $\widehat{U}^t_j$.  Then, we use  $\widehat{U}^t_j$ to compute the full reconstruction $\widehat{ U}^{ts}$, by satisfying two nodal equivalence conditions and a derivative condition to obtain the bi-quadratic $\widehat{ U}^{ts}$ in the patch $\qb{t^n,t^{n+1}}\times\qb{x_j,x_{j+1}}$, by satisfying 
+\begin{equation}
+ \begin{split}
+\widehat U(x_j,t^n) &= \widehat{U}_j^t\qp{t^n} ,
+\\
+\widehat U(x_{j+1},t^n) &= \widehat{U}_{j+1}^t\qp{t^n} \quad \text{and}
+\\
+\partial_x \widehat U(x_j, t^n) &= \frac{\widehat{U}_{j+1}^t\qp{t^n} -\widehat{U}_{j-1}^t\qp{t^n} }{2h}.
+\end{split}
+\end{equation}
+
+\tristan{I changed this to be CNCS, is it correct? - George: corrected}
+We are now closer to the spirit of a finite difference method. The
 argument from Lemma \ref{subsec:asymptotic_convergence_rate} can be
 modified to apply in this case. Indeed, one can show that applying the
 same argument the interpolant given by (\ref{eq:quadrecon}) yields
@@ -1659,7 +1668,7 @@ The constants $\Cueta$ and $\Coeta$ represent the minimum and maximum absolute e
         u-\widehat{U}$, satisfies the following bound for all $t\in
         [0,T]$:
 	\begin{equation}\label{eq:burgers_bound}
-	\Norm{e\qp{t}}^2_{\leb{2}}\leq \exp\qp{\int_0^t\qp{\Norm{\partial_x\widehat{U}\qp{s}}_{\leb{\infty}}+1}\mathrm{d}s}\qb{\Norm{e\qp{0}}_{\leb{2}}+\int_0^t\Norm{R\qp{s}}^2_{\leb{2}}\mathrm{d}s}=: \w\qp{t}\cE_b^2\qp{t},
+	\Norm{e\qp{t}}^2_{\leb{2}}\leq \exp\qp{\int_0^t\qp{\Norm{\partial_x\widehat{U}\qp{s}}_{\leb{\infty}}+1}\mathrm{d}s}\qb{\Norm{e\qp{0}}_{\leb{2}}+\int_0^t\Norm{R\qp{s}}^2_{\leb{2}}\mathrm{d}s}=: \w_b\qp{t}\cE_b^2\qp{t},
 	\end{equation}
 	where 
 	\begin{equation}
@@ -1814,46 +1823,103 @@ In order to explain the behaviour of the bound (\ref{eq:burgers_bound}), we deco
 		with a timestep $\tau = \tfrac{h}{10}$. The blow-up in the time accumulation term is because of the spatial derivative in the exponential factor, which becomes exceedingly large in the presence of shocks. }
 \end{figure}
 
-\subsection{Test 2: Inviscid Burgers equation - step initial condition.}  In this test we benchmark the behaviour of the residual for Burgers equation with a step initial condition given by 
-\begin{equation}\label{eq:burrger_disc_ic}
+
+The numerical experiments conducted in this section hitherto highlight the loss of optimality for the bound  (\ref{eq:burgers_bound}) as the solution loses regularity and eventually blows up in the post-shock regime (see Fig. \ref{fig:SSP3WENO_burgers_decoupled}).  We address the issue of post-shock optimality  by utilising an a posteriori estimate from \cite[Thm. 5]{ohlberger2001posteriori}, which converges as $\mathcal{O}\qp{h^{1/2}}$ throughout the computation.  
+
+
+\begin{The}(A posteriori error estimate - \cite[Thm. 5]{ohlberger2009review})
+We denote by $u$ the entropy solution of (\ref{eq_1d_gen_cons_law}) by $U$ the discrete solution obtained using an appropriate discretisation and by $\widehat{U}$ the reconstruction -  in this case obtained as the bilinear Lagrange interpolant of $U$.  Also, we assume that the assumptions described in \cite[\S3]{ohlberger2009review} are satisfied.  Then the following bound holds
+\begin{equation}\label{eq:bound_ohlberger}
 \begin{aligned}
-u_0\qp{x}
-=
-\begin{cases}
-0\quad x\leq 0,\\
-1\quad x>0
-\end{cases}
+\Norm{u-\widehat{U}}_{\leb{1}\qp{0,t;\leb{1}\qp{\W}}}
+\leq
+\qp{1+T}\eta_0 
++
+\eta_t
++
+\eta_c
++
+2T\sqrt{K_0}\sqrt{K_1\eta_t+\qp{K_1+K_1'}\eta_c}
+=:
+\w_o\qp{t}\mathcal{E}_o\qp{t},
 \end{aligned}
 \end{equation}
-The exact solution is given by 
-\begin{equation}
-\begin{aligned}
+where $\w_o\qp{t}=1$ $\forall t$,  $T$ denotes the final time and $\eta_0$, $\eta_t$, $\eta_c$, $K_0$, $K_1$ and $K_1'$ defined in \cite[Cor.1]{ohlberger2009review} and \cite[Thm. 5]{ohlberger2009review}.
+\end{The}
+
+\begin{Rem} The reader will note that the bound (\ref{eq:bound_ohlberger}) is sub-optimal in the pre-shock and optimal post-shock.  Hence, combining this result with (\ref{eq:burgers_bound}) by choosing the minimum between the two results gives optimal a posteriori error  control both before and after shock formation, albeit in different norms. We demonstrate this combination using an experiment where a the solution loses regularity and eventually a shock develops.
+\end{Rem}
+
+
+\subsection{Test 2: Inviscid Burgers equation - hat initial condition } In this test we benchmark and compare the behaviour of the a posteriori bounds (\ref{eq:burgers_bound}) and (\ref{eq:bound_ohlberger}) for Burgers equation with periodic boundary conditions and  a piecewise linear, hat initial condition given by
+\begin{equation}\label{eq:burger_pwlin_ic}
+u_0\qp{x} = 
+\begin{cases}
+1-\norm{x}\quad \text{for}\quad \norm{x}\leq 1,\\
+0\quad\text{otherwise}.
+\end{cases}
+\end{equation}
+
+
+\begin{Rem} The reader should note that we choose the final time, $T$, of the computation so that the solution does not reach and go over the periodic boundary.
+\end{Rem}
+
+
+
+
+ In the pre-shock regime, the exact solution is given by 
+\begin{equation}\label{eq:burger_pwlin_preshock_exact}
+\begin{cases}
+0\quad \text{for}\quad x<-1,\\
+\frac{1+x}{1+t}\quad\text{for}\quad -1\leq x<t,\\
+\frac{1-x}{1-t}\quad\text{for}\quad t\leq x<1,\\
+0\quad\text{otherwise},
+\end{cases}
+\end{equation}
+while in the post-shock regime, i.e $t\geq 1$, it is given by 
+\begin{equation}\label{eq:burger_pwlin_postshock_exact}
 u\qp{x,t}
 =
 \begin{cases}
-0\quad \quad \text{for}\quad &x\leq 0,\\
-x/t\quad \text{for}\quad &0<x\leq t,\\
-1\quad \quad \text{for}\quad &x>t.
+0\quad\text{for}\quad x<-1,\\
+\frac{1+x}{1+t}\quad\text{for}\quad -1\leq x\leq\sqrt{2\qp{1+t}}-1,\\
+0\quad\text{otherwise}.
 \end{cases}
+\end{equation}
+The results are shown in Fig. \ref{fig:FTBS_burger_step}.  We adopt the following notation for ease of reference:
+\begin{equation}
+\begin{aligned}
+\w_b\mathcal{E}_b^2
+&:=
+\exp\qp{\int_0^t\qp{\Norm{\partial_x\widehat{U}\qp{s}}_{\leb{\infty}}+1}\mathrm{d}s}\qb{\Norm{e\qp{0}}_{\leb{2}}+\int_0^t\Norm{R\qp{s}}^2_{\leb{2}}\mathrm{d}s}
+,\\
+\w_o\mathcal{E}_o
+&:=
+\qp{1+T}\eta_0 
++
+\eta_t
++
+\eta_c
++
+2T\sqrt{K_0}\sqrt{K_1\eta_t+\qp{K_1+K_1'}\eta_c}
+\quad\text{and}\\
+\w_{min}\mathcal{E}_{min}&:=\min\bracegs{\qp{\w_b\mathcal{E}_b^2}^{1/2}, \w_o\mathcal{E}_o}.
 \end{aligned}
 \end{equation}
-The results are shown in Fig. \ref{fig:FTBS_burger_step}
-\begin{Rem}[Note on boundary conditions] We caution the reader that we have used periodic boundary conditions for ease of implementation.  In order to ensure the results are not affected by the initial condition travelling over the boundary, we make use of an extended numerical domain and a masking function to discard results outside the closed interval $\qb{-1,1}$. We also run the simulation for a short enough interval to ensure the solution that travels over the periodic boundary does not affect the results in $\qb{-1,1}$.
-\end{Rem}
+
+
 
 \begin{figure}[H] 
-	\includegraphics[width=\textwidth]{../figures/fig_FTBS_bound_comparison_burgers_offset_0_rarefaction_simpleinterp}	
+	\includegraphics[width=\textwidth]{../figures/fig_FTBS_postshock_bound_comparison_L2L1L1_burgers_offset_0_hatIC}	
 	\caption{
 		\label{fig:FTBS_burger_step}
-		Errors and asymptotic convergence rates for the linear in time,
-		WENO in space reconstruction of the FTBS (\ref{eq:FTBS})
-		approximation of Burgers equation with discontinuous initial condition
-		(\ref{eq:burrger_disc_ic}) and periodic boundary conditions. The simulations were conducted over a family of
-		meshes with discretisation parameter $h = 2^{-m}, m = 9,\dots 12$,
-		with a time-step $\tau = \tfrac{h}{10}$. The estimate (\ref{eq:bound_burger_cockburn})
-		is  optimal for the FTBS scheme with favourable effectivity of
-		$EI \qp{.6} \sim 1.4$.}
+		Comparison of errors and asymptotic convergence rates for the bilinear Lagrange reconstruction of the numerical solution obtained for the FTBS (\ref{eq:FTBS})
+		approximation of Burgers equation with a piecewise linear initial condition
+		(\ref{eq:burger_pwlin_ic}) and periodic boundary conditions. The simulations were conducted over a family of
+		meshes with discretisation parameter $h = 2^{-m}, m = 9,\dots 11$,
+		with a time-step $\tau = \tfrac{h}{10}$. Notice that the bound $\w_o\mathcal{E}_o$ is sub-optimal pre-shock while the bound $\w_b\mathcal{E}_b$ blows up post-shock.  }
 \end{figure}
+
 
 
 
