@@ -20,8 +20,8 @@ scheme_str = 'FTBS_postshock';
 % scheme_str = 'WENO3';
 % error L1
 % error L2
-init_conds  = "sinIC";
-
+% init_conds  = "pwlin";
+init_conds = "sinIC";
 % init_conds  = "pwlin";
 rec_string = 'weno';
 % rec_string = 'hermite';

@@ -1,7 +1,7 @@
 function var_out = fn_FTBS_burger(scheme_str,init_conds,ex,t_0)
 global nq xq wq % gauss quadrature
 
-showplot = 0;
+showplot = 1;
 
 
 
@@ -58,7 +58,7 @@ for i_scheme = 1:length(scheme_arr)
     
     for m = 1:length(maxit_arr)
         Lx= 1; ratio_cTf = 1; part_fine = 1;
-        h = 2^(-(maxit_arr(m)+11)); % mesh size normal is +8
+        h = 2^(-(maxit_arr(m)+9)); % mesh size normal is +8
         x = create_grid(Lx, ratio_cTf, h, part_fine);
         x2 = -pi +2*pi*(x-x(1))/(x(end)-x(1));
         x=x2(1:end-1);
@@ -67,10 +67,10 @@ for i_scheme = 1:length(scheme_arr)
         dt = .1*dx_fine^1;
         if m ==1
             if init_conds == 'hatIC'
-                T= t_0 + 132*80*dt; % normal is 11*80
+                T= t_0 + 33*80*dt; % normal is 11*80
                 fprintf("The final time T=%5.2f\n",T);
             elseif init_conds == 'sinIC'
-                T= t_0 + 4*80*dt; % normal is 11*80
+                T= t_0 + 33*80*dt; % normal is 11*80
                 fprintf("The final time T=%5.2f\n",T);
             elseif init_conds == 'cmbIC'
                 T= t_0 + 10*80*dt; % normal is 11*80

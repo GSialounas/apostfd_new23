@@ -26,7 +26,7 @@ f_size= 12;
 y_lim_error_L1 = [ 1e-3,1e-0];
 y_lim_error_L2 = [1e-3,1e-0];
 y_lim_EOC = [0,2.0];
-ylim_EI = [0,2]
+ylim_EI = [0,2];
 %% plots
 i_int=1;
 for i_scheme = 1:n_schemes
@@ -61,7 +61,7 @@ for i_scheme = 1:n_schemes
         
         xlim_p = time_arr(end);
         % evolution of the error
-        subplot(3,5,1)
+        subplot(3,4,1)
         
         
         semilogy(time_arr,error_arr,[colour_arr(end-(l_refs-i_ref))],'LineWidth',2)
@@ -73,7 +73,7 @@ for i_scheme = 1:n_schemes
         hold on;
         
         
-        subplot(3,5,6)
+        subplot(3,4,5)
         
         semilogy(time_arr,error_arr_l1l1,[colour_arr(end-(l_refs-i_ref))],'LineWidth',2)
         xlabel('$t^n$','Interpreter','Latex','FontSize',f_size)
@@ -84,7 +84,7 @@ for i_scheme = 1:n_schemes
         hold on;
         
                 
-        subplot(3,5,11)
+        subplot(3,4,9)
         
         semilogy(time_arr,error_arr_l1l1,[colour_arr(end-(l_refs-i_ref))],'LineWidth',2)
         xlabel('$t^n$','Interpreter','Latex','FontSize',f_size)
@@ -95,12 +95,12 @@ for i_scheme = 1:n_schemes
         hold on;
 
         
-        subplot(3,5,2)
+        subplot(3,4,2)
 
         semilogy(time_arr,bound_arr,colour_arr(end-(l_refs-i_ref)),'LineWidth',2)
         %         ylabel(['$ \left|\left|\mathcal{E}\left(t_i\right)\right|\right|_{L_2\left(0,t_i\right)} $'],'Interpreter','latex')
         %         title(['$\mathcal{P}^',num2str(2),'$',': $dt=0.1dx^', num2str(1),'$'],'Interpreter','latex')
-        ylabel(['$\left(\omega\mathcal{E}^2\left(t,L^2\left(\Omega\right)\right)\right)^{1/2}$'],'Interpreter','latex','FontSize',f_size)
+        ylabel(['$\left(\omega_b\mathcal{E}_b^2\right)^{1/2}$'],'Interpreter','latex','FontSize',f_size)
         xlabel('$t^n$','Interpreter','latex','FontSize',f_size)
         grid on;
         xlim([time_arr(1),xlim_p])
@@ -108,22 +108,22 @@ for i_scheme = 1:n_schemes
         hold on;
         % Evolution of the indicator
         
-        subplot(3,5,7)
+        subplot(3,4,6)
         %         title(['$dt=0.1dx^', num2str(exponent_arr(1)),'$'],'Interpreter','latex')
         semilogy(time_arr,bound_arr_ohl,[colour_arr(end-(l_refs-i_ref))],'LineWidth',2)
         xlabel('$t^n$','Interpreter','Latex','FontSize',f_size)
-        ylabel(['$\omega\mathcal{E}\left(t,L^1\left(\Omega\right)\right)_{ohl}$'],'Interpreter','latex','FontSize',f_size)
+        ylabel(['$\omega_o\mathcal{E}_o$'],'Interpreter','latex','FontSize',f_size)
         
         grid on;
         xlim([time_arr(1),xlim_p])
         ylim(y_lim_error_L1)
         hold on;
         
-        subplot(3,5,12)
+        subplot(3,4,10)
         %         title(['$dt=0.1dx^', num2str(exponent_arr(1)),'$'],'Interpreter','latex')
         semilogy(time_arr,min(bound_arr_ohl,bound_arr),[colour_arr(end-(l_refs-i_ref))],'LineWidth',2)
         xlabel('$t^n$','Interpreter','Latex','FontSize',f_size)
-        ylabel(['$\min\left(\mathcal{E}^{ohl},\mathcal{E}^S\right)$'],'Interpreter','latex','FontSize',f_size)
+        ylabel(['$\min\left(\omega_o\mathcal{E}_{o},\left(\omega_b\mathcal{E}_b^2\right)^{1/2}\right)$'],'Interpreter','latex','FontSize',f_size)
         
         grid on;
         xlim([time_arr(1),xlim_p])
@@ -190,7 +190,7 @@ for i_scheme = 1:n_schemes
             end
             
             
-            subplot(3,5,3)
+            subplot(3,4,3)
 
             if length(time_arr_1)>length(EOC_bound)
                 plot(time_arr_1(1:(2^(i_ref-1))^(1):end),EOC_error,colour_arr(end-(l_refs-i_ref)+1),'LineWidth',2)
@@ -207,7 +207,7 @@ for i_scheme = 1:n_schemes
             ylim(y_lim_EOC)
             hold on;
             
-            subplot(3,5,8)
+            subplot(3,4,7)
             if length(time_arr_1)>length(EOC_bound_ohl)
                 plot(time_arr_1(1:(2^(i_ref-1))^(1):end),EOC_error_l1l1,colour_arr(end-(l_refs-i_ref)+1),'LineWidth',2)
             else
@@ -223,7 +223,7 @@ for i_scheme = 1:n_schemes
             ylim(y_lim_EOC)
             hold on;
             
-            subplot(3,5,13)
+            subplot(3,4,11)
             if length(time_arr_1)>length(EOC_bound_ohl)
                 plot(time_arr_1(1:(2^(i_ref-1))^(1):end),EOC_error_l1l1,colour_arr(end-(l_refs-i_ref)+1),'LineWidth',2)
             else
@@ -241,7 +241,7 @@ for i_scheme = 1:n_schemes
             
             
             
-            subplot(3,5,4)
+            subplot(3,4,4)
 
             if length(time_arr_1)>length(EOC_bound)
                 plot(time_arr_1(1:(2^(i_ref-1))^(1):end),EOC_bound,colour_arr(end-(l_refs-i_ref)+1),'LineWidth',2)
@@ -250,8 +250,10 @@ for i_scheme = 1:n_schemes
             end
             
             %             ylabel(['$EOC\left( \left|\left|\mathcal{E}\left(t_i\right)\right|\right|_{L_2\left(0,t_i\right)} \right)$'],'Interpreter','latex')
-            ylabel(['$EOC\left(\left(\omega\mathcal{E}^2\left(t,L^2\left(\Omega\right)\right)\right)^{1/2}\right)$'],'Interpreter','latex','FontSize',f_size)
-            xlabel('$t^n$','Interpreter','latex','FontSize',f_size)
+%             ylabel(['$EOC\left(\left(\omega_b\mathcal{E}_b^2\left(t,L^2\left(\Omega\right)\right)\right)^{1/2}\right)$'],'Interpreter','latex','FontSize',f_size)
+                        ylabel(['$EOC\left(\left(\omega_b\mathcal{E}_b^2\right)^{1/2}\right)$'],'Interpreter','latex','FontSize',f_size)
+
+                        xlabel('$t^n$','Interpreter','latex','FontSize',f_size)
             %             title(['$\mathcal{P}^',num2str(2),'$',': $dt=0.1dx^', num2str(1),'$'],'Interpreter','latex')
             grid on;
             xlim([time_arr(1),xlim_p])
@@ -259,7 +261,7 @@ for i_scheme = 1:n_schemes
             hold on;
             
             
-            subplot(3,5,9)
+            subplot(3,4,8)
             if length(time_arr_1)>length(EOC_error)
                 plot(time_arr_1(1:(2^(i_ref-1))^(1):end),EOC_bound_ohl,colour_arr(end-(l_refs-i_ref)+1),'LineWidth',2)
             else
@@ -268,7 +270,7 @@ for i_scheme = 1:n_schemes
             
             %             title(['$dt=0.1dx^', num2str(exponent_arr(1)),'$'],'Interpreter','latex')
             %             ylabel(['$EOC\left( \left|\left|e\left(t_i\right)\right|\right|_{L_2\left(0,t_i\right)} \right)$'],'Interpreter','latex')
-            ylabel(['$EOC\left(\omega\mathcal{E}\left(t,L^1\left(\Omega\right)\right)_{ohl}\right)$'],'Interpreter','latex','FontSize',f_size)
+            ylabel(['$EOC\left(\omega_o\mathcal{E}_o\right)$'],'Interpreter','latex','FontSize',f_size)
             xlabel(['$t^n$'],'Interpreter','latex','FontSize',f_size)
             grid on;
             %             title(['$dt=0.1dx^', num2str(exponent_arr(1)),'$'],'Interpreter','latex')
@@ -276,7 +278,7 @@ for i_scheme = 1:n_schemes
             ylim(y_lim_EOC)
             hold on;
             
-            subplot(3,5,14)
+            subplot(3,4,12)
             if length(time_arr_1)>length(EOC_error)
                 plot(time_arr_1(1:(2^(i_ref-1))^(1):end),EOC_bound_min,colour_arr(end-(l_refs-i_ref)+1),'LineWidth',2)
             else
@@ -285,7 +287,7 @@ for i_scheme = 1:n_schemes
             
             %             title(['$dt=0.1dx^', num2str(exponent_arr(1)),'$'],'Interpreter','latex')
             %             ylabel(['$EOC\left( \left|\left|e\left(t_i\right)\right|\right|_{L_2\left(0,t_i\right)} \right)$'],'Interpreter','latex')
-            ylabel(['$EOC\left(\mathcal{E}_{min}\right)$'],'Interpreter','latex','FontSize',f_size)
+            ylabel(['$EOC\left(\omega_{min}\mathcal{E}_{min}\right)$'],'Interpreter','latex','FontSize',f_size)
             xlabel(['$t^n$'],'Interpreter','latex','FontSize',f_size)
             grid on;
             %             title(['$dt=0.1dx^', num2str(exponent_arr(1)),'$'],'Interpreter','latex')
@@ -294,37 +296,37 @@ for i_scheme = 1:n_schemes
             hold on;
            
         end
-        subplot(3,5,5)
-        %         title(['$dt=0.1dx^', num2str(exponent_arr(1)),'$'],'Interpreter','latex')
-        semilogy(time_arr,EI_arr,[colour_arr(end-(l_refs-i_ref))],'LineWidth',2)
-        xlabel('$t^n$','Interpreter','Latex','FontSize',f_size)
-        ylabel(['$EI\left(t^n\right)_{L^2}$'],'Interpreter','latex','FontSize',f_size)
-        
-        grid on;
-        xlim([time_arr(1),xlim_p])
-%         ylim(y_lim_error_L1)
-        hold on;
-        subplot(3,5,10)
-        %         title(['$dt=0.1dx^', num2str(exponent_arr(1)),'$'],'Interpreter','latex')
-        semilogy(time_arr,EI_arr_l1l1,[colour_arr(end-(l_refs-i_ref))],'LineWidth',2)
-        xlabel('$t^n$','Interpreter','Latex','FontSize',f_size)
-        ylabel(['$EI\left(t^n\right)_{L1L1}$'],'Interpreter','latex','FontSize',f_size)
-        
-        grid on;
-        xlim([time_arr(1),xlim_p])
-%         ylim(y_lim_error_L1)
-        hold on;
-        
-        subplot(3,5,15)
-        %         title(['$dt=0.1dx^', num2str(exponent_arr(1)),'$'],'Interpreter','latex')
-        semilogy(time_arr,EI_arr_min,[colour_arr(end-(l_refs-i_ref))],'LineWidth',2)
-        xlabel('$t^n$','Interpreter','Latex','FontSize',f_size)
-        ylabel(['$EI\left(t^n\right)_{min}$'],'Interpreter','latex','FontSize',f_size)
-        
-        grid on;
-        xlim([time_arr(1),xlim_p])
-%         ylim(y_lim_error_L1)
-        hold on;
+%         subplot(3,5,5)
+%         %         title(['$dt=0.1dx^', num2str(exponent_arr(1)),'$'],'Interpreter','latex')
+%         semilogy(time_arr,EI_arr,[colour_arr(end-(l_refs-i_ref))],'LineWidth',2)
+%         xlabel('$t^n$','Interpreter','Latex','FontSize',f_size)
+%         ylabel(['$EI\left(t^n\right)_{L^2}$'],'Interpreter','latex','FontSize',f_size)
+%         
+%         grid on;
+%         xlim([time_arr(1),xlim_p])
+% %         ylim(y_lim_error_L1)
+%         hold on;
+%         subplot(3,5,10)
+%         %         title(['$dt=0.1dx^', num2str(exponent_arr(1)),'$'],'Interpreter','latex')
+%         semilogy(time_arr,EI_arr_l1l1,[colour_arr(end-(l_refs-i_ref))],'LineWidth',2)
+%         xlabel('$t^n$','Interpreter','Latex','FontSize',f_size)
+%         ylabel(['$EI\left(t^n\right)_{L1L1}$'],'Interpreter','latex','FontSize',f_size)
+%         
+%         grid on;
+%         xlim([time_arr(1),xlim_p])
+% %         ylim(y_lim_error_L1)
+%         hold on;
+%         
+%         subplot(3,5,15)
+%         %         title(['$dt=0.1dx^', num2str(exponent_arr(1)),'$'],'Interpreter','latex')
+%         semilogy(time_arr,EI_arr_min,[colour_arr(end-(l_refs-i_ref))],'LineWidth',2)
+%         xlabel('$t^n$','Interpreter','Latex','FontSize',f_size)
+%         ylabel(['$EI\left(t^n\right)_{min}$'],'Interpreter','latex','FontSize',f_size)
+%         
+%         grid on;
+%         xlim([time_arr(1),xlim_p])
+% %         ylim(y_lim_error_L1)
+%         hold on;
 %         subplot(1,3,3)
 %         semilogy(time_arr,bound_arr,colour_arr(end-(l_refs-i_ref)),'LineWidth',2)
 %         %         ylabel(['$ \left|\left|\mathcal{E}\left(t_i\right)\right|\right|_{L_2\left(0,t_i\right)} $'],'Interpreter','latex')
