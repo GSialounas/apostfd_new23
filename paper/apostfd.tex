@@ -1574,19 +1574,18 @@ $\widehat{\vect U}^{ts}\qp{x,t}$ is plotted as a red, transparent surface in Fig
 	\label{fig_spatiotemp_reconstruction}
 \end{figure}
 
-\section{Numerical verification}\label{sec:numerical_verification}
+\section{A posteriori control and numerical verification}\label{sec:numerical_verification}
 In this section we will study the asymptotic behaviour of the a
 posteriori bound and compare and contrast it with the behaviour of the
 error for two nonlinear examples: Burgers' equation and the shallow
-water equations.  In both cases we are using periodic boundary
-conditions.  The tests in this section are a preliminary step before
-the next section, in which the a posteriori bound is used as a
+water equations. The tests are a preliminary assessment before
+using the a posteriori bound as a
 refinement/coarsening criterion in adaptive tests.  We will firstly
 present the bounds we will be testing for the non-linear problems we
 benchmark in this section, along with the numerical schemes we will
 use.
 \begin{Rem}[a posteriori bound for nonlinear problems]
- The test cases we examine in this section are nonlinear so the
+ The test cases we examine in \S \ref{sec:numerical_verification} are nonlinear, so the
  post-processor from Lemma \ref{theorem_stab_advection} is not
  applicable.  Instead, we will use a different a posteriori estimate
  which is appropriate for nonlinear systems of hyperbolic conservation
@@ -1720,6 +1719,30 @@ schemes in order to benchmark its behaviour before applying it to
 adaptive scenarios, where the bound is used as a driver for
 adaptivity.
 
+
+\begin{The}(A posteriori error estimate - \cite[Thm. 5]{ohlberger2009review})\label{thm:aposteriori_ohlberger}
+	We denote by $u$ the entropy solution of (\ref{eq_1d_gen_cons_law}) by $U$ the discrete solution obtained using an appropriate discretisation and by $\widehat{U}$ the reconstruction -  in this case obtained as the bilinear Lagrange interpolant of $U$.  Also, we assume that the assumptions described in \cite[\S3]{ohlberger2009review} are satisfied.  Then the following bound holds
+	\begin{equation}\label{eq:bound_ohlberger}
+	\begin{aligned}
+	\Norm{u-\widehat{U}}_{\leb{1}\qp{0,t;\leb{1}\qp{\W}}}
+	\leq
+	\qp{1+T}\eta_0 
+	+
+	\eta_t
+	+
+	\eta_c
+	+
+	2T\sqrt{K_0}\sqrt{K_1\eta_t+\qp{K_1+K_1'}\eta_c}
+	=:
+	\w_o\qp{t}\mathcal{E}_o\qp{t},
+	\end{aligned}
+	\end{equation}
+	where $\w_o\qp{t}=1$ $\forall t$,  $T$ denotes the final time and $\eta_0$, $\eta_t$, $\eta_c$, $K_0$, $K_1$ and $K_1'$ defined in \cite[Cor.1]{ohlberger2009review} and \cite[Thm. 5]{ohlberger2009review}.
+\end{The}
+
+\begin{Rem} The reader will note that the bound (\ref{eq:bound_ohlberger}) is sub-optimal in the pre-shock but has the advantage that it does not blow-up in the post-shock.  Hence, combining this result with (\ref{eq:burgers_bound}) by choosing the minimum between the two results gives optimal a posteriori error  control both before and after shock formation, albeit in different norms. We demonstrate this combination using an experiment where a the solution loses regularity and eventually a shock develops - see test \S \ref{test:burger_hat}.
+\end{Rem}
+
 \subsection{Test 1: Scalar Inviscid Burgers' equation. }
 We will benchmark the performance of the a posteriori bound
 (\ref{eq:burgers_bound}) in using the 1D inviscid Burgers' equation
@@ -1824,34 +1847,12 @@ In order to explain the behaviour of the bound (\ref{eq:burgers_bound}), we deco
 \end{figure}
 
 
-The numerical experiments conducted in this section hitherto highlight the loss of optimality for the bound  (\ref{eq:burgers_bound}) as the solution loses regularity and eventually blows up in the post-shock regime (see Fig. \ref{fig:SSP3WENO_burgers_decoupled}).  We address the issue of post-shock optimality  by utilising an a posteriori estimate from \cite[Thm. 5]{ohlberger2001posteriori}, which converges as $\mathcal{O}\qp{h^{1/2}}$ throughout the computation.  
+The numerical experiments conducted in this section hitherto highlight the loss of optimality for the bound  (\ref{eq:burgers_bound}) as the solution loses regularity and eventually blows up in the post-shock regime (see Fig. \ref{fig:SSP3WENO_burgers_decoupled}).  We address the issue of post-shock optimality  by utilising an a posteriori estimate from \cite[Thm. 5]{ohlberger2001posteriori}, Thm. \ref{thm:aposteriori_ohlberger}, which converges as $\mathcal{O}\qp{h^{1/2}}$ throughout the computation.  
 
 
-\begin{The}(A posteriori error estimate - \cite[Thm. 5]{ohlberger2009review})
-We denote by $u$ the entropy solution of (\ref{eq_1d_gen_cons_law}) by $U$ the discrete solution obtained using an appropriate discretisation and by $\widehat{U}$ the reconstruction -  in this case obtained as the bilinear Lagrange interpolant of $U$.  Also, we assume that the assumptions described in \cite[\S3]{ohlberger2009review} are satisfied.  Then the following bound holds
-\begin{equation}\label{eq:bound_ohlberger}
-\begin{aligned}
-\Norm{u-\widehat{U}}_{\leb{1}\qp{0,t;\leb{1}\qp{\W}}}
-\leq
-\qp{1+T}\eta_0 
-+
-\eta_t
-+
-\eta_c
-+
-2T\sqrt{K_0}\sqrt{K_1\eta_t+\qp{K_1+K_1'}\eta_c}
-=:
-\w_o\qp{t}\mathcal{E}_o\qp{t},
-\end{aligned}
-\end{equation}
-where $\w_o\qp{t}=1$ $\forall t$,  $T$ denotes the final time and $\eta_0$, $\eta_t$, $\eta_c$, $K_0$, $K_1$ and $K_1'$ defined in \cite[Cor.1]{ohlberger2009review} and \cite[Thm. 5]{ohlberger2009review}.
-\end{The}
-
-\begin{Rem} The reader will note that the bound (\ref{eq:bound_ohlberger}) is sub-optimal in the pre-shock but has the advantage that it does not blow-up in the post-shock.  Hence, combining this result with (\ref{eq:burgers_bound}) by choosing the minimum between the two results gives optimal a posteriori error  control both before and after shock formation, albeit in different norms. We demonstrate this combination using an experiment where a the solution loses regularity and eventually a shock develops.
-\end{Rem}
 
 
-\subsection{Test 2: Inviscid Burgers equation - hat initial condition } In this test we benchmark and compare the behaviour of the a posteriori bounds (\ref{eq:burgers_bound}) and (\ref{eq:bound_ohlberger}) for Burgers equation with periodic boundary conditions and  a piecewise linear, hat initial condition given by
+\subsection{Test 2: Inviscid Burgers equation - hat initial condition }\label{test:burger_hat} In this test we benchmark and compare the behaviour of the a posteriori bounds (\ref{eq:burgers_bound}) and (\ref{eq:bound_ohlberger}) for Burgers equation with periodic boundary conditions and  a piecewise linear, hat initial condition given by
 \begin{equation}\label{eq:burger_pwlin_ic}
 u_0\qp{x} = 
 \begin{cases}
