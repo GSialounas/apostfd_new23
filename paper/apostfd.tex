@@ -165,122 +165,132 @@
 \section{Introduction}
 \label{sec:introduction}
 
-Hyperbolic conservation laws ubiquitously arise in many physical
-applications. Inviscid compressible flows are well described by
-Euler's equations which have meteorological applications, for
-example. A major difficulty in designing numerical schemes for
-hyperbolic conservation laws is that they can form shocks in finite
-time. There has been considerable activity in this area based on
-various numerical techniques, such as finite difference, volume and
-element approaches
-\cite{cockburn1995convergence,kroner1994convergence,leveque2002finite}. The
-formation and tracking of these discontinuities is a significant
-challenge.
+Hyperbolic conservation laws play a crucial role across a myriad of
+physical applications. One of the most significant cases in point is
+inviscid compressible flows, such as through Euler's equations, which
+have found substantial relevance in meteorological scenarios, among
+others. However, a pervasive challenge encountered in crafting
+numerical schemes for such hyperbolic conservation laws is the
+propensity of these laws to develop shocks within a finite temporal
+frame.
 
-A substantial body of work has accumulated over the years in
-applications of FD schemes for hyperbolic problems, resulting in
-several noteworthy contributions (see \cite{leveque1992numerical},
-\cite{johnson1997advanced} for overviews).  Early examples include
-Godunov's scheme (\cite{godunov1959difference}), the Lax-Friedrichs
-(LxF) scheme (\cite{lax1954weak}), the two-step Lax-Wendroff scheme
-(see the recent work of \cite{liska2021lax}), as well as the works of
-van Leer (see (\cite{van1973towards}, \cite{van1974towards},
-\cite{van1977towards}, \cite{van1977towardsIV} and
-\cite{van1979towards})).  The works of \cite{nessyahu1990non}, who use
-the LxF solver in conjunction MUSCL-type interpolants to compensate
-for the excessive LxF viscosity are also of note.  Two classes of FD
-schemes that are of particular importance in the context of hyperbolic
-conservation laws are the Essentially Non-Oscillatory schemes (see
-\cite{harten1987uniformly}, \cite{shu1988efficient},
-\cite{shu1989efficient}) and the Weighted ENO schemes
-(\cite{liu1994weighted}, \cite{jiang1996efficient},
-\cite{jiang1998nonoscillatory}; see \cite{shu1998essentially} and
-references therein for an overview).  ENO and WENO schemes combine
-high orders of approximation in smooth regions and non-oscillatory
-behaviour in the vicinity of discontinuities.
+Over the years, the scientific community has engaged in considerable
+research activity in this domain, exploring various numerical
+techniques. These include, but are not limited to, finite difference,
+volume, and element methods, each bringing its unique advantages to
+the table
+\cite{cockburn1995convergence,kroner1994convergence,leveque2002finite}. One
+of the core challenges, in this context, is the inception and
+effective tracking of the discontinuities, which are inherent to such
+systems.
 
-A posteriori error estimation aims to provide the user with local
-computational control over the error incurred in approximating a
-partial differential equation (PDE) with a given numerical scheme.  A
-posteriori error estimates for hyperbolic problems have received
-considerable attention, particularly for discontinuous Galerkin (dG)
-finite element methods
-\cite{johnson1990adaptive,johnson1995adaptive,dedner2007error,giesselmann2015posteriori,giesselmann2017posteriori,dedner2019residual,ainsworth2011posteriori,verfurth2013posteriori}
-and finite volume (FV) methods
-\cite{cockburn1994error,chen2014goal,barth2018finite,semplice2016adaptive,semplice2018adaptive}. 
+Among these techniques, the Finite Difference (FD) schemes hold a
+prominent place, having been deeply entrenched in the annals of
+computational science. A plethora of impactful work has been channeled
+into the application of FD schemes for hyperbolic problems, with a
+resultant cascade of significant contributions. Key literature
+overviews in this area can be found in \cite{leveque1992numerical} and
+\cite{johnson1997advanced}. Some groundbreaking examples in this space
+include the seminal Godunov's scheme \cite{godunov1959difference}, the
+intuitively designed Lax-Friedrichs (LxF) scheme \cite{lax1954weak},
+the advanced two-step Lax-Wendroff scheme, which has been subject to
+recent insightful analysis \cite{liska2021lax}, and the comprehensive
+studies by van Leer \cite{van1973towards, van1974towards,
+  van1977towards, van1977towardsIV, van1979towards}. The innovative
+approach by \cite{nessyahu1990non} is particularly noteworthy,
+employing the LxF solver in tandem with MUSCL-type interpolants to
+counterbalance the inherent LxF viscosity. Of paramount importance in
+the context of hyperbolic conservation laws are two distinct classes
+of FD schemes: the Essentially Non-Oscillatory (ENO) schemes
+\cite{harten1987uniformly, shu1988efficient, shu1989efficient} and the
+Weighted ENO (WENO) schemes \cite{liu1994weighted, jiang1996efficient,
+  jiang1998nonoscillatory}. The brilliance of ENO and WENO schemes
+lies in their delicate balance - they achieve high orders of
+approximation in smooth regions while ensuring non-oscillatory
+behaviour near discontinuities.
 
-By comparison, finite difference (FD) schemes have seen less interest
-with regard to a posteriori estimates. This is predominantly due to
-the problem lacking a variational structure, something quite crucial
-for typical a posteriori techniques to be applied. Indeed,
-goal-oriented a posteriori estimates have been derived for the
-Lax-Wendroff scheme by proving the method is equivalent to a finite
-element scheme \cite{collins2014posteriori}. Although there are the
-approaches that work for general numerical schemes approximating
-scalar conservation laws \cite{cockburn1995posteriori} and a
-posteriori estimates derived for FD schemes with local error
-estimation based on Richardson extrapolation
-\cite{berger1984adaptive,arney1988posteriori} . The estimates are used
-to facilitate mesh adaptivity.
+The domain of a posteriori error estimation seeks to equip the user
+with localised computational control over the approximation errors
+when dealing with a given numerical scheme for a partial differential
+equation (PDE). This area, especially for hyperbolic problems, has
+garnered significant attention. Notably, the discontinuous Galerkin
+(dG) finite element methods and finite volume (FV) methods have been
+subject to in-depth research
+\cite{johnson1990adaptive,johnson1995adaptive,dedner2007error,giesselmann2015posteriori,giesselmann2017posteriori,dedner2019residual,ainsworth2011posteriori,verfurth2013posteriori,cockburn1994error,chen2014goal,barth2018finite,semplice2016adaptive,semplice2018adaptive}.
 
-In this work we derive a posteriori bounds for general finite
-difference schemes approximating systems of nonlinear conservation
-laws. The main novelty of our work is that it enables the construction
-of reliable a posteriori estimate for general FD schemes. The result
-is quite general, in that we assume nothing on the exact solution
-although the final estimate is conditional, in that it holds only
-under some conditions on the numerical solution. The framework has
-inherent mechanisms to construct robust estimates of high-order, at
-least in the pre-shock regime, enabling the user to obtain optimal
-bounds for high order FD schemes using WENO interpolation
+However, the FD schemes, in comparison, have seen a relatively subdued
+focus in the context of a posteriori estimates. This can largely be
+attributed to these problems not possessing a variational structure, a
+crucial element for the successful deployment of standard a posteriori
+techniques. Some works in this space include the study by
+\cite{collins2014posteriori}, which derived goal-oriented a posteriori
+estimates for the Lax-Wendroff scheme by drawing parallels with a
+finite element scheme. Other significant approaches targeting general
+numerical schemes approximating scalar conservation laws and local
+error estimation for FD schemes based on Richardson extrapolation are
+detailed in \cite{cockburn1995posteriori, berger1984adaptive,
+  arney1988posteriori}.
+
+In the current work, we venture into deriving a posteriori bounds for
+general finite difference schemes that approximate systems of
+nonlinear conservation laws. Our contribution is novel, paving the way
+for crafting dependable a posteriori estimates for a wide spectrum of
+FD schemes. We maintain a generalised approach, refraining from making
+assumptions on the exact solution. However, it's imperative to note
+that the final estimate remains conditional, being valid only under
+specific conditions placed on the numerical solution. A cornerstone of
+our framework is its intrinsic capability to devise robust estimates
+allowing users to attain optimal bounds for high order FD schemes,
+specifically when harnessing WENO interpolation
 \cite{liu2009positivity,janett2019novel}.
 
-The a posteriori error analysis is carried out using the stability
-framework of the PDE (see \cite{giesselmann2015posteriori}) and it
-therefore yields a bound which is usable regardless of the chosen
-numerical discretisation technique.  The construction of the estimate
-for computational purposes is done using reconstruction
-techniques. Similar techniques have been used for dG methods (see
-e.g. \cite{makridakis2007space,giesselmann2015posteriori,giesselmann2017posteriori,dedner2019residual}).
+The very nature of a posteriori error analysis is that it fits within
+the stability framework of the PDE. This ensures the derived bound
+remains universally applicable, irrespective of the chosen numerical
+discretisation technique. The practical construction of the estimate
+is accomplished using reconstruction techniques, which find parallels
+in methodologies used for dG methods
+\cite{makridakis2007space,giesselmann2015posteriori,giesselmann2017posteriori,dedner2019residual}.
 
-We conduct a range of numerical experiments to benchmark the behaviour
-of the estimates and to demonstrate the concept of optimal order for
-smooth solutions. We showcase relevant results for widely used schemes
-for both linear and nonlinear examples.  The reader should note that
-the estimates are robust in the pre-shock regime but not in the
-post-shock regime.  
+To empirically validate our theoretical construct, we delve into a
+suite of numerical experiments. These are designed to not only
+benchmark the behaviour of our estimates but also to examine the
+behaviour of the estimate for smooth and non-smooth solutions.
 
-We will also demonstrate the estimate's ability to track parasitic
-waves, spurious numerical oscillations often travelling in the
-opposite direction than that of the physical solution, a well known
-numerical artefact in the approximation of this class of problem.
-They often are the result of initial condition travelling over a area
-of changing grid resolution. The issue of parasitic waves in
-non-uniform grids is well-known
-(cf. \cite{vichnevetsky1981energy},\cite{vichnevetsky1981propagation},\cite{trefethen1982group}
-and more recently \cite{long2011numerical}).  
+Furthermore, our work provides an examination into the estimate's
+ability to identify parasitic waves. These waves, often termed
+spurious numerical oscillations move counter to the direction of the
+physical solution. Such anomalies are typically the aftermath of
+initial conditions traversing areas of fluctuating grid
+resolution. The challenges posed by parasitic waves on non-uniform
+grids have been previously identified and explored in literature such
+as \cite{vichnevetsky1981energy, vichnevetsky1981propagation,
+  trefethen1982group} and the more contemporary work of
+\cite{long2011numerical}.
 
-The rest of this work is structured as follows.  In \S\ref{sec:setup}
-we introduce notation, we setup the problem and we present the
-stability framework for the PDE and the a posteriori bound.  We also
-obtain an a posteriori bound for the advection equation.  In
-\S\ref{sec:example_aposteriori_bounds} we demonstrate the construction
-and motivate the use of the a posteriori bound using an illustrative
-example.  In \S\ref{sec:numerical_discretisation} we present the
-spatial and temporal discretisations we will be using.  In
-\S\ref{sec:ENO_WENO_schemes} we present WENO schemes which will be
-used as spatial discretisations in some of the examples we consider.
-In \S\ref{sec:general_reconstructions} we expand upon
-\S\ref{sec:example_aposteriori_bounds} by providing the general
-framework for constructing bounds for FD schemes.  In
-\S\ref{sec:numerical_verification} we conduct benchmarking experiments
-to assess the behaviour of the bounds constructed using the proposed
-framework.  In \S\ref{sec:adaptive_implementation} we present the
-implementation details required for adaptivity using the framework we
-derived.  In \S\ref{sec:adaptive_experiments} we use the a posteriori
-bounds as drivers for adaptivity for a linear example (the advection
-equation) and a nonlinear system (shallow water equations).  We
-conclude this work in \S\ref{sec:conclusion}.
+The subsequent sections of this work are structured as follows:
+Section \S\ref{sec:setup} is dedicated to introducing notations,
+establishing the problem at hand, and delving into the stability
+framework of the PDE and the a posteriori bound. We also focus on the
+a posteriori bound specific to the advection equation. In
+\S\ref{sec:example_aposteriori_bounds}, we illustrate the construction
+and underline the significance of the a posteriori bound through an
+exemplary case. Section \S\ref{sec:numerical_discretisation}
+introduces the spatial and temporal discretizations employed in our
+study. WENO schemes, leveraged as spatial discretizations in several
+of our examples, are detailed in
+\S\ref{sec:WENO_discretization}. Here, we expound upon the underlying
+philosophy, derivation, and practical implementation nuances of WENO
+schemes, highlighting their salient attributes especially in the
+context of hyperbolic conservation laws. Section
+\S\ref{sec:experiments} is devoted to the presentation and thorough
+analysis of our numerical experiments. Our findings and observations,
+both anticipated and unforeseen, are meticulously dissected to
+validate our theoretical postulations. Moreover, this section offers
+insights into the practical implications and potential limitations of
+our a posteriori estimates.
+
+The final section, \S\ref{sec:conclusions}, furnishes a reflective conclusion to our study. We encapsulate the primary takeaways, underscore the significance of our contribution to the existing literature, and ruminate on potential directions for future research. Implicitly woven throughout our discourse is the underlying aspiration to bridge the existing chasm between theory and real-world application. By enhancing the understanding of a posteriori error estimates in the context of finite difference schemes for hyperbolic conservation laws, we aim to empower practitioners with tools that are both theoretically rigorous and practically impactful.
 
 
 \section{Preliminaries and problem setup}
@@ -869,7 +879,7 @@ to achieve the optimal convergence rate of the residual.
 	\end{subfigure}
 	\\
 	\begin{subfigure}[b]{\textwidth}
-		\includegraphics[width=\textwidth]{../figures/fig_CNCS_plots_1x5_sin_IC_ind_uniform_P1_55}	
+		\includegraphics[width=\textwidth]{../figures/fig_CNCS_plots_1x5_sin_IC_ind_uniform_P1_5555}	
 		\caption{\label{sfig:FTCS_prelim_P1}
 		  CNCS (\ref{eq:FTCS}).
                   \tristan{loosk at the yaxis on the errors. You need to run the 2nd plot from 1e-6 to 1e0.}
