@@ -276,8 +276,8 @@ a posteriori bound specific to the advection equation. In
 \S\ref{sec:example_aposteriori_bounds}, we illustrate the construction
 and underline the significance of the a posteriori bound through an
 exemplary case. Section \S\ref{sec:numerical_discretisation}
-introduces the spatial and temporal discretizations employed in our
-study. WENO schemes, leveraged as spatial discretizations in several
+introduces the spatial and temporal discretisations employed in our
+study. WENO schemes, leveraged as spatial discretisations in several
 of our examples, are detailed in
 \S\ref{sec:WENO_discretization}. Here, we expound upon the underlying
 philosophy, derivation, and practical implementation nuances of WENO
@@ -519,8 +519,8 @@ $\Oh(\tau^2 + h^2)$ respectively.
 \subsection{Data representation}
 
 The key to our analysis is to have access to a global interpretation
-of the numerical approximation $\{ U^n_j \}_{j}^{n}$, which is only
-defined as point values over the space-time domain. This is not a
+of the numerical approximation $\{ U^n_j \}_{j}^{n}$ which is only
+defined as point values over the space-time domain. There is not a
 unique choice and we will illustrate some examples in the following
 sections. We will denote these post processings $\widehat U$. The most
 intuitive post-processing is to apply, for example, a bilinear
@@ -528,9 +528,10 @@ Lagrange interpolant in space-time. Then we have
 
 \begin{Cor}[An a posteriori bound]
 	\label{cor:aposteriori}
-	Let $\widehat U$ be a continuous reconstruction of the finite
-	difference approximation $\{ U^n_j \}_{j}^n$. Then, in view of Lemma
-	\ref{theorem_stab_advection}, we have the a posteriori bound:
+	Let $\widehat U$ be the piecewise bilinear interpolant of the
+        finite difference approximation $\{ U^n_j \}_{j}^n$ (or in
+        fact any continuous reconstruction). Then, in view of Lemma
+        \ref{theorem_stab_advection}, we have the a posteriori bound:
 	\begin{equation}\label{eq_prelim_bound}
 	\Norm{(u - \widehat{U})\qp{t}}^2_{\leb{2}\qp{\W}}
 	\leq
