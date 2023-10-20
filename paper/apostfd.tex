@@ -141,8 +141,7 @@
   In this work, we derive a posteriori error estimates for general
   finite difference (FD) schemes approximating systems of nonlinear
   conservation laws. Our approach enables the construction of reliable
-  a posteriori estimates for general FD schemes. The results are
-  conditional, as they hold under certain conditions on the numerical
+  a posteriori estimates for general FD schemes. The results hold under certain conditions on the numerical
   solution, but are general as they do not assume any particular
   structure of the exact solution. The framework allows for the
   construction of robust estimates for high-order schemes which we
@@ -279,16 +278,16 @@ exemplary case. Section \S\ref{sec:numerical_discretisation}
 introduces the spatial and temporal discretisations employed in our
 study. WENO schemes, leveraged as spatial discretisations in several
 of our examples, are detailed in
-\S\ref{sec:WENO_discretization}. Here, we expound upon the underlying
+\S\ref{sec:ENO_WENO_schemes}. Here, we expound upon the underlying
 philosophy, derivation, and practical implementation nuances of WENO
 schemes, highlighting their salient attributes especially in the
-context of hyperbolic conservation laws. Section
-\S\ref{sec:experiments} is devoted to the presentation and thorough
+context of hyperbolic conservation laws.  In \S\ref{sec:general_reconstructions} we present the details of the procedure use to obtain the general reconstruction. .Section
+\S\ref{sec:numerical_verification} is devoted to the presentation and thorough
 analysis of our numerical experiments. Our findings and observations,
 are dissected to validate our theoretical postulations. Moreover, this
 section offers insights into the practical implications and potential
-limitations of our a posteriori estimates. The final section,
-\S\ref{sec:conclusions} concludes our study.
+limitations of our a posteriori estimates.  In \S \ref{sec:adaptive_implementation} we examine the use of our bound as a guide for adaptivity. The final section,
+\S\ref{sec:conclusion} concludes our study.
 
 
 \section{Preliminaries and problem setup}
@@ -491,28 +490,28 @@ for $n=0,\dots,N-1$.
 Formally, these methods have truncation error $\Oh(\tau + h)$ and
 $\Oh(\tau^2 + h^2)$ respectively.
 
-%% \begin{Defn}[Truncation error for the FTBS scheme]\label{defn:truncation_ftbs}
-%% 	We define the Truncation error for the FTBS scheme at $\qp{t,x}$, $T\qp{t,x}$, as
-%% 	\begin{equation}
-%% 	\begin{aligned}
-%% 	T\qp{t,x}&:=\frac{u\qp{t+\tau,x}-u\qp{x,t}}{\tau}+\frac{u\qp{t,x}-u\qp{t,x-h}}{h}\\
-%% 	&=\frac{1}{2}\qp{ \tau u_{tt}\qp{x,\eta} +hu_{xx}\qp{\xi,t} },
-%% 	\end{aligned}
-%% 	\end{equation}
-%% 	for $\xi\in\qp{x-h,x}$, $\eta \in\qp{t, t+\tau}$.
-%% \end{Defn}
+ \begin{Defn}[Truncation error for the FTBS scheme]\label{defn:truncation_ftbs}
+ 	We define the Truncation error for the FTBS scheme at $\qp{t,x}$, $T\qp{t,x}$, as
+ 	\begin{equation}
+ 	\begin{aligned}
+ 	T\qp{t,x}&:=\frac{u\qp{t+\tau,x}-u\qp{x,t}}{\tau}+\frac{u\qp{t,x}-u\qp{t,x-h}}{h}\\
+ 	&=\frac{1}{2}\qp{ \tau u_{tt}\qp{x,\eta} +hu_{xx}\qp{\xi,t} },
+ 	\end{aligned}
+ 	\end{equation}
+ 	for $\xi\in\qp{x-h,x}$, $\eta \in\qp{t, t+\tau}$.
+ \end{Defn}
 
 
-%% \begin{Defn}[Truncation error for the BTFS scheme]\label{defn:btfs_truncation}
-%% 	We define the Truncation error for the BTFS scheme at $\qp{t,x}$, $T\qp{t,x}$, as
-%% 	\begin{equation}\label{eq:btfs_truncation}
-%% 	\begin{aligned}
-%% 	T\qp{t,x}&:=\frac{u\qp{t+\tau,x}-u\qp{x,t}}{\tau}+\frac{u\qp{t+\tau,x+h}-u\qp{t+\tau,x}}{h}\\
-%% 	&=\qp{ \tau-h}u_{tx},
-%% 	\end{aligned}
-%% 	\end{equation}
-%% 	for $\xi\in\qp{x+h,x}$, $\eta \in\qp{t, t+\tau}$.
-%% \end{Defn}
+ \begin{Defn}[Truncation error for the BTFS scheme]\label{defn:btfs_truncation}
+ 	We define the Truncation error for the BTFS scheme at $\qp{t,x}$, $T\qp{t,x}$, as
+ 	\begin{equation}\label{eq:btfs_truncation}
+ 	\begin{aligned}
+ 	T\qp{t,x}&:=\frac{u\qp{t+\tau,x}-u\qp{x,t}}{\tau}+\frac{u\qp{t+\tau,x+h}-u\qp{t+\tau,x}}{h}\\
+ 	&=\qp{ \tau-h}u_{tx},
+ 	\end{aligned}
+ 	\end{equation}
+ 	for $\xi\in\qp{x+h,x}$, $\eta \in\qp{t, t+\tau}$.
+ \end{Defn}
 
 \subsection{Data representation}
 
@@ -548,7 +547,7 @@ Lagrange interpolant in space-time. Then we have
 Note that given the numerical solution, the right hand side of
 (\ref{eq_prelim_bound}) is fully computable. It can even be shown to
 be fully robust when $u_0$ is a sufficiently smooth initial condition
-as we will indicate in the following result.
+as we will demonstrate in the following result.
 
 \begin{Lem}[Asymptotic convergence rate for the reconstruction residual]
 	\label{subsec:asymptotic_convergence_rate}
@@ -839,8 +838,8 @@ as we will indicate in the following result.
   examine the \emph{estimated order of convergence} (EOC) of the
   estimate and the \emph{effectivity index} (EI).
 	
-  Consider two sequences $a_i(t)$ and $h_i$ which converge to zero
-  from above we define the EOC for these to be
+  Consider two sequences, $a_i(t)$ and $h_i$, which converge to zero
+  from above.  We define the EOC for these to be
   \begin{equation}\label{eq_EOC}
     EOC\qp{a_i(t);h_i}:=\frac{\log\qp{a_{i+1}(t)/a_{i}(t)}}{\log\qp{h_{i+1}/h_{i}}}.
   \end{equation}
@@ -883,8 +882,7 @@ to achieve the optimal convergence rate of the residual.
 
 		\caption{\label{sfig:FTCS_prelim_P1}
 		  CNCS (\ref{eq:FTCS}).
-                  \tristan{looskm at the yaxis on the errors. You need to run the 2nd plot from 1e-6 to 1e0.}
-		}
+               }
 	\end{subfigure}
 	\caption{\label{fig:bilinearLagrange}
           Errors and asymptotic
@@ -894,16 +892,16 @@ to achieve the optimal convergence rate of the residual.
           (\ref{eq_ic_sin}) and periodic boundary conditions. The
           simulations were conducted over a family of meshes with
           discretisation parameter $h = 2^{-m}, m = 4,\dots 7$, with a
-          timestep $\tau = \tfrac{h^2}{10}$. Note that the estimate is
-          optimal for the FTBS scheme and achieves a very favourable
-          effectivity of $EI \qp{4} < 3$, however it is suboptimal for
+          timestep $\tau = \tfrac{h^2}{10}$. Note that, while the estimate is
+          optimal for the FTBS scheme, achieving a  favourable
+          effectivity of $EI \qp{4} < 3$, it is suboptimal for
           the CNCS scheme.  }
 \end{figure}
 
 The suboptimality in the a posteriori bound for the CNCS scheme can be
-circumvented. We do this by building information from within the
+addressed by building information from within the
 finite difference spatial discretisation directly into the
-post-processor, effectively augmenting $\widehat U$ such that it is
+post-processor.  This effectively augments $\widehat U$ such that it is
 defined as the piecewise bi-quadratic Lagrange interpolant of the finite
 difference coefficients $\{U^n_j\}$.  For clarity, we will denote by $\widehat{ U}^t$ the temporal step of the reconstruction and by $\widehat{ U}^{ts}$ the spatio-temporal step (the full reconstruction).   We require that, in each temporal interval $\qb{t^n, t^{n+1}}$, $\widehat{ U}^t$ satisfy two nodal equivalence conditions and a derivative condition:
 \begin{equation}
@@ -916,7 +914,7 @@ difference coefficients $\{U^n_j\}$.  For clarity, we will denote by $\widehat{ 
 \partial_t\widehat{U}_j^t\qp{t^n} &= -\frac{1}{2h}\qp{U_{j+1}^{n}-U_{j-1}^{n}}.
 \end{split}
 \end{equation}
-Note that we have use the sub-script $j$ to denote the spatial position, $x_j$, on the grid where we obtain the $\widehat{U}^t_j$.  Then, we use  $\widehat{U}^t_j$ to compute the full reconstruction $\widehat{ U}^{ts}$, by satisfying two nodal equivalence conditions and a derivative condition to obtain the bi-quadratic $\widehat{ U}^{ts}$ in the patch $\qb{t^n,t^{n+1}}\times\qb{x_j,x_{j+1}}$, by satisfying 
+Note that we used the sub-script $j$ to denote the spatial position, $x_j$, on the grid where we obtain the $\widehat{U}^t_j$.  Then, we use  $\widehat{U}^t_j$ to compute the bi-quadratic, full reconstruction,  $\widehat{ U}^{ts}$, by satisfying two nodal equivalence conditions and a derivative condition  in the patch $\qb{t^n,t^{n+1}}\times\qb{x_j,x_{j+1}}$:
 \begin{equation}
  \begin{split}
 \widehat U(x_j,t^n) &= \widehat{U}_j^t\qp{t^n} ,
@@ -927,11 +925,11 @@ Note that we have use the sub-script $j$ to denote the spatial position, $x_j$, 
 \end{split}
 \end{equation}
 
-\tristan{I changed this to be CNCS, is it correct? - George: corrected}
+
 We are now closer to the spirit of a finite difference method. The
 argument from Lemma \ref{subsec:asymptotic_convergence_rate} can be
 modified to apply in this case. Indeed, one can show that applying the
-same argument the interpolant given by (\ref{eq:quadrecon}) yields
+same argument, the interpolant given by (\ref{eq:quadrecon}) yields
 $\sqrt{w\cE^2} = \Oh\qp{\tau^2+h^2}$, which is optimal for the CNCS
 scheme. To illustrate this asymptotic convergence properties we have
 replicated the same experiment as in Figure \ref{fig:bilinearLagrange}
@@ -951,13 +949,13 @@ posteriori bound and favourable effectivities.
 		(\ref{eq_ic_sin}) and periodic boundary conditions. The simulations were conducted over a family of
 		meshes with discretisation parameter $h = 2^{-m}, m = 4,\dots 7$,
 		with a time-step $\tau = \tfrac{h}{10}$. Note that the estimate
-		is now optimal for the CNCS scheme with favourable effectivity of
+		is now optimal for the CNCS scheme with a favourable effectivity of
 		$EI \qp{4} \sim 2.2$.}
 \end{figure}
 
 The ideas presented in this section form an intuitive way to obtain
 the reconstruction. It is possible to generalise this quite naturally
-to other spatio-temporal discretisations as we will present in the
+to other spatio-temporal discretisations, as we will present in the
 forthcoming sections.
 
 \section{General Systems}\label{sec:numerical_discretisation}
@@ -1034,7 +1032,7 @@ It can be verified that strong solutions of (\ref{eq_1d_gen_cons_law}) also sati
 \subsection{Spatial discretisation}
 It is well known that numerical schemes for
 non-linear conservation laws may converge to functions which are not weak-solutions of the original problem (see \cite[\S12.1]{leveque1992numerical}). We address this problem by expressing the method in conservation form. We use a consistent numerical flux
-function $\vec{F}$, which takes $p+q+1$ arguments:
+function, $\vec{F}$, which takes $p+q+1$ arguments:
 \begin{equation}\label{eq_defn_num_flux}
 \dfunkmapstonumflux{\qp{\vec{U}^n_{j-p+1},\cdots,\vec{U}^n_{j+q}}}{\vec{F}^n_j}{{\vec{F}}\qp{\vec{U}^n_{j-p},\cdots,\vec{U}^n_{j+q}}}{\vec{F}\qp{\vec{v},\cdots,\vec{v}}}{\vec{f}\qp{\vec{v}}, }
 \end{equation}
@@ -2040,6 +2038,8 @@ In  this section we discuss practical implementation details for the solution of
 
 We begin by  presenting the adaptive algorithm we use.  Firstly, we will explain how we facilitate the comparison of the adaptive numerical simulation with the uniform one and then we present the  marking and the refinement/coarsening strategies.
 
+We then  benchmark using  two different problems: a linear advection problem with a discontinuous initial condition and periodic boundary conditions, and a shallow water dam-break problem with zero-neumann boundary conditions.  In this way we benchmark the performance of the indicator in more challenging settings than in previous sections. 
+
 \subsection{Adaptive Algorithm}
 Our adaptive algorithm is of SOLVE $\to$ ESTIMATE $\to$ MARK $\to$ REFINE type.
 
@@ -2120,8 +2120,7 @@ The reader should note that there are several ways of choosing $\gamma_c$ and $\
 \State Set $\mathcal{T}_{i+1}=\mathcal{T}_i^{\qp{n}}$
 */
 
-\section{Adaptive experiments}\label{sec:adaptive_experiments}
-In this section we describe the numerical experiments we run to test the a posteriori bounds as criteria for adaptivity.  We use two different problems: a linear advection problem with a discontinuous initial condition and periodic boundary conditions, and a shallow water dam-break problem with zero-neumann boundary conditions.  In this way we benchmark the performance of the indicator in more challenging settings than in previous sections. 
+
 \begin{Rem}[Grid-spacing for the adaptive mesh] We start the simulations after having globally refined the entire grid the maximum allowable number of times.  Then, the indicator detects where this is excessive and coarsens locally.  This is the reason for  the steep decrease in the number of dof in the left plots in Fig. \ref{fig:FTBS_linadvect_adapt} and Fig. \ref{fig:SSP3WENO3_shw_dambreak_adapt}.
 \end{Rem}
 \begin{Rem}[Time-step for the adaptive mesh]  In order to maintain numerical stability, in the absence of an adaptive mechanism for the time-step, we  couple the time-step to the smallest spatial step present in the computation, to maintain numerical stability.
