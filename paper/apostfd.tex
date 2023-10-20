@@ -1590,11 +1590,10 @@ error for two nonlinear examples: Burgers' equation and the shallow
 water equations. The tests are a preliminary assessment before
 using the a posteriori bound as a
 refinement/coarsening criterion in adaptive tests.  We will firstly
-present the bounds we will be testing for the non-linear problems we
-benchmark in this section, along with the numerical schemes we will
+present the bounds for the non-linear problems  in this section, along with the numerical schemes we will
 use.
 \begin{Rem}[a posteriori bound for nonlinear problems]
- The test cases we examine in \S \ref{sec:numerical_verification} are nonlinear, so the
+ The test cases we examine in this section are nonlinear, so the
  post-processor from Lemma \ref{theorem_stab_advection} is not
  applicable.  Instead, we will use a different a posteriori estimate
  which is appropriate for nonlinear systems of hyperbolic conservation
@@ -1652,7 +1651,7 @@ Derivatives of a field, q, are denoted $\D q:=\qp{\partial_{u_1}q\qp{\vect{u}},\
 \end{bmatrix}.
 \end{equation}
 \end{Rem}
-\begin{Lem}[a posteriori error control for nonlinear systems of 1D conservation laws from \cite{giesselmann2015posteriori}] \label{theorem_apost_control_nonlinear}Let $\vec{f}\in C^2\qp{U,\mathbb{R}^d}$ satisfy (\ref{eq_associated_cons_law}) and let $\vec{u}$ be an entropy solution of (\ref{eq_1d_gen_cons_law}) with periodic boundary conditions.  Let $\recgs{U}$ take values in $\mathcal{D}$ (which is a convex, compact subset of the state space).  Then for $0\leq t\leq T$ the error between $\vec{u}$ an  $\recgs{U}$ is given by 
+\begin{Lem}[A posteriori error control for nonlinear systems of 1D conservation laws from \cite{giesselmann2015posteriori}] \label{theorem_apost_control_nonlinear}Let $\vec{f}\in C^2\qp{U,\mathbb{R}^d}$ satisfy (\ref{eq_associated_cons_law}) and let $\vec{u}$ be an entropy solution of (\ref{eq_1d_gen_cons_law}) with periodic boundary conditions.  Let $\recgs{U}$ take values in $\mathcal{D}$ (which is a convex, compact subset of the state space).  Then for $0\leq t\leq T$ the error between $\vec{u}$ an  $\recgs{U}$ is given by 
 \begin{equation}\label{eq_bound}
 \begin{aligned}
 \Norm{\vect{u}\qp{\cdot,t}-\recgs{U}\qp{\cdot,t}}^2_{\leb{2}\qp{I}}\leq&
@@ -1685,35 +1684,34 @@ The constants $\Cueta$ and $\Coeta$ represent the minimum and maximum absolute e
 \end{Cor}
 
 
-\begin{Rem} Note that the  result given in Lemma  \ref{cor_stab_control_burgers} loses its robustness in the post-shock regime due to the presence of the reconstruction's derivative, which blows up upon shock formation, in the exponential accumulation factor, see (\ref{eq:burgers_bound}).   The next result on a posteriori error control is from \cite{cockburn1995posteriori}.  It pertains to a posteriori error control for a scalar, non-linear hyperbolic problem and it makes use of the Kruzkov doubling of variable technique (see \cite{kruvzkov1970first},\cite{kuznetsov1976accuracy}).  This estimate retains robustness in the post-shock regime.  We test it for the scalar problem in the post-shock regime.  
-\end{Rem} 
 
-\begin{The}($\leb{1}\qp{\W}$ error bound - \cite[Thm. 2.1]{cockburn1995posteriori})\label{thm:bound_post_shock_burgers} Let $u$ be an entropy solution of the scalar case of (\ref{eq_1d_gen_cons_law}) and denote by $\widehat{U}$ the reconstruction of the numerical solution $\braces{U^n_j}^n_j$ (see Defn.\ref{defn_spatio-temporal reconstruction}).  Then,
-	\begin{equation}\label{eq:bound_burger_cockburn}
-	\begin{aligned}
-	\Norm{u\qp{t} - \widehat{U}\qp{t}}_{\leb{1}\qp{\W}}
-	&\leq 
-	\Norm{u_0-v_0}_{\leb{1}\qp{0,t;\leb{1}\qp{\W}}}
-	+
-	\int_{0}^t\Norm{R\qp{s}}_{\leb{1}\qp{\W}}\mathrm{d}s\\
-	&=:
-	\w_a\qp{t}\mathcal{E}_a\qp{t;\leb{1}\qp{\W}},
-	\end{aligned}
-	\end{equation}
-	where
-	\begin{equation*}
-	\w_a\qp{t}=1\quad \forall t
-	\end{equation*}
-	and
-	\begin{equation*}
-	R:=  \partial_t\widehat{ U}+\partial_x \qp{{f}\qp{\widehat{U}}}
-	\end{equation*}
-	is the discrete residual of the reconstruction.
-\end{The}
-\begin{proof} See \cite[Appendix]{cockburn1995posteriori}.
-\end{proof}
 
-We test the bound (\ref{eq:burgers_bound}) for three different schemes
+%\begin{The}($\leb{1}\qp{\W}$ error bound - \cite[Thm. 2.1]{cockburn1995posteriori})\label{thm:bound_post_shock_burgers} Let %$u$ be an entropy solution of the scalar case of (\ref{eq_1d_gen_cons_law}) and denote by $\widehat{U}$ the reconstruction of the %numerical solution $\braces{U^n_j}^n_j$ (see Defn.\ref{defn_spatio-temporal reconstruction}).  Then,
+%	\begin{equation}\label{eq:bound_burger_cockburn}
+%	\begin{aligned}
+%	\Norm{u\qp{t} - \widehat{U}\qp{t}}_{\leb{1}\qp{\W}}
+%	&\leq 
+%	\Norm{u_0-v_0}_{\leb{1}\qp{0,t;\leb{1}\qp{\W}}}
+%	+
+%	\int_{0}^t\Norm{R\qp{s}}_{\leb{1}\qp{\W}}\mathrm{d}s\\
+%	&=:
+%	\w_a\qp{t}\mathcal{E}_a\qp{t;\leb{1}\qp{\W}},
+%	\end{aligned}
+%	\end{equation}
+%	where
+%	\begin{equation*}
+%	\w_a\qp{t}=1\quad \forall t
+%	\end{equation*}
+%	and
+%	\begin{equation*}
+%	R:=  \partial_t\widehat{ U}+\partial_x \qp{{f}\qp{\widehat{U}}}
+%	\end{equation*}
+%	is the discrete residual of the reconstruction.
+%\end{The}
+%\begin{proof} See \cite[Appendix]{cockburn1995posteriori}.
+%\end{proof}
+
+We test the  (\ref{eq:burgers_bound}) for three different schemes
 - Lax-Friedrichs, Lax-Wendroff and SSP3-WENO - with uniform temporal
 and spatial discretizations, i.e. $\tau^n:=\tau $ $\forall n$ and
 $h_j:=h$ $\forall j$.  The reconstruction residual,
@@ -1721,13 +1719,14 @@ $h_j:=h$ $\forall j$.  The reconstruction residual,
 Defn. \ref{defn_temp_rec} for the temporal component and
 Defn. \ref{defn_spatio-temporal reconstruction} for the spatial
 component.
-We test the bound (\ref{eq:bound_burger_cockburn}) for the non-linear scalar problem with a discontinuous initial condition with a FTBS scheme and a linear-in-time, WENO3-in-space reconstruction.  The reason we do not test the bound (\ref{eq:burgers_bound}) in this case is because of the blow-up in the exponential factor.
+%We test the bound (\ref{eq:bound_burger_cockburn}) for the non-linear scalar problem with a discontinuous initial condition with a %FTBS scheme and a linear-in-time, WENO3-in-space reconstruction.  The reason we do not test the bound (\ref{eq:burgers_bound}) in %this case is because of the blow-up in the exponential factor.
 
-We have implemented the a posteriori bound with these numerical
-schemes in order to benchmark its behaviour before applying it to
-adaptive scenarios, where the bound is used as a driver for
-adaptivity.
+%We have implemented the a posteriori bound with these numerical
+%schemes in order to benchmark its behaviour before applying it to
+%adaptive scenarios, where the bound is used as a driver for adaptivity.
 
+\begin{Rem} Note that the  result given in Lemma  \ref{cor_stab_control_burgers} loses its robustness in the post-shock regime due to the presence of the reconstruction's derivative, which blows up upon shock formation, in the exponential accumulation factor, see (\ref{eq:burgers_bound}).   The next result on a posteriori error control is from \cite{ohlberger2009review}.  We utilise it because retains robustness (though not optimality) in the post-shock regime.  We test it for the scalar problem in the post-shock regime.  
+\end{Rem} 
 
 \begin{The}(A posteriori error estimate - \cite[Thm. 5]{ohlberger2009review})\label{thm:aposteriori_ohlberger}
 	We denote by $u$ the entropy solution of (\ref{eq_1d_gen_cons_law}) by $U$ the discrete solution obtained using an appropriate discretisation and by $\widehat{U}$ the reconstruction -  in this case obtained as the bilinear Lagrange interpolant of $U$.  Also, we assume that the assumptions described in \cite[\S3]{ohlberger2009review} are satisfied.  Then the following bound holds
@@ -1749,7 +1748,7 @@ adaptivity.
 	where $\w_o\qp{t}=1$ $\forall t$,  $T$ denotes the final time and $\eta_0$, $\eta_t$, $\eta_c$, $K_0$, $K_1$ and $K_1'$ defined in \cite[Cor.1]{ohlberger2009review} and \cite[Thm. 5]{ohlberger2009review}.
 \end{The}
 
-\begin{Rem} The reader will note that the bound (\ref{eq:bound_ohlberger}) is sub-optimal in the pre-shock but has the advantage that it does not blow-up in the post-shock.  Hence, combining this result with (\ref{eq:burgers_bound}) by choosing the minimum between the two results gives optimal a posteriori error  control both before and after shock formation, albeit in different norms. We demonstrate this combination using an experiment where a the solution loses regularity and eventually a shock develops - see test \S \ref{test:burger_hat}.
+\begin{Rem} The reader will note that the bound (\ref{eq:bound_ohlberger}) is sub-optimal in the pre-shock but has the advantage that it does not blow-up in the post-shock.  Hence, combining this result with (\ref{eq:burgers_bound}) by choosing the minimum between the two results gives optimal a posteriori error  before  shock formation and enables error control after the shock forms, albeit in different norms. We demonstrate this combination using an experiment where  the solution loses regularity and eventually a shock develops - see test \S \ref{test:burger_hat}.
 \end{Rem}
 
 \subsection{Test 1: Scalar Inviscid Burgers' equation. }
@@ -1845,10 +1844,10 @@ Figs. \ref{fig:Burgers_LxF_preshock} and
           parameter $h = 2^{-m}, \,m = 9,\dots 12$, with a timestep
           $\tau = \tfrac{h}{10}$.  Notice that  the estimator loses optimality gradually in the interval $0.2\leq t \leq 0.8$.  This is because the solution itself is losing regularity, only this time the scheme and the residual are both of sufficiently high order  to capture this.  At $t\approx 1$ the shock forms and the exponential factor in (\ref{eq:burgers_bound})  blows up.}
 \end{figure}
-In order to explain the behaviour of the bound (\ref{eq:burgers_bound}), we decouple  the time-accumulation factor from the residual component of the post-processor (see Fig. \ref{fig:SSP3WENO_burgers_decoupled}).  Notice that at $ t\approx1$ the exponential factor blows up rapidly as $v_x$ blows up.  The reason for this is that at $t=1$ the solution starts forming a shock.  This explains the behaviour for $t>=1$.  
+In order to elucidate the behaviour of the bound (\ref{eq:burgers_bound}), we decouple  the time-accumulation factor from the residual component of the post-processor (see Fig. \ref{fig:SSP3WENO_burgers_decoupled}).  Notice that at $ t\approx1$ the exponential factor blows up rapidly as $v_x$ blows up.  The reason for this is that at $t=1$ the solution starts forming a shock.  This explains the behaviour for $t>=1$.  
 \begin{figure}[H]	
 		\includegraphics[width=\textwidth]{../figures/fig_SSP3WENO3_postshockplots_1x5_sin_IC_burgers_decoupled}	
-	\caption{\label{fig:SSP3WENO_burgers_decoupled}  Decoupling for the post-processor the cubic spatio-temporal  interpolant of SSP3-WENO3
+	\caption{\label{fig:SSP3WENO_burgers_decoupled}  Decoupling of the post-processor for the cubic spatio-temporal  interpolant of SSP3-WENO3
 		approximations of Burgers' equation with a sinusoidal initial condition and periodic boundary conditions
 		(\ref{eq_burgers}).  The simulations were conducted over a family of
 		meshes with discretisation parameter $h = 2^{-m}, m = 9,\dots 12$,
@@ -1856,10 +1855,26 @@ In order to explain the behaviour of the bound (\ref{eq:burgers_bound}), we deco
 \end{figure}
 
 
-The numerical experiments conducted in this section hitherto highlight the loss of optimality for the bound  (\ref{eq:burgers_bound}) as the solution loses regularity and eventually blows up in the post-shock regime (see Fig. \ref{fig:SSP3WENO_burgers_decoupled}).  We address the issue of post-shock optimality  by utilising an a posteriori estimate from \cite[Thm. 5]{ohlberger2001posteriori}, Thm. \ref{thm:aposteriori_ohlberger}, which converges as $\mathcal{O}\qp{h^{1/2}}$ throughout the computation.  
-
-
-
+The numerical experiments conducted in this section hitherto, highlight the issue of robustness loss for the bound  (\ref{eq:burgers_bound}) as the solution loses regularity and eventually blows up in the post-shock regime (see Fig. \ref{fig:SSP3WENO_burgers_decoupled}).  We circumvent this issue by  utilising (\ref{eq:bound_ohlberger}), which converges as $\mathcal{O}\qp{h^{1/2}}$ throughout the computation.  We thereby ensure pre-shock optimality and achieve post-shock robustness by combining the two.  We adopt the following notation for ease of reference:
+\begin{equation}
+	\begin{aligned}
+		\w_b\mathcal{E}_b^2
+		&:=
+		\exp\qp{\int_0^t\qp{\Norm{\partial_x\widehat{U}\qp{s}}_{\leb{\infty}}+1}\mathrm{d}s}\qb{\Norm{e\qp{0}}_{\leb{2}}+\int_0^t\Norm{R\qp{s}}^2_{\leb{2}}\mathrm{d}s}
+		,\\
+		\w_o\mathcal{E}_o
+		&:=
+		\qp{1+T}\eta_0 
+		+
+		\eta_t
+		+
+		\eta_c
+		+
+		2T\sqrt{K_0}\sqrt{K_1\eta_t+\qp{K_1+K_1'}\eta_c}
+		\quad\text{and}\\
+		\w_{min}\mathcal{E}_{min}&:=\min\bracegs{\qp{\w_b\mathcal{E}_b^2}^{1/2}, \w_o\mathcal{E}_o}.
+	\end{aligned}
+\end{equation}
 
 \subsection{Test 2: Inviscid Burgers equation - hat initial condition }\label{test:burger_hat} In this test we benchmark and compare the behaviour of the a posteriori bounds (\ref{eq:burgers_bound}) and (\ref{eq:bound_ohlberger}) for Burgers equation with periodic boundary conditions and  a piecewise linear, hat initial condition given by
 \begin{equation}\label{eq:burger_pwlin_ic}
@@ -1896,27 +1911,7 @@ u\qp{x,t}
 0\quad\text{otherwise}.
 \end{cases}
 \end{equation}
-The results are shown in Fig. \ref{fig:FTBS_burger_step}.  We adopt the following notation for ease of reference:
-\begin{equation}
-\begin{aligned}
-\w_b\mathcal{E}_b^2
-&:=
-\exp\qp{\int_0^t\qp{\Norm{\partial_x\widehat{U}\qp{s}}_{\leb{\infty}}+1}\mathrm{d}s}\qb{\Norm{e\qp{0}}_{\leb{2}}+\int_0^t\Norm{R\qp{s}}^2_{\leb{2}}\mathrm{d}s}
-,\\
-\w_o\mathcal{E}_o
-&:=
-\qp{1+T}\eta_0 
-+
-\eta_t
-+
-\eta_c
-+
-2T\sqrt{K_0}\sqrt{K_1\eta_t+\qp{K_1+K_1'}\eta_c}
-\quad\text{and}\\
-\w_{min}\mathcal{E}_{min}&:=\min\bracegs{\qp{\w_b\mathcal{E}_b^2}^{1/2}, \w_o\mathcal{E}_o}.
-\end{aligned}
-\end{equation}
-
+The results are shown in Fig. \ref{fig:FTBS_burger_step}.  
 
 
 \begin{figure}[H] 
@@ -1941,7 +1936,7 @@ The results are shown in Fig. \ref{fig:FTBS_burger_step}.  We adopt the followin
 \end{figure}
 
 The last test in this section is presented in order to motivate adaptivity in the context of finite difference schemes for conservation laws. We highlight additional challenges that arise in implementing adaptivity, even for scalar examples in one spatial dimension.  
-\subsection{Test 3: Parasite detection in 1D} \label{subsec:parasite}In this test we investigate the resulting behaviour of (\ref{eq_prelim_bound}) in the presence of parasitic waves and we verify the capability of the bound we construct using Defns \ref{defn_temp_rec} and \ref{defn_spatio-temporal reconstruction} to detect such waves. Very briefly, parasitic waves are numerical artefacts which are generated whenever the numerical solution encounters some discontinuity in the numerical model. Such discontinuities include local changes in grid spacing (see \cite{vichnevetsky1981propagation}),  abrupt changes in some aspect of the specific PDE model, such as a discontinuous change in coefficients (see \cite{trefethen1982group}) or even a change in the PDE used in different regions of the domain, e.g. advection in one region and advection-diffusion in another, (see the work of \cite{giesselmann2017posteriori} for more details on model adaptivity).  
+\subsection{Test 3: Parasite detection in 1D} \label{subsec:parasite}In this test we investigate the resulting behaviour of (\ref{eq_prelim_bound}) in the presence of parasitic waves and we verify the capability of the bound we construct using Defns \ref{defn_temp_rec} and \ref{defn_spatio-temporal reconstruction} to detect such waves. Very briefly, parasitic waves are numerical artefacts which are generated whenever the numerical solution encounters some discontinuity in the numerical model. Such discontinuities include local changes in grid spacing (see \cite{vichnevetsky1981propagation}),  abrupt changes in some aspect of the specific PDE model, such as a discontinuous change in coefficients (see \cite{trefethen1982group}) or even a change in the PDE used in different regions of the domain, e.g. advection in one region and advection-diffusion in another, (see the work of \cite{giesselmann2017posteriori} for more details on model adaptivity).    Parasitic waves can rapidly pollute the computation.
 
 We use a Crank-Nicholson in time  Central-Space scheme  on a piecewise non-uniform grid given by
 \begin{equation}\label{eq_grid_spacing_piecewise_nonu}
@@ -2002,7 +1997,7 @@ which makes the parasites more visible.  The results are shown in Fig. \ref{fig:
 			Magnified Parasite.
 		}
 	\end{subfigure}
-\caption{A parasitic wave which occurs to due an abrupt mesh change.  We use a CNCS scheme on a grid given by (\ref{eq_grid_spacing_piecewise_nonu}) and a temporal-to-spatial step coupling of $\tau=\frac{h}{10}$.  We plot the solution and the normalized $\leb{2}$-norm of the local residual (\ref{eq_reconstruction_gen_cons}) before and after parasite formation.  The parasitic wave is the highly oscillatory wave in the right-most plot, which is zoomed in.  Notice that it is moving in the opposite direction from the solution. Such parasites can arise when implementing adaptivity and can rapidly pollute the computation. Notice that the residual detects and tracks the parasite.}
+\caption{A parasitic wave which occurs to due an abrupt mesh change.  We use a CNCS scheme on a grid given by (\ref{eq_grid_spacing_piecewise_nonu}) and a temporal-to-spatial step coupling of $\tau=\frac{h}{10}$.  We plot the solution and the normalized $\leb{2}$-norm of the local residual (\ref{eq_reconstruction_gen_cons}) before and after parasite formation.  The parasitic wave is the highly oscillatory wave in the right-most plot, which is magnified.  Notice that it is moving  counter to the solution. Such parasites can arise when implementing adaptivity and can rapidly pollute the computation. Notice that the residual detects and tracks the parasite.}
 \label{fig:CNCS_parasite}
 \end{figure}
 
@@ -2030,7 +2025,7 @@ which makes the parasites more visible.  The results are shown in Fig. \ref{fig:
 %	}
 %\end{figure}
 
-In Fig.\ref{fig:CNCS_parasite} we see a parasite, which is the highly oscillatory wave-train shown in the bottom left plot.  Notice that it travels in the opposite direction compared to the initial condition.    Parasitic waves can rapidly pollute the computation.     Notice that the bound we have constructed using Defns. \ref{defn_temp_rec} and \ref{defn_spatio-temporal reconstruction} is able to detect the parasitic wave.  The reader should note that implementing adaptivity in the presence of an existing grid discontinuity may exacerbate parasite formation and propagation.
+In Fig.\ref{fig:CNCS_parasite} we see a parasite, which manifests as the highly oscillatory wave-train shown in the right plot.  Notice that it travels in the opposite direction compared to the solution.        Notice that the bound we have constructed using  Defns. \ref{defn_temp_rec} and \ref{defn_spatio-temporal reconstruction} is able to detect the parasitic wave.  The reader should note that implementing adaptivity in the presence of an existing grid discontinuity may exacerbate parasite formation and propagation.
 
 
 \section{Adaptive experiments}\label{sec:adaptive_implementation}
