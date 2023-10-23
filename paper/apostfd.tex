@@ -120,9 +120,8 @@
 \address{
   Georgios Sialounas
   \thanks{
-  Department of Mathematics and Statistics,
-  University of Reading, Reading, RG6 6AX, UK 
-   {\tt{gs1511@ic.ac.uk}}.
+  Private Consultant
+   {\tt{georgios.sialounas@hotmail.com}}.
 }}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
@@ -2025,18 +2024,18 @@ which makes the parasites more visible.  The results are shown in Fig. \ref{fig:
 %	}
 %\end{figure}
 
-In Fig.\ref{fig:CNCS_parasite} we see a parasite, which manifests as the highly oscillatory wave-train shown in the right plot.  Notice that it travels in the opposite direction compared to the solution.        Notice that the bound we have constructed using  Defns. \ref{defn_temp_rec} and \ref{defn_spatio-temporal reconstruction} is able to detect the parasitic wave.  The reader should note that implementing adaptivity in the presence of an existing grid discontinuity may exacerbate parasite formation and propagation.
+In Fig.\ref{fig:CNCS_parasite} we see a parasite, which manifests as the highly oscillatory wave-train shown in the right plot.  Notice that it travels counter to the solution's direction.        Notice that the bound we have constructed using  Defns. \ref{defn_temp_rec} and \ref{defn_spatio-temporal reconstruction} is able to detect the parasitic wave.  Lastly, the reader should note that implementing adaptivity in the presence of an existing grid discontinuity may exacerbate parasite formation and propagation.
 
 
 \section{Adaptive experiments}\label{sec:adaptive_implementation}
-In  this section we discuss practical implementation details for the solution of (\ref{eq_1d_gen_cons_law}) in an adaptive context.   We describe the setup we use to test the suitability of (\ref{eq_reconstruction_gen_cons}) as a criterion for mesh adaptivity in 1D and we compare and contrast the results produced from the adaptive simulation with results produced from a uniform grid.
+In  this section we discuss practical implementation details for the solution of (\ref{eq_1d_gen_cons_law}) using adaptivity.   We test (\ref{eq_reconstruction_gen_cons}) as a criterion for mesh adaptivity in 1D and  compare the results against a uniform grid test case. 
 
-We begin by  presenting the adaptive algorithm we use.  Firstly, we will explain how we facilitate the comparison of the adaptive numerical simulation with the uniform one and then we present the  marking and the refinement/coarsening strategies.
+The section starts with a brief discussion on the details of the adaptive algorithm.  This includes a description of the adaptive algorithm itself,  the method used  to compare the adaptive and uniform test case and the  marking,  refinement and coarsening strategies.
 
-We then  benchmark using  two different problems: a linear advection problem with a discontinuous initial condition and periodic boundary conditions, and a shallow water dam-break problem with zero-neumann boundary conditions.  In this way we benchmark the performance of the indicator in more challenging settings than in previous sections. 
+We then  benchmark using  two different problems: a linear advection problem with a discontinuous initial condition and periodic boundary conditions, and a shallow water dam-break problem with zero-neumann boundary conditions. 
 
 \subsection{Adaptive Algorithm}
-Our adaptive algorithm is of SOLVE $\to$ ESTIMATE $\to$ MARK $\to$ REFINE type.
+Our adaptive algorithm is of the  SOLVE $\to$ ESTIMATE $\to$ MARK $\to$ REFINE type.
 
 \begin{Rem}[Maximum number of refinements]
 For the purposes of this paper we allow a maximum of  four  refinement levels relative to the initial, uniform triangulation. 
@@ -2116,8 +2115,8 @@ The reader should note that there are several ways of choosing $\gamma_c$ and $\
 */
 
 
-\begin{Rem}[Grid-spacing for the adaptive mesh] We start the simulations after having globally refined the entire grid the maximum allowable number of times.  Then, the indicator detects where this is excessive and coarsens locally.  This is the reason for  the steep decrease in the number of dof in the left plots in Fig. \ref{fig:FTBS_linadvect_adapt} and Fig. \ref{fig:SSP3WENO3_shw_dambreak_adapt}.
-\end{Rem}
+%\begin{Rem}[Grid-spacing for the adaptive mesh] We start the simulations after having globally refined the entire grid the maximum %allowable number of times.  Then, the indicator detects where this is excessive and coarsens locally.  This is the reason for  the steep %decrease in the number of dof in the left plots in Fig. \ref{fig:FTBS_linadvect_adapt} and Fig. %\ref{fig:SSP3WENO3_shw_dambreak_adapt}.
+%\end{Rem}
 \begin{Rem}[Time-step for the adaptive mesh]  In order to maintain numerical stability, in the absence of an adaptive mechanism for the time-step, we  couple the time-step to the smallest spatial step present in the computation, to maintain numerical stability.
 \end{Rem}
 
@@ -2138,7 +2137,7 @@ We discretise the problem using a Forward-Time Backward Space scheme given by (\
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{../figures/fig_FTBSplots_1x5_step_IC_P1_comparison_adaptONOFF}	
-	\caption{\label{fig:FTBS_linadvect_adapt} An adaptive simulation of the linear advection equation with an FTBS discretization, periodic boundary conditions and a step initial condition given by (\ref{eq_ic_step}).  The simulation starts at the maximum allowable refinement level (we set this to be 4) with an initial (fine) grid with spacing $h=2^{-12}$ and a temporal step $\tau =\frac{2^{-10}}{10}$, which remains constant throughout the simulation. The equivalent uniform grid has $741$ degrees of freedom.  The indicator used in this case is a simple bilinear Lagrange indicator.  Notice that the indicator automatically coarsens the grid at the beginning of the simulation, resulting in a steep decrease in the number of decrease of freedom in parts of the domain which are away from the discontinuity. Also notice that the adaptive mesh compares favorably with an equivalent uniform grid as it consistently maintains a lower level of error throughout the major part of the simulation.}
+	\caption{\label{fig:FTBS_linadvect_adapt} An adaptive simulation of the linear advection equation with an FTBS discretization, periodic boundary conditions and a step initial condition given by (\ref{eq_ic_step}).  The simulation starts at the maximum allowable refinement level (we set this to be 4) with an initial (fine) grid with spacing $h=2^{-12}$ and a temporal step $\tau =\frac{2^{-10}}{10}$, which remains constant throughout the simulation. The equivalent uniform grid has $741$ degrees of freedom.  The indicator used in this case is a simple bilinear Lagrange indicator.  The adaptive mesh compares favorably with an equivalent uniform grid as it consistently maintains a lower level of error throughout the major part of the simulation.}
 \end{figure}
 
 \/*
@@ -2284,7 +2283,7 @@ initial condition.  The initial fine mesh is given by $h=32\pi \times
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{../figures/fig_SHW_dambreak_RK3_WENO3_rec_3_fixed_gsplots_1x5_shw_dambreak_comparison_adaptONOFF}	
-	\caption{\label{fig:SSP3WENO3_shw_dambreak_adapt} An adaptive simulation of the shallow water equations for the dam-break problem using an SSP3-WENO3 discretization and free outflow boundary conditions.  The simulation starts at the maximum allowable refinement level with a uniform grid with $h=32\pi \times 2^{-14}$ and a temporal step $\tau =\frac{32\pi\times2^{-12}}{10}$ which remains constant throughout the simulation. The equivalent uniform grid has $2183$ degrees of freedom.  The residual is constructed using a bilinear Lagrange indicator.  Notice that the indicator automatically coarsens the grid at the beginning of the simulation, resulting in a steep decrease in the number of freedom away from the discontinuity. The behaviour in the adaptive case is almost identical with that of the finest resolution despite the considerable difference in degrees of freedom (the two results are almost entirely coincident on the right plot).  This is because, for this problem, the features of refinement interest are concentrated in small areas, allowing for good resolution with relatively few degrees of freedom. }
+	\caption{\label{fig:SSP3WENO3_shw_dambreak_adapt} An adaptive simulation of the shallow water equations for the dam-break problem using an SSP3-WENO3 discretization and free outflow boundary conditions.  The simulation starts at the maximum allowable refinement level with a uniform grid with $h=32\pi \times 2^{-14}$ and a temporal step $\tau =\frac{32\pi\times2^{-12}}{10}$ which remains constant throughout the simulation. The equivalent uniform grid has $2183$ degrees of freedom.  The residual is constructed using a bilinear Lagrange indicator. Notice that the adaptive case compares favourably with the equivalent uniform grid case. }
 \end{figure}
 
 \section{Conclusions}\label{sec:conclusion}
