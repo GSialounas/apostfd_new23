@@ -2289,16 +2289,16 @@ initial condition.  The initial fine mesh is given by $h=32\pi \times
 \section{Conclusions}\label{sec:conclusion}
 The main contribution from this article is a framework for constructing reliable, optimal a posteriori error estimates for classes of Finite Difference schemes, which have not received as much attention in the context of a posteriori estimates as FE and FV.   The framework is generally applicable: it does not depend on the specific choice of the underlying FD scheme.
 
-The methodology incorporates both the numerical solution and information from the FD scheme itself, thereby facilitating the construction of high order a aposteriori estimates using reconstruction techniques. This is  a desirable property as it enables the user to construct optimal estimates for high order FD schemes.  
-At the moment, this is limited to order three on account of the approach taken for the temporal component. Despite this limitation, the method for exceeding order three has been delineated.  We used this with success for the spatial component.  This will be incorporated for the temporal component  in future work.
+The methodology incorporates both the numerical solution and information from the FD scheme itself, thereby facilitating the construction of high order a aposteriori estimates using reconstruction techniques. This is  a desirable property as it enables the user to construct optimal estimates (in the pre-shock regime) for high order FD schemes.  
+At the moment, this is limited to order three on account of the approach taken for the temporal component. Despite this limitation, the method for exceeding order three has been identified and used with success for the spatial component.  This will be incorporated for the temporal component  in future work.
 
 
 
-We demonstrate that the  obtained estimates possess desirable characteristics using a range of numerical tests with both linear and nonlinear, scalar and vectorial examples.  In these tests, the estimates show optimal convergence characteristics while the solution is smooth, but break down in the presence of shocks.  This is because they contain terms which blow up when shocks appear and as the mesh size goes to zero.
+We demonstrate that the  obtained estimates possess desirable characteristics using a range of numerical tests with both linear and nonlinear, scalar and vectorial examples.  In these tests, the estimates show optimal convergence characteristics while the solution is smooth, but break down in the presence of shocks.  This is because they contain terms which blow up when shocks appear and as the mesh size goes to zero.  Nonetheless, the framework has been used to construct robust estimates using alternative bounds that hold post-shock (albeit at the loss of optimality), showcasing the general applicability and flexibility of the framework.
 
 We also show that the residuals constructed using the methodology we propose can be used as local mesh refinement criteria with favourable results relative to equivalent uniform grids.  We demonstrate this using a scalar linear problem and a nonlinear system of conservation laws in one dimension.
 
-The behaviour in the post shock regime, pertaining not only to optimality, but indeed to convergence, remains a future challenge.
+The question of optimality in the post-shock regime remains a future challenge.
 
 
  
