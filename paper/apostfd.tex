@@ -140,15 +140,16 @@
   In this work, we derive a posteriori error estimates for general
   finite difference (FD) schemes approximating systems of nonlinear
   conservation laws. Our approach enables the construction of reliable
-  a posteriori estimates for general FD schemes. The results hold under certain conditions on the numerical
-  solution, but are general as they do not assume any particular
-  structure of the exact solution. The framework allows for the
-  construction of robust estimates for high-order schemes which we
-  showcase with strong stability preseving weighted essentially non
-  oscilatory (SSP-WENO) schemes. The a posteriori error analysis is,
-  however, applicable to any method. The construction of the estimate
-  for computational purposes is done using reconstruction techniques,
-  similar to those used in finite element and finite volume methods.
+  a posteriori estimates for general FD schemes. The results hold
+  under certain conditions on the numerical solution, but are general
+  as they do not assume any particular structure of the exact
+  solution. The framework allows for the construction of robust
+  estimates for high-order schemes which we showcase with strong
+  stability preseving weighted essentially non oscilatory (SSP-WENO)
+  schemes. The a posteriori error analysis is, however, applicable to
+  any method. The construction of the estimate for computational
+  purposes is done using reconstruction techniques, similar to those
+  used in finite element and finite volume methods.
 
   We conduct numerical experiments to benchmark the behavior of the
   estimates and demonstrate the concept of optimal order for smooth
@@ -202,7 +203,7 @@ the context of hyperbolic conservation laws are two distinct classes
 of FD schemes: the Essentially Non-Oscillatory (ENO) schemes
 \cite{harten1987uniformly, shu1988efficient, shu1989efficient} and the
 Weighted ENO (WENO) schemes \cite{liu1994weighted, jiang1996efficient,
-  jiang1998nonoscillatory}. The brilliance of ENO and WENO schemes
+  jiang1998nonoscillatory}. The success of ENO and WENO schemes
 lies in their delicate balance - they achieve high orders of
 approximation in smooth regions while ensuring non-oscillatory
 behaviour near discontinuities.
@@ -214,19 +215,19 @@ equation (PDE). This area, especially for hyperbolic problems, has
 garnered significant attention. Notably, the discontinuous Galerkin
 (dG) finite element methods and finite volume (FV) methods have been
 subject to in-depth research
-\cite{johnson1990adaptive,johnson1995adaptive,dedner2007error,giesselmann2015posteriori,giesselmann2017posteriori,dedner2019residual,ainsworth2011posteriori,verfurth2013posteriori,cockburn1994error,chen2014goal,barth2018finite,semplice2016adaptive,semplice2018adaptive}.
-
-However, the FD schemes, in comparison, have seen a relatively subdued
-focus in the context of a posteriori estimates. This can largely be
-attributed to these problems not possessing a variational structure, a
-crucial element for the successful deployment of standard a posteriori
-techniques. Some works in this space include the study by
-\cite{collins2014posteriori}, which derived goal-oriented a posteriori
-estimates for the Lax-Wendroff scheme by drawing parallels with a
-finite element scheme. Other significant approaches targeting general
-numerical schemes approximating scalar conservation laws and local
-error estimation for FD schemes based on Richardson extrapolation are
-detailed in \cite{cockburn1995posteriori, berger1984adaptive,
+\cite{johnson1990adaptive,johnson1995adaptive,dedner2007error,giesselmann2015posteriori,giesselmann2017posteriori,dedner2019residual,ainsworth2011posteriori,verfurth2013posteriori,cockburn1994error,chen2014goal,barth2018finite,semplice2016adaptive,semplice2018adaptive}
+form a non exhaustive list. However, the FD schemes, by comparison,
+have seen a relatively subdued focus in the context of a posteriori
+estimates. This can largely be attributed to these problems not
+possessing a variational structure, a crucial element for the
+successful deployment of standard a posteriori techniques. Some works
+in this space include the study by \cite{collins2014posteriori}, which
+derived goal-oriented a posteriori estimates for the Lax-Wendroff
+scheme by drawing parallels with a finite element scheme. Other
+significant approaches targeting general numerical schemes
+approximating scalar conservation laws and local error estimation for
+FD schemes based on Richardson extrapolation are detailed in
+\cite{cockburn1995posteriori, berger1984adaptive,
   arney1988posteriori}.
 
 In the current work, we venture into deriving a posteriori bounds for
@@ -243,23 +244,25 @@ specifically when harnessing WENO interpolation
 \cite{liu2009positivity,janett2019novel}.
 
 The very nature of a posteriori error analysis is that it fits within
-the stability framework of the PDE. This ensures the derived bound
-remains universally applicable, irrespective of the chosen numerical
-discretisation technique. The practical construction of the estimate
-is accomplished using reconstruction techniques, which find parallels
-in methodologies used for dG methods
+the stability framework of the PDE. Here we make use of the relative
+entropy framework \cite{dafermos} \tristan{add the dafermos book
+  citation} for systems and examine Kruzkov techniques
+\cite{bouchut1998kruzkov} in the scalar case. This ensures the derived
+bound remains universally applicable, irrespective of the chosen
+numerical discretisation technique. The practical construction of the
+estimate is accomplished using reconstruction techniques, which find
+parallels in methodologies used for dG methods
 \cite{makridakis2007space,giesselmann2015posteriori,giesselmann2017posteriori,dedner2019residual}.
 
 To empirically validate our theoretical construct, we delve into a
 suite of numerical experiments. These are designed to not only
 benchmark the behaviour of our estimates but also to examine the
-behaviour of the estimate for smooth and non-smooth solutions.
-
-Furthermore, our work provides an examination into the estimate's
-ability to identify parasitic waves. These waves, often termed
-spurious numerical oscillations move counter to the direction of the
-physical solution. Such anomalies are typically the aftermath of
-initial conditions traversing areas of fluctuating grid
+behaviour of the estimate for smooth and non-smooth
+solutions. Furthermore, we provide an examination into the
+estimate's ability to identify parasitic waves. These waves, often
+termed spurious numerical oscillations move counter to the direction
+of the physical solution. Such anomalies are typically the aftermath
+of initial conditions traversing areas of fluctuating grid
 resolution. The challenges posed by parasitic waves on non-uniform
 grids have been previously identified and explored in literature such
 as \cite{vichnevetsky1981energy, vichnevetsky1981propagation,
@@ -276,24 +279,25 @@ and underline the significance of the a posteriori bound through an
 exemplary case. Section \S\ref{sec:numerical_discretisation}
 introduces the spatial and temporal discretisations employed in our
 study. WENO schemes, leveraged as spatial discretisations in several
-of our examples, are detailed in
-\S\ref{sec:ENO_WENO_schemes}. Here, we expound upon the underlying
-philosophy, derivation, and practical implementation nuances of WENO
-schemes, highlighting their salient attributes especially in the
-context of hyperbolic conservation laws.  In \S\ref{sec:general_reconstructions} we present the details of the procedure use to obtain the general reconstruction. .Section
-\S\ref{sec:numerical_verification} is devoted to the presentation and thorough
-analysis of our numerical experiments. Our findings and observations,
-are dissected to validate our theoretical postulations. Moreover, this
-section offers insights into the practical implications and potential
-limitations of our a posteriori estimates.  In \S \ref{sec:adaptive_implementation} we examine the use of our bound as a guide for adaptivity. The final section,
-\S\ref{sec:conclusion} concludes our study.
+of our examples, are detailed in \S\ref{sec:ENO_WENO_schemes}. Here,
+we expound upon the underlying philosophy, derivation, and practical
+implementation nuances of WENO schemes, highlighting their salient
+attributes especially in the context of hyperbolic conservation laws.
+In \S\ref{sec:general_reconstructions} we present the details of the
+procedure use to obtain the general reconstruction. Section
+\S\ref{sec:numerical_verification} is devoted to the presentation and
+analysis of our numerical experiments. Moreover, this section offers insights
+into the practical implications and potential limitations of our a
+posteriori estimates.  In \S \ref{sec:adaptive_implementation} we
+examine the use of our bound as a guide for adaptivity. The final
+section, \S\ref{sec:conclusion} concludes our study.
 
 
 \section{Preliminaries and problem setup}
 \label{sec:setup}
 In this section we introduce notation and present the mains ideas of
-subsequent sections through an illustrative example.  Let
-$\W\subset\reals$.  The Lebesgue spaces notation is
+subsequent sections through an illustrative example, linear transport.
+Let $\W\subset\reals$.  The Lebesgue spaces notation is
 \begin{equation}
   \leb{p}(\W)
   =
@@ -336,7 +340,7 @@ Finally, let us introduce the following time-dependent Bochner spaces
 \end{equation}
 
 \begin{Lem}[Stability and error control for the linear advection equation]\label{theorem_stab_advection}
-  Let $u$ be an entropy solution of the initial
+  Let $u$ be an entropy solution \tristan{entropy not defined until below} of the initial
   boundary value problem
   \begin{equation}
     \label{eq:transport}
@@ -360,8 +364,9 @@ Finally, let us introduce the following time-dependent Bochner spaces
       v( x,0) &= v_0( x) \quad \text{ in } \W \times \{0\},
     \end{aligned}
   \end{equation}
-  also with periodic boundary conditiosn.  Then, the error between the two functions, $e:= u-v$, satisfies the
-  following bound for all $t\in [0,T]$:
+  also with periodic boundary conditions.  Then, the error between the
+  two functions, $e:= u-v$, satisfies the following bound for all
+  $t\in [0,T]$:
   \begin{equation}
     \Norm{e\qp{t}}^2_{\leb{2}\qp{\W}}
     \leq
@@ -474,12 +479,15 @@ U^0_j &= u_0(x_j) \text{ for } j=0, \dots, M
 \end{equation}
 and a Crank-Nicolson central-space (CNCS)
 \begin{equation}
-\label{eq:FTCS}
-\begin{split}
-U^{n+1}_j &= U^n_j - \frac{1}{2}\qp{\frac{\tau}{2h}
-	\qp{U^n_{j+1}-U^n_{j-1}} 
-	+
-	\frac{\tau}{2h}\qp{U^{n+1}_{j+1}-U^{n+1}_{j-1}}}
+  \label{eq:FTCS}
+  \begin{split}
+    U^{n+1}_j
+    + \frac{\tau}{4h}
+    \qp{U^{n+1}_{j+1}-U^{n+1}_{j-1}}
+      &=
+    U^n_j
+    - \frac{\tau}{4h}
+    \qp{U^n_{j+1}-U^n_{j-1}}  
 \text{ for } \quad j=0,\dots, M-1.
 \\
 U^0_j &= u_0(x_j) \text{ for } j=0, \dots, M,
@@ -489,28 +497,28 @@ for $n=0,\dots,N-1$.
 Formally, these methods have truncation error $\Oh(\tau + h)$ and
 $\Oh(\tau^2 + h^2)$ respectively.
 
- \begin{Defn}[Truncation error for the FTBS scheme]\label{defn:truncation_ftbs}
- 	We define the Truncation error for the FTBS scheme at $\qp{t,x}$, $T\qp{t,x}$, as
- 	\begin{equation}
- 	\begin{aligned}
- 	T\qp{t,x}&:=\frac{u\qp{t+\tau,x}-u\qp{x,t}}{\tau}+\frac{u\qp{t,x}-u\qp{t,x-h}}{h}\\
- 	&=\frac{1}{2}\qp{ \tau u_{tt}\qp{x,\eta} +hu_{xx}\qp{\xi,t} },
- 	\end{aligned}
- 	\end{equation}
- 	for $\xi\in\qp{x-h,x}$, $\eta \in\qp{t, t+\tau}$.
- \end{Defn}
+ %% \begin{Defn}[Truncation error for the FTBS scheme]\label{defn:truncation_ftbs}
+ %% 	We define the Truncation error for the FTBS scheme at $\qp{t,x}$, $T\qp{t,x}$, as
+ %% 	\begin{equation}
+ %% 	\begin{aligned}
+ %% 	T\qp{t,x}&:=\frac{u\qp{t+\tau,x}-u\qp{x,t}}{\tau}+\frac{u\qp{t,x}-u\qp{t,x-h}}{h}\\
+ %% 	&=\frac{1}{2}\qp{ \tau u_{tt}\qp{x,\eta} +hu_{xx}\qp{\xi,t} },
+ %% 	\end{aligned}
+ %% 	\end{equation}
+ %% 	for $\xi\in\qp{x-h,x}$, $\eta \in\qp{t, t+\tau}$.
+ %% \end{Defn}
 
 
- \begin{Defn}[Truncation error for the BTFS scheme]\label{defn:btfs_truncation}
- 	We define the Truncation error for the BTFS scheme at $\qp{t,x}$, $T\qp{t,x}$, as
- 	\begin{equation}\label{eq:btfs_truncation}
- 	\begin{aligned}
- 	T\qp{t,x}&:=\frac{u\qp{t+\tau,x}-u\qp{x,t}}{\tau}+\frac{u\qp{t+\tau,x+h}-u\qp{t+\tau,x}}{h}\\
- 	&=\qp{ \tau-h}u_{tx},
- 	\end{aligned}
- 	\end{equation}
- 	for $\xi\in\qp{x+h,x}$, $\eta \in\qp{t, t+\tau}$.
- \end{Defn}
+ %% \begin{Defn}[Truncation error for the BTFS scheme]\label{defn:btfs_truncation}
+ %% 	We define the Truncation error for the BTFS scheme at $\qp{t,x}$, $T\qp{t,x}$, as
+ %% 	\begin{equation}\label{eq:btfs_truncation}
+ %% 	\begin{aligned}
+ %% 	T\qp{t,x}&:=\frac{u\qp{t+\tau,x}-u\qp{x,t}}{\tau}+\frac{u\qp{t+\tau,x+h}-u\qp{t+\tau,x}}{h}\\
+ %% 	&=\qp{ \tau-h}u_{tx},
+ %% 	\end{aligned}
+ %% 	\end{equation}
+ %% 	for $\xi\in\qp{x+h,x}$, $\eta \in\qp{t, t+\tau}$.
+ %% \end{Defn}
 
 \subsection{Data representation}
 
@@ -520,14 +528,14 @@ defined as point values over the space-time domain. There is not a
 unique choice and we will illustrate some examples in the following
 sections. We will denote these post processings $\widehat U$. The most
 intuitive post-processing is to apply, for example, a bilinear
-Lagrange interpolant in space-time. Then we have
+Lagrange interpolant in space-time.
 
 \begin{Cor}[An a posteriori bound]
 	\label{cor:aposteriori}
 	Let $\widehat U$ be the piecewise bilinear interpolant of the
         finite difference approximation $\{ U^n_j \}_{j}^n$ (or in
         fact any continuous reconstruction). Then, in view of Lemma
-        \ref{theorem_stab_advection}, we have the a posteriori bound:
+        \ref{theorem_stab_advection}, we have the a posteriori bound
 	\begin{equation}\label{eq_prelim_bound}
 	\Norm{(u - \widehat{U})\qp{t}}^2_{\leb{2}\qp{\W}}
 	\leq
@@ -560,7 +568,10 @@ as we will demonstrate in the following result.
 	\end{equation}
 \end{Lem}
 \begin{proof}
-	We begin by defining, $\widehat{U}^t$ nodally as
+  \tristan{This proof needs simplifying massively, it's very convoluted}
+	We begin by defining, $\widehat{U}^t$ as a continuous function
+        in time, but only defined at the nodal points in the spatial
+        direction as
 	\begin{equation}
 	\widehat{U}^t_j\qp{t}
 	:=
@@ -569,8 +580,8 @@ as we will demonstrate in the following result.
 		U^n_j}{\tau}\qp{t-t^n}, \quad \text{for }\quad t \in \qb{t^n,
 		t^{n+1}}  \text{ and } j\in [0,M-1],
 	\end{equation}
-	which represents the interpolant in the temporal direction. This allows us
-	to write $\widehat{U}$ as
+	which represents the interpolant in the temporal
+        direction. This allows us to write $\widehat{U}$ as
 	\begin{equation}
 	\widehat{U}\qp{x,t}
 	:=
@@ -898,11 +909,15 @@ to achieve the optimal convergence rate of the residual.
 \end{figure}
 
 The suboptimality in the a posteriori bound for the CNCS scheme can be
-addressed by building information from within the
-finite difference spatial discretisation directly into the
-post-processor.  This effectively augments $\widehat U$ such that it is
-defined as the piecewise bi-quadratic Lagrange interpolant of the finite
-difference coefficients $\{U^n_j\}$.  For clarity, we will denote by $\widehat{ U}^t$ the temporal step of the reconstruction and by $\widehat{ U}^{ts}$ the spatio-temporal step (the full reconstruction).   We require that, in each temporal interval $\qb{t^n, t^{n+1}}$, $\widehat{ U}^t$ satisfy two nodal equivalence conditions and a derivative condition:
+addressed by building information from within the finite difference
+spatial discretisation directly into the post-processor.  This
+effectively augments $\widehat U$ such that it is defined as the
+piecewise bi-quadratic Lagrange interpolant of the finite difference
+coefficients $\{U^n_j\}$.  For clarity, we will denote by $\widehat{
+  U}^t$ as the time continuous, space discrete reconstruction and by
+$\widehat{ U}^{ts}$ the fully continuous reconstruction.  We require
+that, in each temporal interval $\qb{t^n, t^{n+1}}$, $\widehat{ U}^t$
+satisfy two nodal equivalence conditions and a derivative condition:
 \begin{equation}
   \label{eq:quadrecon}
 \begin{split}
@@ -920,17 +935,17 @@ Note that we used the sub-script $j$ to denote the spatial position, $x_j$, on t
 \\
 \widehat U(x_{j+1},t^n) &= \widehat{U}_{j+1}^t\qp{t^n} \quad \text{and}
 \\
-\partial_x \widehat U(x_j, t^n) &= \frac{\widehat{U}_{j+1}^t\qp{t^n} -\widehat{U}_{j-1}^t\qp{t^n} }{2h}.
+\partial_x \widehat U(x_j, t^n) &= \frac 1 {2h} \qp{\widehat{U}_{j+1}^t\qp{t^n} -\widehat{U}_{j-1}^t\qp{t^n} }.
 \end{split}
 \end{equation}
-
 
 We are now closer to the spirit of a finite difference method. The
 argument from Lemma \ref{subsec:asymptotic_convergence_rate} can be
 modified to apply in this case. Indeed, one can show that applying the
 same argument, the interpolant given by (\ref{eq:quadrecon}) yields
 $\sqrt{w\cE^2} = \Oh\qp{\tau^2+h^2}$, which is optimal for the CNCS
-scheme. To illustrate this asymptotic convergence properties we have
+scheme \tristan{can you? what are the regularity requirements on
+  u0?}. To illustrate this asymptotic convergence properties we have
 replicated the same experiment as in Figure \ref{fig:bilinearLagrange}
 for the quadratic reconstruction. This is shown in Figure
 \ref{fig:FTCS_prelim_P2}.  It can be seen that the additional
@@ -942,14 +957,19 @@ posteriori bound and favourable effectivities.
 	\includegraphics[width=\textwidth]{../figures/fig_CNCS_plots_1x5_sin_IC_ind_uniform_P2}	
 	\caption{
 		\label{fig:FTCS_prelim_P2}
-		Errors and asymptotic convergence rates for the linear in time,
-		quadratic in space Hermite interpolant of CNCS (\ref{eq:FTCS})
-		approximations of (\ref{eq:transport}) with initial condition
-		(\ref{eq_ic_sin}) and periodic boundary conditions. The simulations were conducted over a family of
-		meshes with discretisation parameter $h = 2^{-m}, m = 4,\dots 7$,
-		with a time-step $\tau = \tfrac{h}{10}$. Note that the estimate
-		is now optimal for the CNCS scheme with a favourable effectivity of
-		$EI \qp{4} \sim 2.2$.}
+		Errors and asymptotic convergence rates for the linear
+                in time, quadratic in space Hermite interpolant of
+                CNCS (\ref{eq:FTCS}) approximations of
+                (\ref{eq:transport}) with initial condition
+                (\ref{eq_ic_sin}) and periodic boundary
+                conditions. The simulations were conducted over a
+                family of meshes with discretisation parameter $h =
+                2^{-m}, m = 4,\dots 7$, with a time-step $\tau =
+                \tfrac{h}{10}$. Note that the estimate is now optimal
+                for the CNCS scheme with a favourable effectivity of
+                $EI \qp{4} \sim 2.2$. \tristan{I don't believe you,
+                  have you removed the accumulation factor? the
+                  results aren't consistent with FTBS}}
 \end{figure}
 
 The ideas presented in this section form an intuitive way to obtain
@@ -979,7 +999,10 @@ forthcoming sections.
 %\end{Rem}
 
 
-In this section we present spatial and temporal discretisations for schemes for more general conservation laws than in \S\ref{sec:example_aposteriori_bounds}.  Since we consider vectorial problems, we will denote by $\vec{U}^n_j$ the numerical approximation to $\vec u\qp{x_j, t^n}$.  
+In this section we introduce the spatial and temporal discretisations
+under consideration for a general class of systems of conservation
+laws.  We will denote by $\vec{U}^n_j$ the numerical approximation to
+$\vec u\qp{x_j, t^n}$.
 \begin{Rem}[One-dimensional system of conservation laws] We consider problems of the form
 	\begin{equation}\label{eq_1d_gen_cons_law}
 	\begin{aligned}
@@ -998,40 +1021,48 @@ In this section we present spatial and temporal discretisations for schemes for 
 	\end{equation}
 \end{Rem}
 
-\begin{Defn}[Entropy/entropy-flux pair]
-	The pair $\qp{\eta, q}$ is an entropy/entropy-flux pair associated with the conservation law (\ref{eq_1d_gen_cons_law}) iff $\eta$ is convex and
-	\begin{equation}
-	\D q= \D\eta \D f.
-	\end{equation}  
-\end{Defn}
+\begin{comment}
+  \begin{Defn}[Entropy/entropy-flux pair]
+    The pair $\qp{\eta, q}$ is an entropy/entropy-flux pair associated with the conservation law (\ref{eq_1d_gen_cons_law}) iff $\eta$ is convex and
+    \begin{equation}
+      \D q= \D\eta \D f.
+    \end{equation}  
+  \end{Defn}
 
-\begin{Defn}[Entropy solution]
-	A function $\vec{u}\in\leb{\infty}\qp{\mathbb{R^d}\times\qb{  0,\infty}}$ is an entropy solution of
-	(\ref{eq_1d_gen_cons_law}) with an associated
-	entropy/entropy-flux pair $\qp{\eta,q}$ if
-	\begin{equation}
-	\begin{aligned}
+  \begin{Defn}[Entropy solution]
+    A function $\vec{u}\in\leb{\infty}\qp{\mathbb{R^d}\times\qb{  0,\infty}}$ is an entropy solution of
+    (\ref{eq_1d_gen_cons_law}) with an associated
+    entropy/entropy-flux pair $\qp{\eta,q}$ if
+    \begin{equation}
+      \begin{aligned}
 	\int_0^{\infty}\int_\Omega\vec{u}\cdot \partial_t \phi +\vec{f}\qp{\vec{u}}\cdot \partial_x\phi\, \mathrm{d}x\mathrm{d}t
 	+\int_\Omega \vec{u}_0\cdot \phi \qp{\cdot,0} \mathrm{d}x& =0 \quad
 	\forall\phi \in C^1_0\qp{\reals\times [0,\infty)}\quad\text{and}\\
-	\int_0^\infty \int_\Omega \eta \qp{\vec{u}}\partial_t \phi + q\qp{\vec{u}}\partial_x \phi\, \mathrm{d}x\mathrm{d}t
-	+ \int_\Omega \eta \qp{\vec{u}_0}\phi\qp{\cdot,0} \mathrm{d}x&\geq 0\quad \forall \phi \in C^1_c\qp{\reals \times [0,\infty)}
-	\end{aligned}
-	\end{equation}
-	
-	%	\begin{equation}
-	%	\int_{\mathbb{R}^d}\int_{\mathbb{R}^+}\qp{S\qp{u}\partial_t\phi +F_S\qp{u}\cdot\nabla \phi}\mathrm{d}t
-	%	\mathrm{d}x+\int_{\mathbb{R}^d}S\qp{u_0}\phi\qp{x,0}\mathrm{d}x\geq 0 \quad \forall \phi \in C^1_0\qp{\mathbb{R}^d\times\mathbb{R}^+,\mathbb{R}^+}
-	%	\end{equation}
-\end{Defn}
-It can be verified that strong solutions of (\ref{eq_1d_gen_cons_law}) also satisfy the additional conservation law
-\begin{equation}\label{eq_associated_cons_law}
-\partial_t {\eta}\qp{\vec{u}} + \partial_x {q}\qp{\vec{u}} = 0.
-\end{equation}
+	  \int_0^\infty \int_\Omega \eta \qp{\vec{u}}\partial_t \phi + q\qp{\vec{u}}\partial_x \phi\, \mathrm{d}x\mathrm{d}t
+	  + \int_\Omega \eta \qp{\vec{u}_0}\phi\qp{\cdot,0} \mathrm{d}x&\geq 0\quad \forall \phi \in C^1_c\qp{\reals \times [0,\infty)}
+      \end{aligned}
+    \end{equation}
+    
+    %	\begin{equation}
+    %	\int_{\mathbb{R}^d}\int_{\mathbb{R}^+}\qp{S\qp{u}\partial_t\phi +F_S\qp{u}\cdot\nabla \phi}\mathrm{d}t
+    %	\mathrm{d}x+\int_{\mathbb{R}^d}S\qp{u_0}\phi\qp{x,0}\mathrm{d}x\geq 0 \quad \forall \phi \in C^1_0\qp{\mathbb{R}^d\times\mathbb{R}^+,\mathbb{R}^+}
+    %	\end{equation}
+  \end{Defn}
+  It can be verified that strong solutions of (\ref{eq_1d_gen_cons_law}) also satisfy the additional conservation law
+  \begin{equation}\label{eq_associated_cons_law}
+    \partial_t {\eta}\qp{\vec{u}} + \partial_x {q}\qp{\vec{u}} = 0.
+  \end{equation}
+\end{comment}
+
+
 \subsection{Spatial discretisation}
-It is well known that numerical schemes for
-non-linear conservation laws may converge to functions which are not weak-solutions of the original problem (see \cite[\S12.1]{leveque1992numerical}). We address this problem by expressing the method in conservation form. We use a consistent numerical flux
-function, $\vec{F}$, which takes $p+q+1$ arguments:
+It is well known that numerical schemes for non-linear conservation
+laws may converge to functions which are not weak-solutions of the
+original problem (see \cite[\S12.1]{leveque1992numerical}). We address
+this problem by expressing the method in conservation form
+\tristan{how does this address spurious solutions?}. We use a
+consistent numerical flux function, $\vec{F}$, which takes $p+q+1$
+arguments:
 \begin{equation}\label{eq_defn_num_flux}
 \dfunkmapstonumflux{\qp{\vec{U}^n_{j-p+1},\cdots,\vec{U}^n_{j+q}}}{\vec{F}^n_j}{{\vec{F}}\qp{\vec{U}^n_{j-p},\cdots,\vec{U}^n_{j+q}}}{\vec{F}\qp{\vec{v},\cdots,\vec{v}}}{\vec{f}\qp{\vec{v}}, }
 \end{equation}
@@ -1044,7 +1075,7 @@ $\partial_{x}\vec{f}$ such that
 We can then use a method-of-lines approach in the discretisation of
 (\ref{eq_1d_gen_cons_law}) by requiring
 \begin{equation}\label{eq_conservation_form}
-\frac{\mathrm{d}}{\mathrm{d}t}\vec{U}_j =  \frac{1}{h}\qp{{\vec{F}\qp{\vec{U}^n_{j-p},\cdots,\vec{U}^n_{j+q}}}-{\vec{F}\qp{\vec{U}^n_{j-p-1},\cdots,\vec{U}^n_{j+q-1}}}} \Foreach j=0, \dots, M.
+  \frac{\mathrm{d}}{\mathrm{d}t}\vec{U}_j =  \frac{1}{h}\qp{{\vec{F}\qp{\vec{U}^n_{j-p},\cdots,\vec{U}^n_{j+q}}}-{\vec{F}\qp{\vec{U}^n_{j-p-1},\cdots,\vec{U}^n_{j+q-1}}}} \Foreach j=0, \dots, M.
 \end{equation}
 For clarity, we provide illustrative examples of $\vec{F}$ for the
 Lax-Friedrichs and the Lax-Wendroff scheme. 
@@ -1065,7 +1096,7 @@ Lax-Friedrichs and the Lax-Wendroff scheme.
   %% \begin{equation}\label{eq_LxF_scheme}
   %%   U^{n+1}_j:= U^n_j-\frac{\tau}{h}\qp{F\qp{U^n_j, U^n_{j+1}}-F\qp{U^n_{j-1}, U^n_{j}}}.
   %% \end{equation}
-  The Lax-Friedrichs flux is formally $\mathcal{O}\qp{h}$.
+  The Lax-Friedrichs flux is formally $\mathcal{O}\qp{h}$. \tristan{This isn't what you mean, if this were true the method is not consistent}
 \end{Rem}
 
 \begin{Rem}[Conservation form for the Lax-Wendroff scheme]
@@ -1086,7 +1117,7 @@ Lax-Friedrichs and the Lax-Wendroff scheme.
 	\begin{equation}\label{eq_LxW_scheme}
 	\vec U^{n+1}_j:= \vec  U^n_j-\frac{\tau}{h}\qp{\vec f\qp{\vec U^{n+1/2}_{j+1/2}}-\vec f\qp{\vec U^{n+1/2}_{j-1/2}}}.
 	\end{equation}
-	The Lax-Wendroff scheme is formally $\mathcal{O}\qp{\tau^2 +h^2}$.
+	The Lax-Wendroff scheme is formally $\mathcal{O}\qp{\tau^2 +h^2}$. \tristan{here you've written scheme so is correct}
 \end{Rem}
 
 
@@ -1107,84 +1138,128 @@ Runge-Kutta (SSPRK) methods (see \cite{gottlieb2001strong}).
 \begin{equation}
   \begin{array}{c|ccc}0&0&0&0\\1&1&0&0\\1/2&1/4&1/4&0\\\hline &1/6&1/6&2/3\\\end{array}.
 \end{equation}
+\tristan{I don't understand, which do you use?}
 
-
+\tristan{This section is quite confused. Eventually you use SSP WENO, Lax wendroff which is a full discretisation and Lax friedrich which is only a spatial discretisation. Weno is left until the next chapter and LF is not really described fully.}
 
 \section{WENO Schemes}\label{sec:ENO_WENO_schemes}
 
-In this section we briefly summarise the details behind Weighted Essentially Non-Oscillatory (WENO) schemes, (cf. \cite{jiang1996efficient}, \cite{shu1998essentially}), which pertain to our implementation.  ENO/WENO schemes have been used with great success in several areas and in particular in the discretisation of hyperbolic conservation laws and convection-diffusion equations (see e.g. \cite{shu2020essentially} for an overview).   
+In this section we briefly summarise the details behind Weighted
+Essentially Non-Oscillatory (WENO) schemes,
+(cf. \cite{jiang1996efficient}, \cite{shu1998essentially}), which
+pertain to our implementation.  ENO/WENO schemes have been used with
+great success in several areas and in particular in the discretisation
+of hyperbolic conservation laws and convection-diffusion equations
+(see e.g. \cite{shu2020essentially} for an overview).
 
-They have several features which contributed to their widespread success.  These include a mechanism of computational stencil construction that can achieve arbitrarily high accuracy in regions where the solution is smooth, essentially non-oscillatory behavior in the vicinity of discontinuities (no artificial, numerical overshoots and undershoots) and proven ability to simulate complex smooth solution structures (see \cite{shu1998essentially} for more details).  In the present work we only consider WENO schemes.
+They have several features which contributed to their widespread
+success.  These include a mechanism of computational stencil
+construction that can achieve arbitrarily high accuracy in regions
+where the solution is smooth, essentially non-oscillatory behavior in
+the vicinity of discontinuities (no artificial, numerical overshoots
+and undershoots) and proven ability to simulate complex smooth
+solution structures (see \cite{shu1998essentially} for more details).
+In the present work we only consider WENO schemes.
 
-There are two, closely related procedures that we use in the context of WENO schemes: reconstruction and approximation. The reconstruction procedure is used to form $\vec{F}$ in the spatial discritization of (\ref{eq_num_approx_f}) while the approximation procedure is used to obtain the spatial component of the post-processor from Lemma \ref{theorem_stab_advection} (see \S\ref{sec:general_reconstructions}). 
+There are two, closely related procedures that we use in the context
+of WENO schemes: reconstruction and approximation. The reconstruction
+procedure is used to form $\vec{F}$ in the spatial discritization of
+(\ref{eq_num_approx_f}) while the approximation procedure is used to
+obtain the spatial component of the post-processor from Lemma
+\ref{theorem_stab_advection} (see
+\S\ref{sec:general_reconstructions}).
 
 
 \begin{Rem}
-	In order to avoid cofusion, it is emphasized that the ENO/WENO reconstruction procedure, as described in \cite{shu1998essentially}, refers to the procedure  used to formulate the ENO/WENO numerical scheme.
-	The reconstruction procedure we have developed refers to the procedure used to obtain the post-processor which is subsequently used for a posteriori error computations.  
+  In order to avoid cofusion, it is emphasized that the ENO/WENO
+  reconstruction procedure, as described in \cite{shu1998essentially},
+  refers to the procedure used to formulate the ENO/WENO numerical
+  scheme.  The reconstruction procedure we have developed refers to
+  the procedure used to obtain the post-processor which is
+  subsequently used for a posteriori error computations. \tristan{so
+    it's never been done before? this is how this reads and it's a
+    strong statement. Is it true?}
 	
-	The readers should note that this procedure, as well as the characteristics of the resulting reconstruction,  are built using information from the scheme and are therefore inherently linked with it.
+  The readers should note that this procedure, as well as the
+  characteristics of the resulting reconstruction, are built using
+  information from the scheme and are therefore inherently linked with
+  it.
 \end{Rem}
 
 
 \begin{Defn}[WENO reconstruction problem from \cite{shu1998essentially}]
-	Given the cell averages of a function $v\qp{x}$:
-	\begin{equation}
-	\bar{v}_j:= \frac{1}{h_j}\int_{x_j}^{x_{j+1}} v\qp{\xi}\mathrm{d}\xi, \quad j=0,\dots,M-1,
-	\end{equation}
-	find a polynomial $p_j\qp{x}$ of degree at most $k-1$ for each cell $I_j$ such that it is a $k-th$ order accurate approximation to $v\qp{x}$ inside $I_j$:
-	\begin{equation}
-	p_j\qp{x} = v\qp{x} + \mathcal{O}\qp{h^k}, \quad x\in I_j, \quad j=0,\dots,M-1.
-	\end{equation}
+  Given the cell averages of a function $v\qp{x}$:
+  \begin{equation}
+    \bar{v}_j:= \frac{1}{h_j}\int_{x_j}^{x_{j+1}} v\qp{\xi}\mathrm{d}\xi, \quad j=0,\dots,M-1,
+  \end{equation}
+  find a polynomial $p_j\qp{x}$ of degree at most $k-1$ for each
+  cell $I_j$ such that it is a $k$-th order accurate
+  approximation to $v\qp{x}$ inside $I_j$, that is:
+  \begin{equation}
+    p_j\qp{x} = v\qp{x} + \mathcal{O}\qp{h^k}, \quad x\in I_j, \quad j=0,\dots,M-1.
+  \end{equation}
 \end{Defn}
 The procedure for obtaining the polynomial $p_j$ from $\bar{v}_j$ can
-be found in \cite[Procedure 2.2]{shu1998essentially} and in
-\cite[\S.2.2]{shu2020essentially}.  It is used  for both
-finite volumes and for finite differences with a minor difference.  In
-the context of finite volumes, we use the cell averages $\bar{v}_j$ to
-obtain a high order approximation to $v$.  We then substitute this in
-an expression for $\vec{F}$ to calculate the numerical flux. In
-contrast, in the context of finite differences, the computational
-variables are point values rather than cell averages. In this case, the values 
-$\vec{f}\qp{\vec{U}_j}$, $j=1,\dots,M$, are used  to obtain a high-order accurate approximation to $\vec{F}$
-and subsequently $\partial_x\vec{f}$ in (\ref{eq_defn_num_flux}) and
-(\ref{eq_num_approx_f}).  It is the latter approach that we will be using
-throughout this work.
+be found in \cite[Procedure 2.2]{shu1998essentially} and in \cite[\S
+  2.2]{shu2020essentially}.  It can be used for both finite volumes
+and for finite differences with a minor difference.  In the context of
+finite volumes, we use the cell averages $\bar{v}_j$ to obtain a high
+order approximation to $v$.  We then substitute this in an expression
+for $\vec{F}$ to calculate the numerical flux. In contrast, in the
+context of finite differences, the computational variables are point
+values rather than cell averages. In this case, the values
+$\vec{f}\qp{\vec{U}_j}$, $j=1,\dots,M$, are used to obtain a
+high-order accurate approximation to $\vec{F}$ and subsequently
+$\partial_x\vec{f}$ in (\ref{eq_defn_num_flux}) and
+(\ref{eq_num_approx_f}).  It is the latter approach that we will be
+using throughout this work.
 
 We present this procedure below for a uniform scheme for simplicity.
-The reader should note that in the shallow water numerical experiment in
-\S\ref{sec:adaptive_implementation}, the WENO scheme used is derived for
-a non-uniform scheme over an adaptive grid.
-As a result, all geometry-related quantities - such as the sub-stencil polynomials, the smoothenss indicators and the resulting weights - are no longer pre-computable constants.  Instead, they have to be re-computed at every time-step.
-The reader can find the detailed procedure on how to
+The reader should note that in the shallow water numerical experiment
+in \S\ref{sec:adaptive_implementation}, the WENO scheme used is
+derived for a non-uniform scheme over an adaptive grid.  As a result,
+all geometry-related quantities - such as the sub-stencil polynomials,
+the smoothenss indicators and the resulting weights - are no longer
+pre-computable constants.  Instead, they have to be re-computed at
+every time-step.  The reader can find the detailed procedure on how to
 derive the scheme on a non-uniform grid in \cite{shu1998essentially}.
+\tristan{move to numerics section. Also, how costly is this computation?}
 
 \begin{Rem}[Order of WENO schemes on non-uniform grids]
-	The reader is advised that, as is pointed out in
-	\cite{shu1998essentially}, WENO schemes for finite differences which
-	are posed on non-uniform grids cannot be higher than order
-	two.
+  The reader is advised that, as is pointed out in
+  \cite{shu1998essentially}, WENO schemes for finite differences which
+  are posed on non-uniform grids cannot be higher than order
+  two. \tristan{why is that? and then why are we using WENO 3 for the
+    adaptive scheme?}
 \end{Rem}
 
-
-\subsection{The WENO-3 scheme}\label{subsec:WENO-3} In one spatial dimension, the WENO reconstruction procedure for the third order finite difference WENO scheme is used to approximate  $\vect f_x$ on the cell $I_j:=\qb{x_j, x_{j+1}}$.  The cell $I_j$ is chosen to be the central cell of the computational stencil $S:=\bracegs{I_{j-1}, I_j, I_{j+1}}$.  The approximation is then obtained as a convex combination of polynomials over two sub-stencils of $S$, namely 
+\subsection{The WENO-3 scheme}
+\label{subsec:WENO-3}
+In one spatial dimension, the WENO reconstruction procedure for the
+third order finite difference WENO scheme is used to approximate
+$\vect f_x$ on the cell $I_j:=\qb{x_j, x_{j+1}}$.  The cell $I_j$ is
+chosen to be the central cell of the computational stencil
+$S:=\bracegs{I_{j-1}, I_j, I_{j+1}}$.  The approximation is then
+obtained as a convex combination of polynomials over two sub-stencils
+of $S$, namely
 \begin{equation}
 \begin{aligned}
 S_1&:=\bracegs{I_{j-1}, I_j}\quad \text{and}\\
 S_2&:=\bracegs{I_{j}, I_{j+1}}.
 \end{aligned}
 \end{equation}
-The polynomials $p_1\qp{x}$and
-$p_2\qp{x}$ are the ENO reconstructions of $f\qp{u}$
-on the substencils $S_1$ and $S_2$
-respectively.  The numerical flux at $x_{j}$, denoted by
-$F_{j}$, is obtained as the combination
+The polynomials $p_1\qp{x}$and $p_2\qp{x}$ are the ENO reconstructions
+of $f\qp{u}$ on the substencils $S_1$ and $S_2$ respectively.  The
+numerical flux at $x_{j}$, denoted by $F_{j}$ \tristan{suddenly we're
+  scalar?}, is obtained as the combination
 \begin{equation}\label{eq_f_WENO}
 F_{j}:=w_1p_1\qp{x_{j}} +w_2p_2\qp{x_{j}},
 \end{equation}
-where $w_1$ and $w_2$ are the non-linear weights (see (\ref{eq_non_lin_weights})) corresponding to $S_1$and $S_2$, which have to satisfy the conditions
+where $w_1$ and $w_2$ are non-linear weights (see
+(\ref{eq_non_lin_weights})) corresponding to $S_1$and $S_2$, which
+have to satisfy the conditions
 \begin{equation}
-w_l\geq 0,\quad \sum_{l=1}^2 w_l = 1.
+w_1, w_2\geq 0,\quad w_1 + w_2 = 1.
 \end{equation}
 Finally, the WENO approximation to the flux derivative is obtained using
 \begin{equation}\label{eq_WENO_approx_flux_derivative}
@@ -1192,27 +1267,44 @@ Finally, the WENO approximation to the flux derivative is obtained using
 \end{equation}
 
 
-\begin{Rem}[Flux-splitting] When WENO schemes are implemented using finite differences one should ensure upwinding and stability (see \cite{shu1998essentially}).  This can be achieved in various ways.  In this paper, this was done by applying the chosen finite difference method to a \textit{flux-splitting} $f^{\pm}\qp{u}$ of $f\qp{u}$.  In particular, 
-	\begin{equation}
-	f\qp{u}= f^+\qp{u} + f^-\qp{u}.
-	\end{equation}
-	where 
-	\begin{equation}
-	\frac{d}{du}f^+\qp{u} \geq 0 \quad \text{and}\quad \frac{d}{du}f^-\qp{u} \leq 0.
-	\end{equation}
-	A simple flux-splitting is the Lax-Friedrichs splitting, which is given by 
-	\begin{equation}
-	f^{\pm}\qp{u}:=\frac{1}{2}\qp{f\qp{u}\pm \alpha u},
-	\end{equation}
-	For 1D scalar conservation laws
-	\begin{equation}
-	\alpha:=\max_{u}\norm{f'\qp{u}}.
-	\end{equation}
-	For hyperbolic systems of conservation laws, ${f}'$ is a Jacobian (with real eigenvalues).  In this case  upwinding is slightly more involved.  The reader should note that in that case one can either perform a characteristic decomposition (which is the more robust approach) or use flux-splitting on a component-by-component basis.  We opt for the latter route as it is sufficient for the purposes of this study.  In this case, $\alpha$ is calculated using the eigenvalues, $\lambda_i$, of the Jacobian ${f}'$:
-	\begin{equation}
-	\alpha := \max_{u} \max_{i} \abs{\lambda_i\qp{u}}.
-	\end{equation}
-	The reader should also note that when coding WENO schemes,  the stencil used for $f^+\qp{u}$ is biased to the left, while the stencil for $f^-\qp{u}$ is biased one point to the right. 
+\begin{Rem}[Flux-splitting]
+  When WENO schemes are implemented using finite differences one
+  should ensure upwinding and stability (see
+  \cite{shu1998essentially}) \tristan{what does this mean? upwinding
+    for stability?}.  This can be achieved in various ways.  In this
+  paper, this was done by applying the chosen finite difference method
+  to a \textit{flux-splitting} $f^{\pm}\qp{u}$ of $f\qp{u}$.  In
+  particular,
+  \begin{equation}
+    f\qp{u}= f^+\qp{u} + f^-\qp{u}.
+  \end{equation}
+  where 
+  \begin{equation}
+    \frac{d}{du}f^+\qp{u} \geq 0 \quad \text{and}\quad \frac{d}{du}f^-\qp{u} \leq 0.
+  \end{equation}
+  A simple flux-splitting is the Lax-Friedrichs splitting, which is given by 
+  \begin{equation}
+    f^{\pm}\qp{u}:=\frac{1}{2}\qp{f\qp{u}\pm \alpha u},
+  \end{equation}
+  For 1D scalar conservation laws
+  \begin{equation}
+    \alpha:=\max_{u}\norm{f'\qp{u}}.
+  \end{equation}
+  For hyperbolic systems of conservation laws, ${f}'$ is a Jacobian
+  (with real eigenvalues).  In this case upwinding is slightly more
+  involved. The reader should note that in that case one can either
+  perform a characteristic decomposition (which is the more robust
+  approach) or use flux-splitting on a component-by-component basis.
+  We opt for the latter route as it is sufficient for the purposes of
+  this study. \tristan{is there a citation for these? why is the
+    decomposition more robust?}  In this case, $\alpha$ is calculated
+  using the eigenvalues, $\lambda_i$, of the Jacobian ${f}'$:
+  \begin{equation}
+    \alpha := \max_{u} \max_{i} \abs{\lambda_i\qp{u}}.
+  \end{equation}
+  The reader should also note that when coding WENO schemes, the
+  stencil used for $f^+\qp{u}$ is biased to the left, while the
+  stencil for $f^-\qp{u}$ is biased one point to the right.
 \end{Rem}
 We will demonstrate the process for obtaining $f^+$ as an example. The
 ENO sub-stencil polynomials for $f^+$, for a third order WENO scheme
@@ -1223,6 +1315,8 @@ p_1\qp{U} &= \frac{1}{2}\qp{-f\qp{U_{j-1}} + 3f\qp{U_j}},\\
 p_2\qp{U} &= \frac{1}{2}\qp{f\qp{U_{j}} + f\qp{U_{j+1}}}
 \end{aligned}
 \end{equation}
+\tristan{why should these be polynomial??}
+
 Next, we construct the weights $w_1$ and $w_2$.  Suppose
 we wanted to create a reconstruction for a function $v\qp{x}$, which
 is piecewise smooth in sub-stencils $S_1$ and $S_2$.  There are
@@ -1230,14 +1324,19 @@ constants $d_r$, $r=1,\,2$ such that
 \begin{equation}
 v_{j+1}=d_1v_{j+1}^{\qp{1}} +d_2v_{j+1}^{\qp{2}}=v\qp{x_{j+1}}+\mathcal{O}\qp{h^{2k-1}},
 \end{equation} 
-where $v^{\qp{i}}_{j+1}$ is the reconstruction of $v\qp{x}$ in the sub-stencil $S_i$ evaluated at $x_{j+1}$.  More specifically, for $f^+$,
+where $v^{\qp{i}}_{j+1}$ is the reconstruction of $v\qp{x}$ in the
+sub-stencil $S_i$ evaluated at $x_{j+1}$ \tristan{this is bad
+  notation, I don't understand what you're trying to say. Use the
+  reconstruction notation from earlier in the paper?}.  More
+specifically, for $f^+$,
 \begin{equation}
 d_0 = \frac{1}{3},\quad d_1=\frac{2}{3}.
 \end{equation}
-If $v\qp{x}$ is smooth, the nonlinear weights $w_i$ should
-be very close to $d_i$.  If, instead, $v\qp{x}$ has a discontinuity in some
-stencil, the $w_i$ from that stencil should be close to zero to avoid spurious, oscillatory behaviour.
-This is accomplished by using smoothness indicators $\beta_i$, where
+\tristan{d1 and d2?}  If $v\qp{x}$ is smooth, the nonlinear weights
+$w_i$ should be very close to $d_i$.  If, instead, $v\qp{x}$ has a
+discontinuity in some stencil, the $w_i$ from that stencil should be
+close to zero to avoid spurious, oscillatory behaviour.  This is
+accomplished by using smoothness indicators $\beta_i$, where
 \begin{equation}
 \beta_i:=\sum_{l=1}^{k-1}\int^{x_{j+1}}_{x_j}h^{2l-1}\qp{\frac{\partial^lp_i\qp{x}}{\partial x^l}}^2\mathrm{d}x.
 \end{equation}
@@ -1257,27 +1356,44 @@ position to the right.
 
 
 \begin{Rem}[Choice of nonlinear weights]
-	The choice of nonlinear weights is very important.  As is
-	demonstrated in \cite{jiang1996efficient}, an appropriate choice of
-	nonlinear weights can upgrade the order of accuracy of
-	(\ref{eq_f_WENO}) in smooth regions relative to an ENO scheme with a stencil $S_1$ or $S_2$.  Furthermore, because these weights are
-	designed to reflect the smoothness of the reconstruction polynomial
-	in the relevant stencil, they are also used to facilitate the
-	non-oscillatory property of the WENO scheme.  
+  The choice of nonlinear weights is very important.  As is
+  demonstrated in \cite{jiang1996efficient}, an appropriate choice of
+  nonlinear weights can upgrade the order of accuracy of
+  (\ref{eq_f_WENO}) in smooth regions relative to an ENO scheme with a
+  stencil $S_1$ or $S_2$.  Furthermore, because these weights are
+  designed to reflect the smoothness of the reconstruction polynomial
+  in the relevant stencil, they are also used to facilitate the
+  non-oscillatory property of the WENO scheme.
 	
-	The Smoothness Increasing Accuracy Preserving (SIAC) filtering is a comparable concept.  This is a post-processing technique which has been used to reduce error oscillations and recover smoothness in the solution and its derivatives in the context of the Discontinuous Galerkin method (see \cite{dedner2019residual}).
+  The Smoothness Increasing Accuracy Preserving (SIAC) filtering is a
+  comparable concept.  This is a post-processing technique which has
+  been used to reduce error oscillations and recover smoothness in the
+  solution and its derivatives in the context of the Discontinuous
+  Galerkin method (see \cite{dedner2019residual}).
 \end{Rem}
 
+\tristan{This section needs flipping around so everything is
+  constructed first then the scheme we use is stated.}
 
-\section{General reconstructions}\label{sec:general_reconstructions}
+\tristan{I would combine the last two chapters to detail all the
+  schemes we consider with 1. LF (needs to include a timestepping
+  method) 2. LW (all is there) 3. WENO + SSP3. No need to separate
+  space/time.}
 
-In this section we formally define a reconstruction and describe properties we would like it to possess.  Furthermore, we present a
+\section{General reconstructions}
+\tristan{is it general or is it weno3?}
+\label{sec:general_reconstructions}
+
+In this section we formally define a reconstruction and describe
+properties we would like it to possess.  Furthermore, we present a
 methodology to obtain a space-time reconstruction from a computed
 numerical solution for (\ref{eq_1d_gen_cons_law}).  We conclude the
-section by illustrating the procedure of obtaining the spatio-temporal reconstruction from the numerical solution.
+section by illustrating the procedure of obtaining the spatio-temporal
+reconstruction from the numerical solution.
 
 \begin{Defn}[Reconstruction]\label{defn_reconstruction}
-The reconstruction, $\recgs{U}$, of the numerical solution, $\vec{U}$, to (\ref{eq_1d_gen_cons_law}) is a function that satisfies 
+The reconstruction, $\recgs{U}$, of the numerical solution, $\vec{U}$,
+to (\ref{eq_1d_gen_cons_law}) is a function that satisfies
 \begin{equation}
 \label{eq:ibvpU}
 \begin{aligned}
@@ -1287,15 +1403,17 @@ The reconstruction, $\recgs{U}$, of the numerical solution, $\vec{U}$, to (\ref{
 \widehat{\vect{U}}(\vect x,0) &= \vect{u}_0(\vect x) \quad \text{ in } \W \times \{0\}
 \end{aligned}
 \end{equation}
-and periodic boundary conditions, such that the reconstruction residual, $\vect{R}$, is well-defined and
-explicitly computable.  Furthermore,
-$\widehat{\vect{U}}$ should lead to an optimal a posteriori
-error estimate.  An estimate
-is optimal when it converges at the same rate as the chosen numerical
-scheme.
+and periodic boundary conditions, such that the reconstruction
+residual, $\vect{R}$, is well-defined and explicitly computable.
+Furthermore, $\widehat{\vect{U}}$ should lead to an optimal a
+posteriori error estimate.  An estimate is optimal when it converges
+at the same rate as the chosen numerical scheme.
 \end{Defn}
 
-
+\tristan{I disagree with this definition. It's an aim, not a
+  definition} \tristan{I also disagree with the initial condition. If
+  reconstruction is pointwise defined to match the IC then what does
+  that imply for the order of accuracy of the reconstruction initially?}
 
 \/*
 
@@ -1323,10 +1441,12 @@ may be non-linear.
 
 In the exposition that follows, we will use the superscripts $t$ and
 $s$ to represent that the function in question is either time or space
-dependent only.  We will also use the supercript $ts$ to denote
-dependence on both time and space.
+dependent only.  \tristan{I don't think this is what you mean... all
+  objects are space-time dependent, the key is whether they are wrt
+  continuous or discrete variables} We will also use the supercript $ts$ to
+denote dependence on both time and space.
 
-\begin{Defn}[Space of the spatial reconstruction step]
+\begin{Defn}[Space of the spatial reconstruction step \tristan{what is step?}]
   Let $\polygsna{q}{\qb{x_j, x_{j+1}}}$ denote the space of
   polynomials of degree $q\in\mathbb{N}$ over the sub-interval
   $\qb{x_j, x_{j+1}}$.  We define the space of the spatial step of the
@@ -1338,7 +1458,7 @@ dependence on both time and space.
 \end{Defn}
 
 \begin{Defn}[Space of the temporal reconstruction step]
-We define the space of the temporal step of
+  We define the space of the temporal step of
   the reconstruction as the space of piecewise polynomials of degree
   $r$ over $\qb{0,T}$ such that
   \begin{equation}
@@ -1348,17 +1468,30 @@ We define the space of the temporal step of
 \end{Defn}
 
 \begin{Defn}[Temporal reconstruction]\label{defn_temp_rec}
-	The temporal reconstruction, $\widehat{\vec{U}}^t\in \mathbb{V}_r^t\qp{0,T;\mathbb{V}_q^s}$ of the numerical solution $\vect{U}$, is the unique function satisfying
-	\begin{equation}\label{eq_conds_temp_rec}
-	\begin{aligned}
-	\widehat{\vec {U}}^t\qp{t^n}&={\vec{U}}^n_j\quad \text{and}\\
-	\partial_t\widehat{\vec{U}}^t\qp{t^n}&=- \frac{1}{h}\qp{{\vec{F}\qp{\vec{U}^n_{j-p},\cdots,\vec{U}^n_{j+q}}}-{\vec{F}\qp{\vec{U}^n_{j-p-1},\cdots,\vec{U}^n_{j+q-1}}}}.
-	\end{aligned}
-	\end{equation}
-	for $n=0,\dots,N$.  
+  The temporal reconstruction, $\widehat{\vec{U}}^t\in
+  \mathbb{V}_r^t\qp{0,T;\mathbb{V}_q^s}$ \tristan{I don't think this
+    space is correct, the temporal recon is only defined at point
+    values in space...} of the numerical solution $\vect{U}$, is the
+  unique function satisfying
+  \begin{equation}\label{eq_conds_temp_rec}
+    \begin{aligned}
+      \widehat{\vec {U}}^t\qp{t^n}&={\vec{U}}^n_j\quad \text{and}\\
+      \partial_t\widehat{\vec{U}}^t\qp{t^n}&=- \frac{1}{h}\qp{{\vec{F}\qp{\vec{U}^n_{j-p},\cdots,\vec{U}^n_{j+q}}}-{\vec{F}\qp{\vec{U}^n_{j-p-1},\cdots,\vec{U}^n_{j+q-1}}}}.
+    \end{aligned}
+  \end{equation}
+  for $n=0,\dots,N$.  \tristan{I don't think this function is uniquely
+    defined because of what I write about the space...}
 \end{Defn}
 
-\begin{Rem}[Order of the temporal reconstruction] The procedure presented in Defn. \ref{defn_temp_rec} limits the temporal component of the reconstruction to third order.  A possibility for increasing the order of the temporal reconstruction is by obtaining a WENO interpolant for the temporal component in the same way we will demonstrate for the spatial one in the following section.
+\begin{Rem}[Order of the temporal reconstruction]
+  The procedure presented in Defn. \ref{defn_temp_rec} limits the
+  temporal component of the reconstruction to third order \tristan{3rd
+    order wrt what? this needs rewriting}.  A possibility for
+  increasing the order of the temporal reconstruction is by obtaining
+  a WENO interpolant for the temporal component in the same way we
+  will demonstrate for the spatial one in the following section.
+  \tristan{how would you do that, does it not require information in
+    the future because the stencil is not 1-sided?}
 \end{Rem}
 
 Once we obtain the temporal reconstruction we use it to define the
@@ -1368,13 +1501,31 @@ The procedure used to obtain the spatial component is based on the
 Weighted Essentially Non-Oscillatory (WENO) interpolation procedure
 which is derived and presented in detail in \cite{janett2019novel}.
 
-\subsection{WENO approximation}  In this section we present the procedure for obtaining the spatial component of the reconstruction using the WENO interpolation procedure of \cite{janett2019novel}. An advantage of this interpolant is that all its aspects (sub-stencil polynomials, linear and non-linear weights) have been modified for use on non-uniform grids.  In addition, it has the other advantages of WENO-interpolants.  These include high orders of approximation in regions where the solution is smooth and essentially non-oscillatory behaviour in the vicinity of discontinuities.  
+\subsection{WENO approximation}
 
-Consider a function $y\qp{x}$ with a set of point values $\bracegs{y_j}$ at locations $\bracegs{x_j}$,  where  the grid is not necessarily uniform. We want to construct a third order WENO intepolating polynomial in an interval $\qb{x_j, x_{j+1}}$ by using the $4$-point stencil
+In this section we present the procedure for obtaining the spatial
+component of the reconstruction using the WENO interpolation procedure
+of \cite{janett2019novel}. An advantage of this interpolant is that
+all its aspects (sub-stencil polynomials, linear and non-linear
+weights) have been modified for use on non-uniform grids.  In
+addition, it has the other advantages of WENO-interpolants.  These
+include high orders of approximation in regions where the solution is
+smooth and essentially non-oscillatory behaviour in the vicinity of
+discontinuities. \tristan{this contradicts what you said earlier about
+  limitation of order}
+
+Consider a function $y\qp{x}$ with a set of point values
+$\bracegs{y_j}$ at locations $\bracegs{x_j}$, where the grid is not
+necessarily uniform. We want to construct a third order WENO
+intepolating polynomial in an interval $\qb{x_j, x_{j+1}}$ by using
+the $4$-point stencil
 \begin{equation}
 S:=\bracegs{x_{j-1},\dots,x_{j+2}}
 \end{equation}
- The interpolant is obtained as a convex combination of polynomials which are constructed on two 3-point sub-stencils, $S_1$ and $S_2$ of $S$, which are given by 
+ The interpolant is obtained as a convex combination of polynomials
+ which are constructed on two 3-point sub-stencils, $S_1$ and $S_2$ of
+ $S$, which are given by \tristan{now you're using a different
+   notation to what's in the weno chapter}
 \begin{equation}
 \begin{aligned}
 S_1 &:= \braces{x_{j-1}, x_j, x_{j+1} },\\
@@ -1392,7 +1543,13 @@ p_2\qp{x}&:= y_{j}\frac{\qp{x-x_{j+1}}\qp{x-x_{j+2}}}{h_{j}\qp{h_{j}+h_{j+1}}} +
 							  y_{j+2}\frac{\qp{x-x_{j}}\qp{x-x_{j+1}}}{\qp{h_{j}+h_{j+1}}h_{j+1}}
 \end{aligned}
 \end{equation}
-for $x\in \qb{x_j, x_{j+1}}$.  A  polynomial approximation to $u\qp{x}$, $p\qp{x}$, can be obtained as a convex combination of the $p^{\qp{i}}$.  The WENO approach is such that $p\qp{x}$ is a high order approximation in intervals where $u\qp{x}$ is smooth.  $p\qp{x}$ is obtained as a weighted sum of $p^{\qp{1}}$ with  the (linear) weights $\gamma_1$ and $\gamma_2$, each corresponding to a sub-stencil of the large stencil:
+for $x\in \qb{x_j, x_{j+1}}$.  A polynomial approximation to
+$u\qp{x}$, $p\qp{x}$, can be obtained as a convex combination of the
+$p^{\qp{i}}$.  The WENO approach is such that $p\qp{x}$ is a high
+order approximation in intervals where $u\qp{x}$ is smooth.  $p\qp{x}$
+is obtained as a weighted sum of $p^{\qp{1}}$ with the (linear)
+weights $\gamma_1$ and $\gamma_2$, each corresponding to a sub-stencil
+of the large stencil:
 \begin{equation}
 \begin{aligned}
 \gamma_1\qp{x}&:= -\frac{x-x_{j+2}}{x_{j+2}-x_{j-1}}\quad\text{and}\\
@@ -1403,29 +1560,61 @@ The linear weights are positive and satisfy
 \begin{equation}
 \sum_i \gamma_i = 1.
 \end{equation}
-Interested readers can find details on the construction of these weights in (\cite{carlini2005weighted}) and \cite{liu2009positivity}.  If the solution is discontinuous inside a sub-stencil, we would like that stencil to have little contribution to ensure the non-oscillatory behaviour of the scheme.  This is achieved by using the non-linear weights $\w_i\qp{x}$, which are obtained from the $\gamma_i\qp{x}$ as follows:
+\tristan{the idea is the same as with the scheme itself but extended
+  to nonuniform grids, but surely you use this approach in the weno
+  scheme as well? So why are you not using this presentation for the
+  scheme and reconstruction? Why write the same thing twice?}
+
+Interested readers can find details on the construction of these
+weights in (\cite{carlini2005weighted}) and \cite{liu2009positivity}.
+If the solution is discontinuous inside a sub-stencil, the stencil
+should have little contribution to ensure the non-oscillatory
+behaviour of the scheme.  This is achieved by using the non-linear
+weights $\w_i\qp{x}$, which are obtained from the $\gamma_i\qp{x}$ as
+follows:
 \begin{equation}
 \omega_j\qp{x}:=\frac{\alpha_j\qp{x}}{\sum_{i=1}^2\alpha_i\qp{x}},\quad \alpha_i\qp{x}:=\frac{\gamma_i\qp{x}}{\epsilon +\beta_i},
 \end{equation}
-where  $\beta_i$ is the {smoothness indicator} for the sub-stencil $S_i$.  It is an indication of how non-smooth the solution is in the corresponding sub-stencil.  If the solution is smooth in the sub-stencil $S_i$, then the relevant $\beta_i$ is small and the relevant $\omega_i$ is close to the $\gamma_i$ in $S_i$. If instead the solution has a discontinuity in $S_i$, then the $\beta_i$ is large, leading to a small $\omega_i$ and ensuring the non-oscillatory behaviour.
+where $\beta_i$ is the {smoothness indicator} for the sub-stencil
+$S_i$.  It is an indication of how non-smooth the solution is in the
+corresponding sub-stencil.  If the solution is smooth in the
+sub-stencil $S_i$, then the relevant $\beta_i$ is small and the
+relevant $\omega_i$ is close to the $\gamma_i$ in $S_i$. If instead
+the solution has a discontinuity in $S_i$, then the $\beta_i$ is
+large, leading to a small $\omega_i$ and ensuring the non-oscillatory
+behaviour.
 
-The $\beta_i$ which are used in this paper are given in \cite{janett2019novel} and are defined as
+The $\beta_i$ which are used in this paper are given in
+\cite{janett2019novel} and are defined as
 \begin{equation}
 \begin{aligned}
 \beta_1&:= \qp{h_j +h_{j+1}}^2\qp{\frac{\norm{y'_{j+1}-y'_j}}{h_j}  - \frac{\norm{y'_{j}-y'_{j-1}}}{h_{j-1}}}^2\quad \text{and}\\
 \beta_2&:= \qp{h_{j-1}+h_{j}}^2\qp{\frac{\norm{y'_{j+2}-y'_{j+1}}}{h_{j+1}}  - \frac{\norm{y'_{j+1}-y'_{j}}}{h_{j}}}^2.
 \end{aligned}
 \end{equation}
-The calculation of the $y'_i$ is presented in detail in \cite[\S3.3.2]{janett2019novel}.  Finally, the WENO approximation to $u\qp{x}$ in the interval $\qb{x_j, x_{j+1}}$ based on the stencil $S=S_1\cup S_2=\bracegs{x_{j-1}, x_j, x_{j+1}, x_{j+2}}$ can be obtained as
+The calculation of the $y'_i$ is presented in detail in
+\cite[\S3.3.2]{janett2019novel}.  Finally, the WENO approximation to
+$u\qp{x}$ in the interval $\qb{x_j, x_{j+1}}$ based on the stencil
+$S=S_1\cup S_2=\bracegs{x_{j-1}, x_j, x_{j+1}, x_{j+2}}$ can be
+obtained as
 \begin{equation}\label{eq:weno_interpolant}
 p\qp{x} := \w_1p_1\qp{x} + \w_2p_2\qp{x}.
 \end{equation}
-   Now we can define the spatio-temporal reconstruction in terms of the WENO approximation.
+\tristan{This is all misleading and I'm confused. The weights are not
+  constant, they are rational functions so p is not actually
+  polynomial? } Now we can define the spatio-temporal reconstruction
+in terms of the WENO approximation.
 
 
 \begin{Defn}[Spatio-temporal reconstruction]\label{defn_spatio-temporal reconstruction}
-	Let $ \widehat{\vec{U}}^t$ be a temporal reconstruction of the numerical solution $\vect{U}$ of (\ref{eq_1d_gen_cons_law}).  The spatio-temporal reconstruction $\widehat{\vec{U}}^{ts}\in\mathbb{V}^t_r\qp{0,T; \mathbb{V}^s_q}$ 
-	in the interval $\qb{x_j, x_{j+1}}$ is given by the WENO interpolant of $\widehat{\vec{U}}^t$, which is defined in (\ref{eq:weno_interpolant}).
+  Let $ \widehat{\vec{U}}^t$ be a temporal reconstruction of the
+  numerical solution $\vect{U}$ of
+  (\ref{eq_1d_gen_cons_law}). \tristan{a general one or the specific
+    one you've introduced earlier?} The spatio-temporal reconstruction
+  $\widehat{\vec{U}}^{ts}\in\mathbb{V}^t_r\qp{0,T; \mathbb{V}^s_q}$ in
+  the interval $\qb{x_j, x_{j+1}}$ is given by the WENO interpolant of
+  $\widehat{\vec{U}}^t$, which is defined in
+  (\ref{eq:weno_interpolant}).
 \end{Defn}
 \/*
 \subsection{WENO approximation}  The spatial component of the reconstruction is obtained using the WENO interpolation procedure of \cite{janett2019novel}.  An advantage of this choice compared to, say a  Lagrange/Hermite interpolant is that this smooth post-processor will have the ENO property, which is useful in the vicinity of discontinuities. Another important factor is that (in smooth regions) we can use this method to construct spatial post-processors of arbitrarily high order.  In contrast, a conventional Hermite interpolant would limit the post-processor to third order in light of the number of nodal and derivative conditions in the interval of consideration.  We summarise this procedure below.
@@ -1520,13 +1709,41 @@ where the coefficients $\vect{c}_i$ are as follows:
 */
 
 \begin{Rem}[Order of the reconstruction]
-	The conditions presented in Defn. \ref{defn_temp_rec} result in a polynomial which is of third order in the temporal variable.   In contrast Defn. \ref{defn_spatio-temporal reconstruction} can be used to obtain spatial reconstructions of arbitrary order in space, simply by using a higher order WENO interpolant.  The limiting factor in the oder of the full spatio-temporal reconstruction will be the lowest order between the spatial and temporal steps.  In this case, this will be the order of the temporal component (order three). 
+  The conditions presented in Defn. \ref{defn_temp_rec} result in a
+  polynomial which is of third order in the temporal variable.  In
+  contrast Defn. \ref{defn_spatio-temporal reconstruction} can be used
+  to obtain spatial reconstructions of arbitrary order in space,
+  simply by using a higher order WENO interpolant.  The limiting
+  factor in the oder of the full spatio-temporal reconstruction will
+  be the lowest order between the spatial and temporal steps.  In this
+  case, this will be the order of the temporal component (order
+  three). \tristan{limiting in what sense? when compared to a scheme?
+    what are you trying to say here?}
 \end{Rem}
+
 \begin{Rem}[Boundary conditions]
-Note that for periodic boundary conditions, quantities calculated in Defns. \ref{defn_temp_rec} and \ref{defn_spatio-temporal reconstruction} that pertain to the boundaries - i.e. $j=0$ and $j=M$ - should be equal.  In the case of non-periodic boundary conditions - Neumann boundary conditions in particular - the computational domain is extended using an appropriate number of ghost nodes.  For WENO schemes the number of ghost nodes depends on the WENO sub-stencil width.  The values for the ghost nodes can be obtained by extrapolation based on the local WENO polynomials.
+  Note that for periodic boundary conditions, quantities calculated in
+Defns. \ref{defn_temp_rec} and \ref{defn_spatio-temporal
+  reconstruction} that pertain to the boundaries - i.e. $j=0$ and
+$j=M$ - should be equal.  In the case of non-periodic boundary
+conditions - Neumann boundary conditions in particular - the
+computational domain is extended using an appropriate number of ghost
+nodes.  For WENO schemes the number of ghost nodes depends on the WENO
+sub-stencil width.  The values for the ghost nodes can be obtained by
+extrapolation based on the local WENO polynomials.
 \end{Rem}
  
-We illustrate the reconstruction procedure in Fig. \ref{fig_spatiotemp_reconstruction}.  Firstly, we use Defn. \ref{defn_temp_rec} to obtain $\widehat{\vect {U}}^t\qp{t}$ from  $\vect{U}$, where the latter is produced by  the chosen numerical discretisation to (\ref{eq:transport}).  This is the solid red line in the middle plot.  Then, we use Defn. \ref{defn_spatio-temporal reconstruction} to obtain $\widehat{\vect {U}}^{ts}\qp{x,t}$ from $\widehat{\vect {U}}^{t}\qp{t}$.  This is the transparent red surface in the third plot. 
+We illustrate the reconstruction procedure in
+Fig. \ref{fig_spatiotemp_reconstruction}.  Firstly, we use
+Defn. \ref{defn_temp_rec} to obtain $\widehat{\vect {U}}^t\qp{t}$ from
+$\vect{U}$, where the latter is produced by the chosen numerical
+discretisation to (\ref{eq:transport}).  This is the solid red line in
+the middle plot.  Then, we use Defn. \ref{defn_spatio-temporal
+  reconstruction} to obtain $\widehat{\vect {U}}^{ts}\qp{x,t}$ from
+$\widehat{\vect {U}}^{t}\qp{t}$.  This is the transparent red surface
+in the third plot. \tristan{if the figure was clearer this text
+  wouldn't be necessary. The overarching idea and this picture should
+  be earlier, with the FTBS eg.}
 
 \/*
 The first step is to obtain the temporal reconstruction,  $\widehat{\vect {U}}^t\qp{t}$, as a third order Hermit interpolant using  $\vect {U}^n$ and $\vect {U}^{n+1}$.  This is plotted as red lines in  Fig. \ref{fig_spatiotemp_reconstruction} (middle).  Firstly, we let
@@ -1578,25 +1795,29 @@ $\widehat{\vect U}^{ts}\qp{x,t}$ is plotted as a red, transparent surface in Fig
 	\centering
 	\centering
 	\includegraphics[scale=.5]{../figures/fig_P1_spatiotemp_1D}	
-	\caption{Example of a reconstruction procedure.  (Left) $\vect{U}^n$ for $n=0,1,2$ produced by a Finite Difference scheme in 1D, with periodic boundary conditions and a sinusoidal initial condition (blue dashed lines).  (Middle) Temporal reconstruction step $\recgs{U}^t\qp{t}$, depicted as solid, red lines. (Right) Spatio-temporal reconstruction step $\recgs{U}^{ts}\qp{x,t}$, depicted as a transparent, red surface.  }
+	\caption{Example of a reconstruction procedure.  (Left) $\vect{U}^n$ for $n=0,1,2$ produced by a Finite Difference scheme in 1D, with periodic boundary conditions and a sinusoidal initial condition (blue dashed lines).  (Middle) Temporal reconstruction step $\recgs{U}^t\qp{t}$, depicted as solid, red lines. (Right) Spatio-temporal reconstruction step $\recgs{U}^{ts}\qp{x,t}$, depicted as a transparent, red surface. }
 	\label{fig_spatiotemp_reconstruction}
 \end{figure}
 
-\section{A posteriori control and numerical verification}\label{sec:numerical_verification}
+\section{A posteriori control and numerical verification}
+\label{sec:numerical_verification}
+
 In this section we will study the asymptotic behaviour of the a
 posteriori bound and compare and contrast it with the behaviour of the
 error for two nonlinear examples: Burgers' equation and the shallow
-water equations. The tests are a preliminary assessment before
-using the a posteriori bound as a
-refinement/coarsening criterion in adaptive tests.  We will firstly
-present the bounds for the non-linear problems  in this section, along with the numerical schemes we will
+water equations. The tests are a preliminary assessment before using
+the a posteriori bound as a refinement/coarsening criterion in
+adaptive tests.  We will firstly present the bounds for the non-linear
+problems in this section, along with the numerical schemes we will
 use.
+
 \begin{Rem}[a posteriori bound for nonlinear problems]
  The test cases we examine in this section are nonlinear, so the
  post-processor from Lemma \ref{theorem_stab_advection} is not
  applicable.  Instead, we will use a different a posteriori estimate
  which is appropriate for nonlinear systems of hyperbolic conservation
- laws.
+ laws. \tristan{the postprocessor is perfectly fine, the issue is the
+   stability framework... we need to use relative entropy or Kruzkov}
 \end{Rem}
 \/*
 \begin{Lem}[Stability and error control for Burgers' equation]\label{theorem_stab_burgers}
@@ -1626,14 +1847,20 @@ the following bound for all $t\in\qb{0,T}$:
 \end{Lem}
 */
 \begin{Rem}[Reconstruction residual]\label{Rem_reconstruction_residual_eq_adv}
-  The reconstruction residual, $\vect{R}$, is used to compute the smooth post-processor that bounds the error of the problem from above in Thm. \ref{theorem_stab_advection}.  We obtain $\vect{R}$ by substituting $\recgs{U}^{ts}$ in (\ref{eq_1d_gen_cons_law}):
+  The reconstruction residual, $\vect{R}$ \tristan{why are we now
+    using hat for R?}, is used to compute the smooth post-processor
+  that bounds the error of the problem from above in
+  Thm. \ref{theorem_stab_advection}.  We obtain $\vect{R}$ by
+  substituting $\recgs{U}^{ts}$ in (\ref{eq_1d_gen_cons_law}):
 	\begin{equation}\label{eq_reconstruction_gen_cons}
 	-\recgs{R}\qp{ x,t}:=\partial_t\widehat{\vect U}^{ts}\qp{ {x},t}+\partial_x \vect{f}\qp{\recgs{U}^{ts}\qp{x,t}}
 	\end{equation}
 \end{Rem}
 
+
 \begin{Rem}(Derivative notation)
-We use the convention that derivatives of a vector-valued function $\vect{u}=\qp{u_1, \dots, u_d}^T$, are understood component-wise:
+  \tristan{why is this here not where systems are introduced?}
+  We use the convention that derivatives of a vector-valued function $\vect{u}=\qp{u_1, \dots, u_d}^T$, are understood component-wise:
 \begin{equation}
 \partial_x \vect{u} := \qp{\partial_x u_1,\dots,\partial_x u_d}^T,
 \end{equation}
@@ -1650,7 +1877,17 @@ Derivatives of a field, q, are denoted $\D q:=\qp{\partial_{u_1}q\qp{\vect{u}},\
 \end{bmatrix}.
 \end{equation}
 \end{Rem}
-\begin{Lem}[A posteriori error control for nonlinear systems of 1D conservation laws from \cite{giesselmann2015posteriori}] \label{theorem_apost_control_nonlinear}Let $\vec{f}\in C^2\qp{U,\mathbb{R}^d}$ satisfy (\ref{eq_associated_cons_law}) and let $\vec{u}$ be an entropy solution of (\ref{eq_1d_gen_cons_law}) with periodic boundary conditions.  Let $\recgs{U}$ take values in $\mathcal{D}$ (which is a convex, compact subset of the state space).  Then for $0\leq t\leq T$ the error between $\vec{u}$ an  $\recgs{U}$ is given by 
+
+\begin{Lem}[A posteriori error control for nonlinear systems of 1D conservation laws from \cite{giesselmann2015posteriori}]
+  \label{theorem_apost_control_nonlinear}
+  Let $\vec{f}\in C^2\qp{U,\mathbb{R}^d}$ satisfy
+  (\ref{eq_associated_cons_law}) and let $\vec{u}$ be an entropy
+  solution of (\ref{eq_1d_gen_cons_law}) with periodic boundary
+  conditions \tristan{I think we only state entropy solution, I've
+    removed much technicalities earlier}.  Let $\recgs{U}$ take values
+  in $\mathcal{D}$ (which is a convex, compact subset of the state
+  space).  Then for $0\leq t\leq T$ the error between $\vec{u}$ an
+  $\recgs{U}$ is given by
 \begin{equation}\label{eq_bound}
 \begin{aligned}
 \Norm{\vect{u}\qp{\cdot,t}-\recgs{U}\qp{\cdot,t}}^2_{\leb{2}\qp{I}}\leq&
@@ -1660,28 +1897,33 @@ Derivatives of a field, q, are denoted $\D q:=\qp{\partial_{u_1}q\qp{\vect{u}},\
     +\Coeta^2}{\Cueta}\mathrm{d}s}.
 \end{aligned}
 \end{equation}
-The constants $\Cueta$ and $\Coeta$ represent the minimum and maximum absolute eigenvalues of $\D^2 \eta$. Furthermore, $\Cof:=\qp{\sum_i \Cofi}^{1/2}$, where $\Cofi$ is an upper bound for the absolute values of the eigenvalues of the \textit{i}th component of $\vec{f}$.
+The constants $\Cueta$ and $\Coeta$ represent the minimum and maximum
+absolute eigenvalues of $\D^2 \eta$. Furthermore, $\Cof:=\qp{\sum_i
+  \Cofi}^{1/2}$, where $\Cofi$ is an upper bound for the absolute
+values of the eigenvalues of the \textit{i}th component of
+$\vec{f}$. \tristan{I think for simplicitly we remove explicit
+  constants and just say what they depend upon.}
 \end{Lem}
 
 \begin{Cor}[Stability and error control for Burgers' equation with periodic boundary conditions]
-	\label{cor_stab_control_burgers}
-	Let the conditions of Lemma
-        \ref{theorem_apost_control_nonlinear} hold with
-        $f\qp{u}:=\frac{1}{2}u^2$, i.e. the scalar Burgers'
-        equation. Suppose the initial value problems for $u$ and
-        $v:=\widehat{U}$ are coupled with periodic boundary data.
-        Then, the error between the two functions, $e:=
-        u-\widehat{U}$, satisfies the following bound for all $t\in
-        [0,T]$:
-	\begin{equation}\label{eq:burgers_bound}
-	\Norm{e\qp{t}}^2_{\leb{2}}\leq \exp\qp{\int_0^t\qp{\Norm{\partial_x\widehat{U}\qp{s}}_{\leb{\infty}}+1}\mathrm{d}s}\qb{\Norm{e\qp{0}}_{\leb{2}}+\int_0^t\Norm{R\qp{s}}^2_{\leb{2}}\mathrm{d}s}=: \w_b\qp{t}\cE_b^2\qp{t},
-	\end{equation}
-	where 
-	\begin{equation}
--R:=\partial_t\widehat{U} +\partial_x\qp{\frac{\widehat{U}^2}{2}}.
-	\end{equation}
+  \label{cor_stab_control_burgers}
+  Let the conditions of Lemma
+  \ref{theorem_apost_control_nonlinear} hold with
+  $f\qp{u}:=\frac{1}{2}u^2$, i.e. the scalar Burgers'
+  equation. Suppose the initial value problems for $u$ and
+  $v:=\widehat{U}$ are coupled with periodic boundary data.
+  Then, the error between the two functions, $e:=
+  u-\widehat{U}$, satisfies the following bound for all $t\in
+  [0,T]$:
+  \begin{equation}\label{eq:burgers_bound}
+    \Norm{e\qp{t}}^2_{\leb{2}}\leq \exp\qp{\int_0^t\qp{\Norm{\partial_x\widehat{U}\qp{s}}_{\leb{\infty}}+1}\mathrm{d}s}\qb{\Norm{e\qp{0}}_{\leb{2}}+\int_0^t\Norm{R\qp{s}}^2_{\leb{2}}\mathrm{d}s}=: \w_b\qp{t}\cE_b^2\qp{t},
+  \end{equation}
+  where 
+  \begin{equation}
+    -R:=\partial_t\widehat{U} +\partial_x\qp{\frac{\widehat{U}^2}{2}}.
+  \end{equation}
 \end{Cor}
-
+\tristan{why do we now use e and not before?}
 
 
 
@@ -1710,44 +1952,82 @@ The constants $\Cueta$ and $\Coeta$ represent the minimum and maximum absolute e
 %\begin{proof} See \cite[Appendix]{cockburn1995posteriori}.
 %\end{proof}
 
-We test the  (\ref{eq:burgers_bound}) for three different schemes
-- Lax-Friedrichs, Lax-Wendroff and SSP3-WENO - with uniform temporal
-and spatial discretizations, i.e. $\tau^n:=\tau $ $\forall n$ and
-$h_j:=h$ $\forall j$.  The reconstruction residual,
+We test the robustness of the bound (\ref{eq:burgers_bound}) for three
+different schemes - Lax-Friedrichs, Lax-Wendroff and SSP3-WENO
+\tristan{here point to the appropriate sections above} - with uniform
+temporal and spatial discretizations, i.e. $\tau^n:=\tau $ $\forall n$
+and $h_j:=h$ $\forall j$. \tristan{need to point out this is for
+  benchmarking purposes not because we're restricted. Perhaps name the
+  subsection 'benchmarking'?} The reconstruction residual,
 (\ref{eq_reconstruction_gen_cons}), will be obtained by using
 Defn. \ref{defn_temp_rec} for the temporal component and
 Defn. \ref{defn_spatio-temporal reconstruction} for the spatial
-component.
-%We test the bound (\ref{eq:bound_burger_cockburn}) for the non-linear scalar problem with a discontinuous initial condition with a %FTBS scheme and a linear-in-time, WENO3-in-space reconstruction.  The reason we do not test the bound (\ref{eq:burgers_bound}) in %this case is because of the blow-up in the exponential factor.
+component. \tristan{I would just point to the reconstruction section}
+%We test the bound (\ref{eq:bound_burger_cockburn}) for the non-linear
+%scalar problem with a discontinuous initial condition with a %FTBS
+%scheme and a linear-in-time, WENO3-in-space reconstruction.  The
+%reason we do not test the bound (\ref{eq:burgers_bound}) in %this
+%case is because of the blow-up in the exponential factor.
 
 %We have implemented the a posteriori bound with these numerical
 %schemes in order to benchmark its behaviour before applying it to
 %adaptive scenarios, where the bound is used as a driver for adaptivity.
 
-\begin{Rem} Note that the  result given in Lemma  \ref{cor_stab_control_burgers} loses its robustness in the post-shock regime due to the presence of the reconstruction's derivative, which blows up upon shock formation, in the exponential accumulation factor, see (\ref{eq:burgers_bound}).   The next result on a posteriori error control is from \cite{ohlberger2009review}.  We utilise it because retains robustness (though not optimality) in the post-shock regime.  We test it for the scalar problem in the post-shock regime.  
+\begin{Rem}
+  Note that the result given in Lemma \ref{cor_stab_control_burgers}
+  \tristan{it's true for both results} loses its robustness in the
+  post-shock regime due to the presence of the reconstruction's
+  derivative, which blows up upon shock formation \tristan{this is not
+    true, it becomes large, but since it's discrete and the
+    reconstruction is continuous, it never becomes infinite}, in the exponential
+  accumulation factor, see (\ref{eq:burgers_bound}).  The next result
+  on a posteriori error control is from \cite{ohlberger2009review}.
+  We utilise it because retains robustness (though not optimality) in
+  the post-shock regime.  We test it for the scalar problem in the
+  post-shock regime. \tristan{this needs explaining better, and including in the introduction}
 \end{Rem} 
 
 \begin{The}(A posteriori error estimate - \cite[Thm. 5]{ohlberger2009review})\label{thm:aposteriori_ohlberger}
-	We denote by $u$ the entropy solution of (\ref{eq_1d_gen_cons_law}) by $U$ the discrete solution obtained using an appropriate discretisation and by $\widehat{U}$ the reconstruction -  in this case obtained as the bilinear Lagrange interpolant of $U$.  Also, we assume that the assumptions described in \cite[\S3]{ohlberger2009review} are satisfied.  Then the following bound holds
-	\begin{equation}\label{eq:bound_ohlberger}
-	\begin{aligned}
-	\Norm{u-\widehat{U}}_{\leb{1}\qp{0,t;\leb{1}\qp{\W}}}
-	\leq
-	\qp{1+T}\eta_0 
-	+
-	\eta_t
-	+
-	\eta_c
-	+
-	2T\sqrt{K_0}\sqrt{K_1\eta_t+\qp{K_1+K_1'}\eta_c}
-	=:
-	\w_o\qp{t}\mathcal{E}_o\qp{t},
-	\end{aligned}
-	\end{equation}
-	where $\w_o\qp{t}=1$ $\forall t$,  $T$ denotes the final time and $\eta_0$, $\eta_t$, $\eta_c$, $K_0$, $K_1$ and $K_1'$ defined in \cite[Cor.1]{ohlberger2009review} and \cite[Thm. 5]{ohlberger2009review}.
+  We denote by $u$ the entropy solution of (\ref{eq_1d_gen_cons_law})
+  by $U$ the discrete solution obtained using an appropriate
+  discretisation and by $\widehat{U}$ the reconstruction - in this
+  case obtained as the bilinear Lagrange interpolant of
+  $U$. \tristan{I don't understand, this isn't weno interpolation? Why
+    not?} Also, we assume that the assumptions described in
+  \cite[\S3]{ohlberger2009review} are satisfied \tristan{come on... this is lazy}.
+  Then the following bound holds
+  \begin{equation}\label{eq:bound_ohlberger}
+    \begin{aligned}
+      \Norm{u-\widehat{U}}_{\leb{1}\qp{0,t;\leb{1}\qp{\W}}}
+      \leq
+      \qp{1+T}\eta_0 
+      +
+      \eta_t
+      +
+      \eta_c
+      +
+      2T\sqrt{K_0}\sqrt{K_1\eta_t+\qp{K_1+K_1'}\eta_c}
+      =:
+      \w_o\qp{t}\mathcal{E}_o\qp{t},
+    \end{aligned}
+  \end{equation}
+  where $\w_o\qp{t}=1$ $\forall t$, $T$ denotes the final time and
+  $\eta_0$, $\eta_t$, $\eta_c$, $K_0$, $K_1$ and $K_1'$ defined in
+  \cite[Cor.1]{ohlberger2009review} and
+  \cite[Thm. 5]{ohlberger2009review}.  \tristan{what are all these things? this is a massive cop out}
 \end{The}
 
-\begin{Rem} The reader will note that the bound (\ref{eq:bound_ohlberger}) is sub-optimal in the pre-shock but has the advantage that it does not blow-up in the post-shock.  Hence, combining this result with (\ref{eq:burgers_bound}) by choosing the minimum between the two results gives optimal a posteriori error  before  shock formation and enables error control after the shock forms, albeit in different norms. We demonstrate this combination using an experiment where  the solution loses regularity and eventually a shock develops - see test \S \ref{test:burger_hat}.
+\begin{Rem}
+  The reader will note that the bound (\ref{eq:bound_ohlberger}) is
+  sub-optimal in the pre-shock but has the advantage that it does not
+  blow-up in the post-shock \tristan{how could the reader tell this
+    from the information here?}.  Hence, combining this result with
+  (\ref{eq:burgers_bound}) by choosing the minimum between the two
+  results gives optimal a posteriori error before shock formation and
+  enables error control after the shock forms, albeit in different
+  norms. We demonstrate this combination using an experiment where the
+  solution loses regularity and eventually a shock develops - see test
+  \S \ref{test:burger_hat}.
 \end{Rem}
 
 \subsection{Test 1: Scalar Inviscid Burgers' equation. }
@@ -1769,9 +2049,8 @@ infinite sum of Bessel functions (see
 u\qp{x,t}=-2\sum_{k=1}^{\infty}\frac{J_k\qp{kt}}{kt}\sin{kx},
 \end{equation}
 where $J_k$ denotes the $k$th Bessel function.  This is a decaying
-sequence, so we can approximate the solution by truncating it (at say
-$k=100$).  The results are shown in
-Figs. \ref{fig:Burgers_LxF_preshock} and
+sequence, so we approximate the solution by truncating it.  The
+results are shown in Figs. \ref{fig:Burgers_LxF_preshock} and
 \ref{fig:Burgers_LxF_postshock} using the Lax-Friedrichs scheme
 \begin{figure}[H]
 	\begin{subfigure}[b]{\textwidth}
@@ -1836,21 +2115,44 @@ Figs. \ref{fig:Burgers_LxF_preshock} and
 		}
 	\end{subfigure}
 	\caption{\label{fig:SSP3WENO_burgers} Errors and asymptotic
-          convergence rates for the SSP3-WENO3 discretisation of Burgers' equation with a
-          sinusoidal initial condition and periodic boundary
-          conditions (\ref{eq_burgers}).  The reconstruction is obtained using  a Hermite temporal interpolant and a WENO3 spatial interpolant.  The simulations were
-          conducted over a family of meshes with discretisation
-          parameter $h = 2^{-m}, \,m = 9,\dots 12$, with a timestep
-          $\tau = \tfrac{h}{10}$.  Notice that  the estimator loses optimality gradually in the interval $0.2\leq t \leq 0.8$.  This is because the solution itself is losing regularity, only this time the scheme and the residual are both of sufficiently high order  to capture this.  At $t\approx 1$ the shock forms and the exponential factor in (\ref{eq:burgers_bound})  blows up.}
+          convergence rates for the SSP3-WENO3 discretisation of
+          Burgers' equation with a sinusoidal initial condition and
+          periodic boundary conditions (\ref{eq_burgers}).  The
+          reconstruction is obtained using a Hermite temporal
+          interpolant and a WENO3 spatial interpolant.  The
+          simulations were conducted over a family of meshes with
+          discretisation parameter $h = 2^{-m}, \,m = 9,\dots 12$,
+          with a timestep $\tau = \tfrac{h}{10}$.  Notice that the
+          estimator loses optimality gradually in the interval
+          $0.2\leq t \leq 0.8$.  This is because the solution itself
+          is losing regularity, only this time the scheme and the
+          residual are both of sufficiently high order to capture
+          this.  At $t\approx 1$ the shock forms and the exponential
+          factor in (\ref{eq:burgers_bound}) blows up.  \tristan{the
+            text in these captions are not consistent with that's
+            written in the text.} }
 \end{figure}
-In order to elucidate the behaviour of the bound (\ref{eq:burgers_bound}), we decouple  the time-accumulation factor from the residual component of the post-processor (see Fig. \ref{fig:SSP3WENO_burgers_decoupled}).  Notice that at $ t\approx1$ the exponential factor blows up rapidly as $v_x$ blows up.  The reason for this is that at $t=1$ the solution starts forming a shock.  This explains the behaviour for $t>=1$.  
+
+In order to elucidate the behaviour of the bound
+(\ref{eq:burgers_bound}), we decouple the time-accumulation factor
+from the residual component of the post-processor (see
+Fig. \ref{fig:SSP3WENO_burgers_decoupled}).  Notice that at $
+t\approx1$ the exponential factor blows up rapidly as $v_x$ blows up
+\tristan{what is v?}.  The reason for this is that at $t=1$ the
+solution starts forming a shock.  This explains the behaviour for
+$t \geq 1$. \tristan{these 2 sentences need rewriting}
 \begin{figure}[H]	
-		\includegraphics[width=\textwidth]{../figures/fig_SSP3WENO3_postshockplots_1x5_sin_IC_burgers_decoupled}	
-	\caption{\label{fig:SSP3WENO_burgers_decoupled}  Decoupling of the post-processor for the cubic spatio-temporal  interpolant of SSP3-WENO3
-		approximations of Burgers' equation with a sinusoidal initial condition and periodic boundary conditions
-		(\ref{eq_burgers}).  The simulations were conducted over a family of
-		meshes with discretisation parameter $h = 2^{-m}, m = 9,\dots 12$,
-		with a timestep $\tau = \tfrac{h}{10}$. The blow-up in the time accumulation term is because of the spatial derivative in the exponential factor, which becomes exceedingly large in the presence of shocks. }
+  \includegraphics[width=\textwidth]{../figures/fig_SSP3WENO3_postshockplots_1x5_sin_IC_burgers_decoupled}	
+  \caption{\label{fig:SSP3WENO_burgers_decoupled} Decoupling of the
+    post-processor for the cubic spatio-temporal interpolant of
+    SSP3-WENO3 approximations of Burgers' equation with a sinusoidal
+    initial condition and periodic boundary conditions
+    (\ref{eq_burgers}).  The simulations were conducted over a family
+    of meshes with discretisation parameter $h = 2^{-m}, m = 9,\dots
+    12$, with a timestep $\tau = \tfrac{h}{10}$. The blow-up in the
+    time accumulation term is because of the spatial derivative in the
+    exponential factor, which becomes exceedingly large in the
+    presence of shocks. }
 \end{figure}
 
 
@@ -1874,6 +2176,8 @@ The numerical experiments conducted in this section hitherto, highlight the issu
 		\w_{min}\mathcal{E}_{min}&:=\min\bracegs{\qp{\w_b\mathcal{E}_b^2}^{1/2}, \w_o\mathcal{E}_o}.
 	\end{aligned}
 \end{equation}
+\tristan{it's not explained properly. It either needs explaining well,
+  or it needs removing}
 
 \subsection{Test 2: Inviscid Burgers equation - hat initial condition }\label{test:burger_hat} In this test we benchmark and compare the behaviour of the a posteriori bounds (\ref{eq:burgers_bound}) and (\ref{eq:bound_ohlberger}) for Burgers equation with periodic boundary conditions and  a piecewise linear, hat initial condition given by
 \begin{equation}\label{eq:burger_pwlin_ic}
@@ -1916,54 +2220,101 @@ The results are shown in Fig. \ref{fig:FTBS_burger_step}.
 \begin{figure}[H] 
 	\includegraphics[width=\textwidth]{../figures/fig_FTBS_postshock_bound_comparison_L2L1L1_burgers_offset_0_hatIC}	
 	\caption{
-		\label{fig:FTBS_burger_step}
-		Comparison of errors and asymptotic convergence rates for the bilinear Lagrange reconstruction of the numerical solution obtained for the FTBS (\ref{eq:FTBS})
-		approximation of Burgers equation with a piecewise linear initial condition
-		(\ref{eq:burger_pwlin_ic}) and periodic boundary conditions. The simulations were conducted over a family of
-		meshes with discretisation parameter $h = 2^{-m}, m = 9,\dots 11$,
-		with a time-step $\tau = \tfrac{h}{10}$. Notice that the bound $\w_o\mathcal{E}_o$ is sub-optimal pre-shock while the bound $\w_b\mathcal{E}_b$ blows up post-shock.  However, combining the minimum of the two allows us to establish optimal error control in the pre-shock regime and error control in the post-shock with an EOC of $~h^{1/2}$ for the estimate.}
+	  \label{fig:FTBS_burger_step}
+	  Comparison of errors and asymptotic convergence rates for
+          the bilinear Lagrange reconstruction of the numerical
+          solution obtained for the FTBS (\ref{eq:FTBS}) approximation
+          of Burgers equation with a piecewise linear initial
+          condition (\ref{eq:burger_pwlin_ic}) and periodic boundary
+          conditions. The simulations were conducted over a family of
+          meshes with discretisation parameter $h = 2^{-m}, m =
+          9,\dots 11$, with a time-step $\tau = \tfrac{h}{10}$. Notice
+          that the bound $\w_o\mathcal{E}_o$ is sub-optimal pre-shock
+          while the bound $\w_b\mathcal{E}_b$ blows up post-shock.
+          However, combining the minimum of the two allows us to
+          establish optimal error control in the pre-shock regime and
+          error control in the post-shock with an EOC of $~h^{1/2}$
+          for the estimate.  \tristan{The results make sense actually,
+            the key point is the error is superconverging, probably
+            because the norm is so weak, and the Ohlberger estimate
+            can't do better than order 0.5} }
 \end{figure}
 
-
-
-
-\subsection{Test 3:  Shallow Water equation.  }  We benchmark the behaviour of the residual for the shallow water equations.
+\subsection{Test 3:  Shallow Water equation.}
+\tristan{How can you benchmark SW if the equations are defined below?}
+We benchmark the behaviour of the residual \tristan{it's the estimate
+  we're benchmarking, not the residual} for the shallow water
+equations.
 \begin{figure}[H]	
-	\includegraphics[width=\textwidth]{../figures/fig_SHW_RK3_WENO3_rec3_fixed_gsplots_1x5_sin_IC_P3_shw}	
-	\caption{\label{fig:SSP3WENO_SHW} Bench marking for the shallow-water equations with a sinusoidal initial condition and periodic boundary conditions. We use an SSP3-WENO3 scheme with $h = 2^{-m}, m = 9,\dots 12$,
-		with a timestep $\tau = \tfrac{h}{10}$.  The bound is constructed using a Hermite-WENO-3 interpolant.  Observe that the residual maintains a high order of convergence throughout the simulation.}
+  \includegraphics[width=\textwidth]{../figures/fig_SHW_RK3_WENO3_rec3_fixed_gsplots_1x5_sin_IC_P3_shw}	
+  \caption{\label{fig:SSP3WENO_SHW} Bench marking for the
+    shallow-water equations with a sinusoidal initial condition and
+    periodic boundary conditions. We use an SSP3-WENO3 scheme with $h
+    = 2^{-m}, m = 9,\dots 12$, with a timestep $\tau = \tfrac{h}{10}$.
+    The bound is constructed using a Hermite-WENO-3 interpolant.
+    Observe that the residual maintains a high order of convergence
+    throughout the simulation.}
 \end{figure}
 
-The last test in this section is presented in order to motivate adaptivity in the context of finite difference schemes for conservation laws. We highlight additional challenges that arise in implementing adaptivity, even for scalar examples in one spatial dimension.  
-\subsection{Test 3: Parasite detection in 1D} \label{subsec:parasite}In this test we investigate the resulting behaviour of (\ref{eq_prelim_bound}) in the presence of parasitic waves and we verify the capability of the bound we construct using Defns \ref{defn_temp_rec} and \ref{defn_spatio-temporal reconstruction} to detect such waves. Very briefly, parasitic waves are numerical artefacts which are generated whenever the numerical solution encounters some discontinuity in the numerical model. Such discontinuities include local changes in grid spacing (see \cite{vichnevetsky1981propagation}),  abrupt changes in some aspect of the specific PDE model, such as a discontinuous change in coefficients (see \cite{trefethen1982group}) or even a change in the PDE used in different regions of the domain, e.g. advection in one region and advection-diffusion in another, (see the work of \cite{giesselmann2017posteriori} for more details on model adaptivity).    Parasitic waves can rapidly pollute the computation.
+The last test in this section is presented in order to motivate
+adaptivity in the context of finite difference schemes for
+conservation laws. \tristan{doesn't it motivate not doing adaptivity?}
+We highlight additional challenges that arise in implementing
+adaptivity, even for scalar examples in one spatial dimension.
 
-We use a Crank-Nicholson in time  Central-Space scheme  on a piecewise non-uniform grid given by
+\subsection{Test 3: Parasite detection in 1D} \label{subsec:parasite}
+
+In this test we investigate the resulting behaviour of
+(\ref{eq_prelim_bound}) in the presence of parasitic waves and we
+verify the capability of the bound we construct using Defns
+\ref{defn_temp_rec} and \ref{defn_spatio-temporal reconstruction} to
+detect such waves. Very briefly, parasitic waves are numerical
+artefacts which are generated whenever the numerical solution
+encounters some discontinuity in the numerical model. Such
+discontinuities include local changes in grid spacing (see
+\cite{vichnevetsky1981propagation}), abrupt changes in some aspect of
+the specific PDE model, such as a discontinuous change in coefficients
+(see \cite{trefethen1982group}) or even a change in the PDE used in
+different regions of the domain, e.g. advection in one region and
+advection-diffusion in another, (see the work of
+\cite{giesselmann2017posteriori} for more details on model
+adaptivity).  Parasitic waves can rapidly pollute the computation.
+
+We use a Crank-Nicholson in time Central-Space scheme on a piecewise
+non-uniform grid given by
 \begin{equation}\label{eq_grid_spacing_piecewise_nonu}
-h_j=x_{j+1}-x_j= \begin{cases}
-2^{-\qp{9}} \quad&\text{if}\quad x_{j+1}>L/2,\\
-2^{-\qp{10}}\quad&\text{otherwise}
-\end{cases}.
+  h_j=x_{j+1}-x_j= \begin{cases}
+    2^{-\qp{9}} \quad&\text{if}\quad x_{j+1}>L/2,\\
+    2^{-\qp{10}}\quad&\text{otherwise}
+  \end{cases}.
 \end{equation}
 
 
 \begin{Rem}[Truncation error of the central difference quotient]\label{rem_central_truncation}
-	The truncation error of the usual central difference quotient,
-	\begin{equation}\label{eq_normal_quotient}
-	u_x\approx \frac{U^n_{j+1}-U^n_{j-1}}{h_{j+1}+h_{j}},
-	\end{equation}
-	on a uniform grid is two globally. On a non-uniform grid, it is locally one wherever $\llbracket h_j\rrbracket:= h_{j+1}-h_{j}\neq 0$.  In order to ensure that the spatial discretisation is second order on a non-uniform grid, we use the modified  quotient 
-	\begin{equation}\label{eq_modified_quotient}
-	u_x \approx \qp{\frac{1}{h_{j+1}} - \frac{1}{h_j+h_{j+1} } }U^n_{j+1} + 
-	\qp{\frac{1}{h_{j}} - \frac{1}{h_{j+1} } }U^n_{j} +
-	\qp{\frac{1}{h_j+h_{j+1} } -\frac{1}{h_{j}} }U^n_{j-1},
-	\end{equation}
-	which is order two globally  on a non-uniform grid as well and simplifies to (\ref{eq_normal_quotient}) on a uniform grid. 
+  The truncation error of the usual central difference quotient,
+  \begin{equation}\label{eq_normal_quotient}
+    u_x\approx \frac{U^n_{j+1}-U^n_{j-1}}{h_{j+1}+h_{j}},
+  \end{equation}
+  on a uniform grid is two globally. On a non-uniform grid, it is locally one wherever $\llbracket h_j\rrbracket:= h_{j+1}-h_{j}\neq 0$.  In order to ensure that the spatial discretisation is second order on a non-uniform grid, we use the modified  quotient 
+  \begin{equation}\label{eq_modified_quotient}
+    u_x \approx \qp{\frac{1}{h_{j+1}} - \frac{1}{h_j+h_{j+1} } }U^n_{j+1} + 
+    \qp{\frac{1}{h_{j}} - \frac{1}{h_{j+1} } }U^n_{j} +
+    \qp{\frac{1}{h_j+h_{j+1} } -\frac{1}{h_{j}} }U^n_{j-1},
+  \end{equation}
+  which is order two globally on a non-uniform grid as well and
+  simplifies to (\ref{eq_normal_quotient}) on a uniform
+  grid. \tristan{I would just write the scheme with this quotient and
+    highlight why you use it.}
 \end{Rem}
-In order to demonstrate the effect of the parasite, we plot $\Norm{R}_{\leb{2}\qp{I_j}}$, for $R$ given by  (\ref{eq_reconstruction_gen_cons}) for  an exponential initial condition, 
+In order to demonstrate the effect of the parasite, we plot
+$\Norm{R}_{\leb{2}\qp{I_j}}$ \tristan{caption says over Omega which is
+  wrong}, for $R$ given by (\ref{eq_reconstruction_gen_cons}) for an
+exponential initial condition,
 \begin{equation}\label{eq_ic_parasites}
-u_0\qp{x}=\exp\qp{-100\qp{x-0.25}^2},
+  u_0\qp{x}=\exp\qp{-100\qp{x-0.25}^2},
 \end{equation}
-which makes the parasites more visible.  The results are shown in Fig. \ref{fig:CNCS_parasite}.
+which makes the parasites more visible \tristan{as aposed to what?}.
+The results are shown in Fig. \ref{fig:CNCS_parasite}.
 
 \/*
 \begin{figure}[H]
@@ -1976,27 +2327,40 @@ which makes the parasites more visible.  The results are shown in Fig. \ref{fig:
 */
 
 \begin{figure}[H]
-	\centering
-	\begin{subfigure}[b]{.3\textwidth}
-		\includegraphics[width=\textwidth]{../figures/fig_CNCS_parasite_rep_20_zoom_off}	
-		\caption{
-			\label{fig:CNCS_parasite_1D_1}
-			Before parasite forms.
-		}
-	\end{subfigure}
-	\begin{subfigure}[b]{.3\textwidth}
-		\includegraphics[width=\textwidth]{../figures/fig_CNCS_parasite_rep_3800zoom_off}	
-		\caption{\label{fig:CNCS_parasite_1D_1}
-			After parasite forms.
-		}
-	\end{subfigure}
-	\begin{subfigure}[b]{.3\textwidth}
-		\includegraphics[width=\textwidth]{../figures/fig_CNCS_parasite_rep_3800zoom_on}	
-		\caption{\label{fig:CNCS_parasite_1D_2_zoom}
-			Magnified Parasite.
-		}
-	\end{subfigure}
-\caption{A parasitic wave which occurs to due an abrupt mesh change.  We use a CNCS scheme on a grid given by (\ref{eq_grid_spacing_piecewise_nonu}) and a temporal-to-spatial step coupling of $\tau=\frac{h}{10}$.  We plot the solution and the normalized $\leb{2}$-norm of the local residual (\ref{eq_reconstruction_gen_cons}) before and after parasite formation.  The parasitic wave is the highly oscillatory wave in the right-most plot, which is magnified.  Notice that it is moving  counter to the solution. Such parasites can arise when implementing adaptivity and can rapidly pollute the computation. Notice that the residual detects and tracks the parasite.}
+  \centering
+  \begin{subfigure}[b]{.3\textwidth}
+    \includegraphics[width=\textwidth]{../figures/fig_CNCS_parasite_rep_20_zoom_off}	
+    \caption{
+      \label{fig:CNCS_parasite_1D_1}
+      Before parasite forms.
+    }
+  \end{subfigure}
+  \begin{subfigure}[b]{.3\textwidth}
+    \includegraphics[width=\textwidth]{../figures/fig_CNCS_parasite_rep_3800zoom_off}	
+    \caption{\label{fig:CNCS_parasite_1D_1}
+      After parasite forms.
+    }
+  \end{subfigure}
+  \begin{subfigure}[b]{.3\textwidth}
+    \includegraphics[width=\textwidth]{../figures/fig_CNCS_parasite_rep_3800zoom_on}	
+    \caption{\label{fig:CNCS_parasite_1D_2_zoom}
+      Magnified Parasite.
+    }
+  \end{subfigure}
+  \caption{A parasitic wave which occurs to due an abrupt mesh change.
+    We use a CNCS scheme on a grid given by
+    (\ref{eq_grid_spacing_piecewise_nonu}) and a temporal-to-spatial
+    step coupling of $\tau=\frac{h}{10}$.  We plot the solution and
+    the normalized $\leb{2}$-norm of the local residual
+    (\ref{eq_reconstruction_gen_cons}) before and after parasite
+    formation.  The parasitic wave is the highly oscillatory wave in
+    the right-most plot, which is magnified.  Notice that it is moving
+    counter to the solution. Such parasites can arise when
+    implementing adaptivity and can rapidly pollute the
+    computation. Notice that the residual detects and tracks the
+    parasite. \tristan{I would change the left axis to clearly have h
+      depicted on a log scale, not 1/h. What scale is the orange in?
+      You need to put the times these snapshots are taken.}}
 \label{fig:CNCS_parasite}
 \end{figure}
 
@@ -2024,7 +2388,7 @@ which makes the parasites more visible.  The results are shown in Fig. \ref{fig:
 %	}
 %\end{figure}
 
-In Fig.\ref{fig:CNCS_parasite} we see a parasite, which manifests as the highly oscillatory wave-train shown in the right plot.  Notice that it travels counter to the solution's direction.        Notice that the bound we have constructed using  Defns. \ref{defn_temp_rec} and \ref{defn_spatio-temporal reconstruction} is able to detect the parasitic wave.  Lastly, the reader should note that implementing adaptivity in the presence of an existing grid discontinuity may exacerbate parasite formation and propagation.
+In Fig.\ref{fig:CNCS_parasite} we see a parasite, which manifests as the highly oscillatory wave-train shown in the right plot.  Notice that it travels counter to the solution's direction. Notice that the bound we have constructed using  Defns. \ref{defn_temp_rec} and \ref{defn_spatio-temporal reconstruction} is able to detect the parasitic wave.  Lastly, the reader should note that implementing adaptivity in the presence of an existing grid discontinuity may exacerbate parasite formation and propagation.  \tristan{then why do it?!}
 
 
 \section{Adaptive experiments}\label{sec:adaptive_implementation}
