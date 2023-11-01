@@ -245,8 +245,7 @@ specifically when harnessing WENO interpolation
 
 The very nature of a posteriori error analysis is that it fits within
 the stability framework of the PDE. Here we make use of the relative
-entropy framework \cite{dafermos} \tristan{add the dafermos book
-  citation} for systems and examine Kruzkov techniques
+entropy framework (see \cite{dafermos2005hyperbolic})  for systems and examine Kruzkov techniques
 \cite{bouchut1998kruzkov} in the scalar case. This ensures the derived
 bound remains universally applicable, irrespective of the chosen
 numerical discretisation technique. The practical construction of the
@@ -943,7 +942,7 @@ We are now closer to the spirit of a finite difference method. The
 argument from Lemma \ref{subsec:asymptotic_convergence_rate} can be
 modified to apply in this case. Indeed, one can show that applying the
 same argument, the interpolant given by (\ref{eq:quadrecon}) yields
-$\sqrt{w\cE^2} = \Oh\qp{\tau^2+h^2}$, which is optimal for the CNCS
+$\sqrt{w\cE^2} = \Oh\qp{\tau^2+h^2}$, which is optimal for the CNCS, provided the solution possesses sufficient regularity
 scheme \tristan{can you? what are the regularity requirements on
   u0?}. To illustrate this asymptotic convergence properties we have
 replicated the same experiment as in Figure \ref{fig:bilinearLagrange}
@@ -967,7 +966,7 @@ posteriori bound and favourable effectivities.
                 2^{-m}, m = 4,\dots 7$, with a time-step $\tau =
                 \tfrac{h}{10}$. Note that the estimate is now optimal
                 for the CNCS scheme with a favourable effectivity of
-                $EI \qp{4} \sim 2.2$. \tristan{I don't believe you,
+                $EI \qp{4} \sim 2.2$. \tristan{George: the accumulation factor is present in the code.  It may be that the CNCS scheme is accumulating but not evidently up to t=4. I don't believe you,
                   have you removed the accumulation factor? the
                   results aren't consistent with FTBS}}
 \end{figure}
@@ -1059,8 +1058,8 @@ $\vec u\qp{x_j, t^n}$.
 It is well known that numerical schemes for non-linear conservation
 laws may converge to functions which are not weak-solutions of the
 original problem (see \cite[\S12.1]{leveque1992numerical}). We address
-this problem by expressing the method in conservation form
-\tristan{how does this address spurious solutions?}. We use a
+this problem by expressing the method in conservation form.  A scheme in conservation form with a consistent numerical flux  is conservative at the discrete level.  This  prevents shocks from violating the Rankine-Hugoniot condition, thereby travelling at the wrong speed and  resulting in unphysical solutions (see \cite[Thm. 4.2]{hesthaven2017numerical}).
+\tristan{George - is this ok now? how does this address spurious solutions?}. We use a
 consistent numerical flux function, $\vec{F}$, which takes $p+q+1$
 arguments:
 \begin{equation}\label{eq_defn_num_flux}
@@ -1096,7 +1095,11 @@ Lax-Friedrichs and the Lax-Wendroff scheme.
   %% \begin{equation}\label{eq_LxF_scheme}
   %%   U^{n+1}_j:= U^n_j-\frac{\tau}{h}\qp{F\qp{U^n_j, U^n_{j+1}}-F\qp{U^n_{j-1}, U^n_{j}}}.
   %% \end{equation}
-  The Lax-Friedrichs flux is formally $\mathcal{O}\qp{h}$. \tristan{This isn't what you mean, if this were true the method is not consistent}
+ We couple  (\ref{eq_F_LxF_cons}) with a forward Euler time-stepping method:
+ \begin{equation}\label{eq_lax_friedrichs_euler}
+\vec{U}^{n+1}_j = \vec{U}^n_j - \frac{\tau}{h}\qp{  \vec F\qp{ \vec U_j,  \vec U_{j+1}} -  \vec F\qp{ \vec U_{j-1} ,\vec U_{j}}}.
+ \end{equation}
+The Lax-Friedrichs scheme, (\ref{eq_lax_friedrichs_euler}) is formally $\mathcal{O}\qp{\tau+h}$.
 \end{Rem}
 
 \begin{Rem}[Conservation form for the Lax-Wendroff scheme]
@@ -1117,30 +1120,27 @@ Lax-Friedrichs and the Lax-Wendroff scheme.
 	\begin{equation}\label{eq_LxW_scheme}
 	\vec U^{n+1}_j:= \vec  U^n_j-\frac{\tau}{h}\qp{\vec f\qp{\vec U^{n+1/2}_{j+1/2}}-\vec f\qp{\vec U^{n+1/2}_{j-1/2}}}.
 	\end{equation}
-	The Lax-Wendroff scheme is formally $\mathcal{O}\qp{\tau^2 +h^2}$. \tristan{here you've written scheme so is correct}
+	The Lax-Wendroff scheme is formally $\mathcal{O}\qp{\tau^2 +h^2}$. 
 \end{Rem}
 
 
-\subsection{Temporal discretisation}
-We approximate the temporal variable using both implicit and explicit
-temporal discretisations.  For example, using various $1$-stage Runge-Kutta methods given by the Butcher tableau
-\begin{equation}
-  \begin{array}
-    {c|c}
-    \theta & \theta
-    \\
-    \hline
-    & 1 
-  \end{array}.
-\end{equation}
-We also use  Strong-Stability Preserving
-Runge-Kutta (SSPRK) methods (see \cite{gottlieb2001strong}).
-\begin{equation}
+Lastly, for our high order scheme, we will use a Strong Stability Preserving (SSP) temporal discretisation  (see \cite{gottlieb2001strong} with a WENO scheme for the spatial component (see \cite{shu1988efficient}).
+%\begin{equation}
+%  \begin{array}
+  %  {c|c}
+   % \theta & \theta
+  %  \\
+   % \hline
+   % & 1 
+  %\end{array}.
+%\end{equation}
+We give the temporal component of the scheme we use using a Butcher tableaux:
+\begin{equation}\label{tbl:ssp3 _scheme}
   \begin{array}{c|ccc}0&0&0&0\\1&1&0&0\\1/2&1/4&1/4&0\\\hline &1/6&1/6&2/3\\\end{array}.
 \end{equation}
-\tristan{I don't understand, which do you use?}
+The spatial component of our scheme,  given by the WENO-3 scheme requires a few steps in order to derive it.  For the sake of clarity we devote the following section to it.
 
-\tristan{This section is quite confused. Eventually you use SSP WENO, Lax wendroff which is a full discretisation and Lax friedrich which is only a spatial discretisation. Weno is left until the next chapter and LF is not really described fully.}
+
 
 \section{WENO Schemes}\label{sec:ENO_WENO_schemes}
 
@@ -1174,9 +1174,8 @@ obtain the spatial component of the post-processor from Lemma
   In order to avoid cofusion, it is emphasized that the ENO/WENO
   reconstruction procedure, as described in \cite{shu1998essentially},
   refers to the procedure used to formulate the ENO/WENO numerical
-  scheme.  The reconstruction procedure we have developed refers to
-  the procedure used to obtain the post-processor which is
-  subsequently used for a posteriori error computations. \tristan{so
+  scheme.  The reconstruction procedure we use herein refers to the procedure of obtaining the post-processor which is
+  subsequently used for a posteriori error computations. \tristan{I have checked and have not seen a similar case.  The closest I have seen was that comet paper  from the eighties. so
     it's never been done before? this is how this reads and it's a
     strong statement. Is it true?}
 	
@@ -1221,9 +1220,9 @@ derived for a non-uniform scheme over an adaptive grid.  As a result,
 all geometry-related quantities - such as the sub-stencil polynomials,
 the smoothenss indicators and the resulting weights - are no longer
 pre-computable constants.  Instead, they have to be re-computed at
-every time-step.  The reader can find the detailed procedure on how to
+every time-step, adding to the overall computational expense.  The reader can find the detailed procedure on how to
 derive the scheme on a non-uniform grid in \cite{shu1998essentially}.
-\tristan{move to numerics section. Also, how costly is this computation?}
+\tristan{George: Which part should I move to the numerics section? move to numerics section. Also, how costly is this computation?}
 
 \begin{Rem}[Order of WENO schemes on non-uniform grids]
   The reader is advised that, as is pointed out in
@@ -1250,7 +1249,7 @@ S_2&:=\bracegs{I_{j}, I_{j+1}}.
 \end{equation}
 The polynomials $p_1\qp{x}$and $p_2\qp{x}$ are the ENO reconstructions
 of $f\qp{u}$ on the substencils $S_1$ and $S_2$ respectively.  The
-numerical flux at $x_{j}$, denoted by $F_{j}$ \tristan{suddenly we're
+numerical flux at $x_{j}$, denoted by $\vec F_{j}$.  \tristan{suddenly we're
   scalar?}, is obtained as the combination
 \begin{equation}\label{eq_f_WENO}
 F_{j}:=w_1p_1\qp{x_{j}} +w_2p_2\qp{x_{j}},
@@ -1269,10 +1268,9 @@ Finally, the WENO approximation to the flux derivative is obtained using
 
 \begin{Rem}[Flux-splitting]
   When WENO schemes are implemented using finite differences one
-  should ensure upwinding and stability (see
-  \cite{shu1998essentially}) \tristan{what does this mean? upwinding
-    for stability?}.  This can be achieved in various ways.  In this
-  paper, this was done by applying the chosen finite difference method
+  should perform upwinding for stability (see
+  \cite{shu1998essentially}) \tristan{George: ... for stability. what does this mean? upwinding
+    for stability?}  In the present work we performed upwinding by applying the chosen finite difference method
   to a \textit{flux-splitting} $f^{\pm}\qp{u}$ of $f\qp{u}$.  In
   particular,
   \begin{equation}
@@ -1293,10 +1291,8 @@ Finally, the WENO approximation to the flux derivative is obtained using
   For hyperbolic systems of conservation laws, ${f}'$ is a Jacobian
   (with real eigenvalues).  In this case upwinding is slightly more
   involved. The reader should note that in that case one can either
-  perform a characteristic decomposition (which is the more robust
-  approach) or use flux-splitting on a component-by-component basis.
-  We opt for the latter route as it is sufficient for the purposes of
-  this study. \tristan{is there a citation for these? why is the
+  perform a characteristic decomposition or use flux-splitting on a component-by-component basis.  The component-wise approach is  cheaper and is often satisfactory (see e.g. \cite[Procedure 2.7]{shu1988efficient}).  However, in other cases it may be unsuitable.  An example would be in the presence of strong shocks and especially if multiple discontinuities are present.  In such cases a component wise approach could lead to spurious oscillations. If this happens, then the user should opt for  the characteristic decomposition, which is more robust (see \cite[\S 4.1]{shu2020essentially}). 
+  We opt for the latter route as it does not present problems for the examples we examine. \tristan{George: Is this ok? is there a citation for these? why is the
     decomposition more robust?}  In this case, $\alpha$ is calculated
   using the eigenvalues, $\lambda_i$, of the Jacobian ${f}'$:
   \begin{equation}
