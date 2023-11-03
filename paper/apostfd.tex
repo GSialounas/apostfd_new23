@@ -1228,7 +1228,7 @@ derive the scheme on a non-uniform grid in \cite{shu1998essentially}.
   The reader is advised that, as is pointed out in
   \cite{shu1998essentially}, WENO schemes for finite differences which
   are posed on non-uniform grids cannot be higher than order
-  two. \tristan{why is that? and then why are we using WENO 3 for the
+  two. The reason for this is that, because of the non-uniformity of the grid, one cannot obtain a high order approximation for the numerical flux derivative in the FD formulation (see \cite[Problem 22]{shu1988efficient} and \cite[\S11.4]{hesthaven2017numerical} for a detailed explanation). \tristan{why is that? and then why are we using WENO 3 for the
     adaptive scheme?}
 \end{Rem}
 
