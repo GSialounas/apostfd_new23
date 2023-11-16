@@ -1,0 +1,205 @@
+%% filename: amsart-template.tex
+%% version: 1.1
+%% date: 2014/07/24
+%%
+%% American Mathematical Society
+%% Technical Support
+%% Publications Technical Group
+%% 201 Charles Street
+%% Providence, RI 02904
+%% USA
+%% tel: (401) 455-4080
+%%      (800) 321-4267 (USA and Canada only)
+%% fax: (401) 331-3842
+%% email: tech-support@ams.org
+%% 
+%% Copyright 2008-2010, 2014 American Mathematical Society.
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.3c
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%   http://www.latex-project.org/lppl.txt
+%% and version 1.3c or later is part of all distributions of LaTeX
+%% version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status `maintained'.
+%% 
+%% The Current Maintainer of this work is the American Mathematical
+%% Society.
+%%
+%% ====================================================================
+
+%     AMS-LaTeX v.2 template for use with amsart
+%
+%     Remove any commented or uncommented macros you do not use.
+
+\documentclass{amsart}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+%\newcommand{\qp}[1]{\left(#1\right)}
+%\newcommand{\qb}[1]{\left[#1\right]}
+%\newcommand{\w}{\omega}
+%\newcommand{\W}{\Omega}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{xca}[theorem]{Exercise}
+
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\numberwithin{equation}{section}
+\usepackage{tristan}
+\usepackage{pgfplots}  
+\begin{document}
+	
+	\title{WENO3 construction demonstration}
+	
+	%    Remove any unused author tags.
+	
+	%    author one information
+	\author{Georgios Sialounas}
+	\address{}
+	\curraddr{}
+	\email{georgios.sialounas@hotmail.com}
+	\thanks{ }
+	
+	%    author two information
+	\author{}
+	\address{}
+	\curraddr{}
+	\email{}
+	\thanks{}
+	
+	\subjclass[2010]{Primary }
+	
+	\keywords{}
+	
+	\date{}
+	
+	\dedicatory{}
+	
+	\begin{abstract}
+	A demonstration of the WENO3 scheme on a non-uniform grid.
+	\end{abstract}
+	
+	\maketitle
+	
+	\section{Introduction}
+	In this report we will go through the construction steps for the WENO-3 scheme, which is the spatial component of our chosen high order scheme. We will not make the simplification of the uniform grid as this is a crucial step for the reconstruction procedure, which requires evaluating the functions at the Gauss quarature points.  Since the user will need the expressions for these functions we will present the procedure on the general grid.  Incidentally, this will illucidate the reconstruction procedure which also uses the functions involved in the WENO scheme.
+	
+	\section{Overview}
+	
+	
+	\section{The WENO interpolation and reconstruction procedures}
+	WENO schemes and the central ideas behind them are critical in the context of this work.  We use them of course as our high order numerical scheme and we also use the central idea behind them in order to obtain the reconstruction.
+	
+Since we only use the central WENO3 scheme (\cite{shu1988efficient}), all references to stencils and sub-stencils will be specific to that for simplicity.
+	
+	
+	The procedures for obtaining both the spatial component of the WENO scheme as well as the post-processor  consist of three key components. 
+	
+	 Firstly, the user obtains a number of polynomial approximations of the function under consideration over a number of sub-stencils whose union forms the computational stencill.
+	 
+	  Secondly, the sub-stencil approximations are combined into a weighted sum using an appropriate choice of weight such that the approximation over the large stencil is of higher order relative to the sub-stencils.  
+	  
+	  The third component is the modification of the linear weights in order to ensure the essentially non-oscillatory behaviour. We will describe all three components which should give the user the necessary information for replicating these steps.  The procedure we are implementing at the core of this section is the WENO interpolation procedure (see \cite[\S2.1]{liu2009positivity}):
+	  
+	  \begin{Defn}[WENO interpolation precedure from \cite{liu2009positivity}]
+	  	Given the point values of a function $u\qp{x}$ at the grid-points of the large stencil $S:=\bracegs{x_{j-1}, x_j, x_{j+1}, x_{j+2}}$ we want to obtain a WENO interpolant to approximate  $u\qp{x}$ in the stencil $S$.
+	  \end{Defn}
+	  We go through the necessary steps in turn.
+	
+	\subsection{The substencil approximations}
+ The first step is to obtain a numerical approximation to the the function, say  $u\qp{x}$ in the cell $I_j:=\qb{x_j, x_{j+1}}$. We choose $I_j$ to be part of the large computational stencil, $S$, which for our WENO3 scheme is  chosen as $S:=\bracegs{I_{j-1}, I_j, I_{j+1}}$.  $I_j$ is a member of both sub-stencils, say $S_1$ and $S_2$, which together comprise $S$,
+	\begin{equation}
+		\begin{aligned}
+			S_1&:=\bracegs{I_{j-1}, I_j}\\
+			S_2&:=\bracegs{I_{j}, I_{j+1}},
+		\end{aligned}
+	\end{equation}
+and we can obtain the sub-stencil approximations as Lagrange interpolant over the sub-stencils:
+\begin{equation}
+	\begin{aligned}
+		p_1\qp{x}&:= u_{j-1}\frac{\qp{x-x_{j}}\qp{x-x_{j+1}}}{h_{j-1}\qp{h_{j-1}+h_j}} + 
+		u_{j}\frac{\qp{x-x_{j-1}}\qp{x-x_{j+1}}}{h_{j-1}h_j}  +
+		u_{j+1}\frac{\qp{x-x_{j-1}}\qp{x-x_{j}}}{\qp{h_{j-1}+h_j}h_j}\quad\text{and} \\
+		p_2\qp{x}&:= u_{j}\frac{\qp{x-x_{j+1}}\qp{x-x_{j+2}}}{h_{j}\qp{h_{j}+h_{j+1}}} + 
+		u_{j+1}\frac{\qp{x-x_{j}}\qp{x-x_{j+2}}}{h_{j}h_{j+1}}  +
+		u_{j+2}\frac{\qp{x-x_{j}}\qp{x-x_{j+1}}}{\qp{h_{j}+h_{j+1}}h_{j+1}},
+	\end{aligned}
+\end{equation}
+corresponding to $S_1$ and $S_2$.
+	\begin{Rem} [Order of the sub-stencil approximations]  if the function $u$ is smooth in the small stencils $S_1$, $S_2$, then we know that  the polynomials $p_1$ and $p_2$ will be a third order accurate approximation to $u$ in their respective sub-stencils, and in particular in the cell of interest, $I_j$:
+		\begin{equation}
+			p_{1,2}\qp{x} = u\qp{x} + \mathcal{O}\qp{h^k}, \quad x\in I_j, \quad j=0,\dots,M-1.
+		\end{equation}
+	\end{Rem}
+	\begin{Rem} The expressions for the sub-stencil polynomials were not simplified down to the uniform grid case  because we use non-uniform grids for the adaptive experiments.
+\end{Rem}
+	\subsection{Combining the approximations}
+	The next step is to combine the low-order, sub-stencil approximations over $S_1$ and $S_2$ to obtain an even higher order approximation to our function of interest over the large stencil, $S$.  This is accomplished using a convex combination of $p_1$ and $p_2$ using appropriate weights which we denote by $\gamma_1$ and $\gamma_2$ respectively. $\gamma_{1,2}$ are referred to as weights in the literature.  Then, the large-stencil approximation, denoted by $P\qp{x}$  of $u$ over the large stencil $S$ is obtained as
+	\begin{equation}
+P\qp{x}:= \gamma_1\qp{x}p_1\qp{x}+  \gamma_2\qp{x}p_2\qp{x}.
+	\end{equation} 
+The requirements for $\gamma_{1,2}$ are that they sum up to 1 and that they be non-negative for the sake of stability and consistency \cite{janett2019novel}. 
+The procedure for obtaining the expressions for $\gamma_{1,2}$ is not usually treated in the literature,  possibly because  they are obtained once as constants  at the interfaces between cells for uniform grid cases and used in that form thereafter (see \cite{shu1988efficient}).  A detailed procedure for obtaining them can be found in \cite[\S3.1]{carlini2005weighted}, wherein the particular stencil $S$ which we have chosen is used as an example.  We omit the details and give the expressions for these weights:
+\begin{equation}
+	\begin{aligned}
+		\gamma_1\qp{x}:= -\frac{x-x_{j+2}}{x_{j+2}-x_{j-1}}\quad\text{and}\quad 
+		\gamma_2\qp{x}:= \frac{x-x_{j-1}}{x_{j+2}-x_{j-1}}.
+	\end{aligned}
+\end{equation}
+	
+	\subsection{Ensuring essentially non-oscillatory behaviour}  The last component at the core of the WENO procedures for the post-processor and the scheme is to obtain non-linear weights, denoted $w_{1,2}$ from the linear ones, $\gamma_{1,2}$.  The non-linear weights is the component that imbues the scheme with the essentially non-oscillatory behaviour.
+	
+	Specifically, if the solution is discontinuous inside a sub-stencil, the stencil
+	should have little contribution to ensure the non-oscillatory
+	behaviour of the scheme.  This is achieved by using the non-linear
+	weights $w_i\qp{x}$, which are obtained from the $\gamma_i\qp{x}$ as
+	follows:
+	\begin{equation}
+		w_j\qp{x}:=\frac{\alpha_j\qp{x}}{\sum_{i=1}^2\alpha_i\qp{x}},\quad \alpha_i\qp{x}:=\frac{\gamma_i\qp{x}}{\epsilon +\beta_i},
+	\end{equation}
+	where $\beta_i$ is the {smoothness indicator} for the sub-stencil
+	$S_i$.  It is an indication of how non-smooth the solution is in the
+	corresponding sub-stencil.  If the solution is smooth in the
+	sub-stencil $S_i$, then the relevant $\beta_i$ is small and the
+	relevant $\omega_i$ is close to the $\gamma_i$ in $S_i$. If instead
+	the solution has a discontinuity in $S_i$, then the $\beta_i$ is
+	large, leading to a small $\omega_i$ and ensuring the non-oscillatory
+	behaviour.  The $\beta_i$ can be calculated as follows:
+	\begin{equation}\label{eq:smoothness_nonu}
+		\beta_i:=\sum_{l=1}^{k-1}\int^{x_{j+1}}_{x_j}h^{2l-1}\qp{\frac{\partial^lp_i\qp{x}}{\partial x^l}}^2\mathrm{d}x.
+	\end{equation}
+	This is simply a sum of scaled $\leb2$ norms of the derivatives of $p_i$.  The factor $h^{2l-1}$ ensures that $\beta_i$ scales like an $\leb{2}-$norm over polynomials. In the case of a uniform grid, the $\beta_i$ simplify to 
+	\begin{equation}
+		\beta_1=\qp{u_{j-1}-u_j}^2,\quad \beta_2=\qp{u_j-u_{j+1}}^2.
+	\end{equation}
+	If a non-uniform grid is used then we have to  compute the integral.   Do note that (\ref{eq:smoothness_nonu}) is not the only possibility for the smoothness indicator.  Another example, which we used in this paper with encouraging results, is given in  \cite[\S3.3.2]{janett2019novel} and is conveniently suitable for a non-uniform grid.
+	\section{Considerations for the scheme}
+	The reader now possesses all the information required to compute the post-processor once the numerical solution is available. This was done using the WENO interpolation procedure.  A closely related  procedure is the WENO reconstruction procedure.  This is used to obtain the numerical approximation to $\vec{f}_x$.  The procedure itself is equivalent to  WENO approximation of the first derivative of a function.  This is very similar to what we described earlier with a few minor modifications.  We will go through these now.   
+	
+	\begin{Rem} The procedure we describe in this section is conducted on the  individual components of the flux $\vec{f}$, which is a vector function, for reasons that we will explain shortly.  The reader is advised that we are dropping vector notation.
+	\end{Rem}
+	
+We obtain the scheme by using  WENO reconstruction procedure to approximate the individual components of the flux function $\vec{f}_x$, namely the $ {f_j}_x$, on the cell $I_j$.  The numerical flux at $x_{j}$, denoted by
+	$F_{j}$, is obtained as the combination
+	\begin{equation}\label{eq_f_WENO}
+		F_{j}:=w_1p_1\qp{x_{j}} +w_2p_2\qp{x_{j}},
+	\end{equation}
+	where $w_1$ and $w_2$ are the non-linear weights we have described earlier.
+	Finally, the WENO approximation to the flux derivative is obtained using
+	\begin{equation}\label{eq_WENO_approx_flux_derivative}
+		\partial_x f_j\approx \frac{1}{h_{j-1}}\qp{F_{j}- F_{j-1}}.
+	\end{equation}
+\begin{Rem} The polynomials $p_{1,2}$	that are used for the scheme are not the same as the ones that are used in the interpolation procedure.  Let us go through the details now.
+\end{Rem}
+	
+	
+	\bibliographystyle{alpha}
+	\bibliography{apostfd,apostfd_bibdesk}
+\end{document}
